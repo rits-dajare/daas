@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from functools import lru_cache
-import json
+# --------------------------------------------------------------------------------------
+import sys
+from pathlib import Path
+sys.path.append(str(Path('__file__').resolve().parent))
+# --------------------------------------------------------------------------------------
+from webapi import http_request
 import requests
-import http_request
+import json
+from functools import lru_cache
+# --------------------------------------------------------------------------------------
 
 
 # read API keys
@@ -49,7 +55,7 @@ def check_health(res, alert=True):
     return True
 
 
-@lru_cache(maxsize = 255)
+@lru_cache(maxsize=255)
 def to_reading(dajare):
     url = 'https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysis/v1/hiragana?APIKEY={}'
     headers = {'Content-Type': 'application/json'}
@@ -67,11 +73,11 @@ def to_reading(dajare):
     return res
 
 
-@lru_cache(maxsize = 255)
+@lru_cache(maxsize=255)
 def find_sensitive_tags(dajare):
     url = 'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck?APIKEY={}'
-    headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
-    params = { 'text': dajare }
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    params = {'text': dajare}
 
     for key in APIKEY:
         jetrun_api.set_url(url.format(key))
@@ -83,4 +89,3 @@ def find_sensitive_tags(dajare):
             return res
 
     return res
-
