@@ -27,6 +27,11 @@ class JudgeEngine(engine.Engine):
             if re.match(pattern, dajare) is not None:
                 return True
 
+        # not pass xyzxyz pattern
+        # ex. テストテスト -> not dajare
+        if dajare[:3] == dajare[3:]:
+            return False
+
         # convert dajare to reading & morphemes
         reading, morphemes = self.to_reading_and_morphemes(dajare, use_api)
 
