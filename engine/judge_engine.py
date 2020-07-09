@@ -11,7 +11,7 @@ from janome.tokenizer import Tokenizer
 from kanjize import int2kanji
 import jaconv
 import pyboin
-import engine
+from engine import engine
 # --------------------------------------------------------------------------------------
 
 
