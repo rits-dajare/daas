@@ -7,6 +7,7 @@ sys.path.append(str(Path('__file__').resolve().parent))
 # --------------------------------------------------------------------------------------
 from webapi import http_request
 import requests
+import datetime
 import json
 from functools import lru_cache
 # --------------------------------------------------------------------------------------
@@ -47,8 +48,8 @@ def check_health(res, alert=True):
 
                 param = {'message': message}
                 requests.post(url, headers=header, params=param)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         return False
 
@@ -89,3 +90,4 @@ def find_sensitive_tags(dajare):
             return res
 
     return res
+
