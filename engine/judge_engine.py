@@ -19,6 +19,10 @@ class JudgeEngine(engine.Engine):
     def __init__(self):
         self.tokenize = Tokenizer()
 
+    def is_dajare(self, dajare):
+
+        return True
+
     def to_reading_and_morphemes(self, dajare, use_api=True):
         reading = ''
 
@@ -56,9 +60,36 @@ class JudgeEngine(engine.Engine):
 
         return reading, morphemes
 
+    def preprocessing(self, dajare):
+        # excludes chars that are consecutive 3~ times
+        dajare = re.sub(r'(.)\1{2,}', r'\1', dajare)
+
+        # convert dajare to reading & morphemes
+        reading, morphemes = self.to_reading_and_morphemes(dajare)
+
+        for ci in range(len(reading) - 1):
+            if reading[ci+1] not in 'アイウエオ':
+                continue
+
+            if pyboin.text2boin(reading[ci]) == \
+                    pyboin.text2boin(reading[ci+1]):
+                reading = reading[:ci+1] + 'ー' + reading[ci+2:]
+
+        # convert vowel text to pronunciation
+        vowel_pattern = [
+            ['オウ', 'オー'],
+            ['エイ', 'エー'],
+        ]
+        for bi_char in self.n_gram(reading, 2):
+            for sub in vowel_pattern:
+                if pyboin.text2boin(bi_char) == sub[0]:
+                    reading = reading.replace(*sub)
+
+        return reading, morphemes
+
     def n_gram(self, dajare, n):
         return [dajare[idx:idx + n] for idx in range(len(dajare) - n + 1)]
 
 
 judge_engine = JudgeEngine()
-print(judge_engine.to_reading_and_morphemes('布団が吹っ飛んだ'))
+print(judge_engine.preprocessing('紅茶が凍っちゃった'))
