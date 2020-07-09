@@ -21,14 +21,14 @@ class JudgeEngine(engine.Engine):
         self.force_pass_pattern = open('config/force_judge_pattern.txt').read().split('\n')
         self.force_pass_pattern.remove('')
 
-    def is_dajare(self, dajare):
+    def is_dajare(self, dajare, use_api=True):
         # force pass as dajare
         for pattern in self.force_pass_pattern:
             if re.match(pattern, dajare) is not None:
                 return True
 
         # convert dajare to reading & morphemes
-        reading, morphemes = self.to_reading_and_morphemes(dajare)
+        reading, morphemes = self.to_reading_and_morphemes(dajare, use_api)
 
         # pre judge
         tri_gram = self.n_gram(reading, 3)

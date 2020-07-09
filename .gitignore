@@ -33,5 +33,6 @@
 /.idea/
 /.vscode/
 /**/__pycache__/
+/accuracy.py
 #---------------------------
 
