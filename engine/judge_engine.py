@@ -18,8 +18,15 @@ from engine import engine
 class JudgeEngine(engine.Engine):
     def __init__(self):
         self.tokenize = Tokenizer()
+        self.force_pass_pattern = open('config/force_judge_pattern.txt').read().split('\n')
+        self.force_pass_pattern.remove('')
 
     def is_dajare(self, dajare):
+        # force pass as dajare
+        for pattern in self.force_pass_pattern:
+            if re.match(pattern, dajare) is not None:
+                return True
+
         # convert dajare to reading & morphemes
         reading, morphemes = self.to_reading_and_morphemes(dajare)
         reading, morphemes = self.preprocessing(reading, morphemes)
