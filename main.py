@@ -97,10 +97,47 @@ def dajare_evaluate():
     return make_response(jsonify(response), 200)
 
 
+@app.route('/dajare/reading', methods=['GET'])
+def dajare_reading():
+    '''
+    uri：
+        /dajare/reading
+    method：
+        GET
+    headers：
+        'Content-Type':'application/json'
+    query：
+        dajare: String,
+    response：
+        {
+            reading: String,
+            status: String,
+        }
+    '''
+
+    # received query params
+    params = dict(request.args)
+
+    response = {
+        'reading': '',
+        'status': 'OK',
+    }
+
+    # whether params could be received
+    if 'dajare' not in params:
+        response['status'] = 'NG'
+        return make_response(jsonify(response), 400)
+
+    # convert to reading
+    response['reading'] = judge_engine.to_reading(params['dajare'])
+
+    return make_response(jsonify(response), 200)
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8080)
