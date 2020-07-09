@@ -12,7 +12,7 @@ judge_engine = JudgeEngine()
 eval_engine = EvalEngine()
 
 
-@app.route('/dajare/judge', methods=['GET'])
+@app.route('/dajare/judge/', methods=['GET'])
 def dajare_judge():
     '''
     uri：
@@ -60,11 +60,11 @@ def dajare_judge():
     return make_response(jsonify(response), 200)
 
 
-@app.route('/dajare/evaluate', methods=['GET'])
+@app.route('/dajare/eval/', methods=['GET'])
 def dajare_evaluate():
     '''
     uri：
-        /dajare/evaluate
+        /dajare/eval
     method：
         GET
     headers：
@@ -97,7 +97,7 @@ def dajare_evaluate():
     return make_response(jsonify(response), 200)
 
 
-@app.route('/dajare/reading', methods=['GET'])
+@app.route('/dajare/reading/', methods=['GET'])
 def dajare_reading():
     '''
     uri：
