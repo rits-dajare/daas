@@ -22,7 +22,7 @@ def dajare_judge():
     headers：
         'Content-Type':'application/json'
     query：
-        joke: String,
+        dajare: String,
     response：
         {
             is_dajare: Boolean,
@@ -60,11 +60,47 @@ def dajare_judge():
     return make_response(jsonify(response), 200)
 
 
+@app.route('/dajare/evaluate', methods=['GET'])
+def dajare_evaluate():
+    '''
+    uri：
+        /dajare/evaluate
+    method：
+        GET
+    headers：
+        'Content-Type':'application/json'
+    query：
+        dajare: String,
+    response：
+        {
+            score: Number,
+            status: String,
+        }
+    '''
+
+    # received query params
+    params = dict(request.args)
+
+    response = {
+        'score': 0,
+        'status': 'OK',
+    }
+
+    # whether params could be received
+    if 'dajare' not in params:
+        response['status'] = 'NG'
+        return make_response(jsonify(response), 400)
+
+    # eval
+    response['socre'] = eval_engine.eval(params['dajare'])
+
+    return make_response(jsonify(response), 200)
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
-# おまじない
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
