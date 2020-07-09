@@ -171,13 +171,3 @@ class JudgeEngine(engine.Engine):
 
         return count
 
-
-judge_engine = JudgeEngine()
-print(judge_engine.is_dajare('布団が吹っ飛んだ'))
-print(judge_engine.is_dajare('紅茶が凍っちゃった'))
-print(judge_engine.is_dajare('ローソンのローション'))
-print(judge_engine.is_dajare('初見の食券'))
-print(judge_engine.is_dajare('芸無なゲーム'))
-print(judge_engine.is_dajare('Gmailで爺滅入る'))
-print(judge_engine.is_dajare('スロットで金すろーと'))
-print(judge_engine.is_dajare('ニューヨークで入浴'))
