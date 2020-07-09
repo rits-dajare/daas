@@ -92,7 +92,7 @@ def dajare_evaluate():
         return make_response(jsonify(response), 400)
 
     # eval
-    response['socre'] = eval_engine.eval(params['dajare'])
+    response['score'] = eval_engine.eval(params['dajare'])
 
     return make_response(jsonify(response), 200)
 
