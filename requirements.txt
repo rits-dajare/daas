@@ -1,0 +1,8 @@
+Janome==0.3.10
+tensorflow==2.2.0
+kanjize==0.1.0
+jaconv==0.2.4
+requests
+pyboin==0.1.1
+tqdm==4.41.1
+Flask==1.1.2

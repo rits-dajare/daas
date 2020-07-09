@@ -1,0 +1,10 @@
+version: '3'
+services:
+  dajare-engine:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+    working_dir: /app
+    command: ./main.py
