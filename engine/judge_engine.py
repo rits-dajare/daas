@@ -29,6 +29,13 @@ class JudgeEngine(engine.Engine):
 
         # convert dajare to reading & morphemes
         reading, morphemes = self.to_reading_and_morphemes(dajare)
+
+        # pre judge
+        tri_gram = self.n_gram(reading, 3)
+        if len(set(tri_gram)) != len(tri_gram):
+            return True
+
+        # preprocessing
         reading, morphemes = self.preprocessing(reading, morphemes)
 
         # exclude 'ッ'
