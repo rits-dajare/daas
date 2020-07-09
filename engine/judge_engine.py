@@ -27,9 +27,10 @@ class JudgeEngine(engine.Engine):
             if re.match(pattern, dajare) is not None:
                 return True
 
-        # not pass xyzxyz pattern
+        # not pass symmetry(xxx|xxx) pattern
         # ex. テストテスト -> not dajare
-        if dajare[:3] == dajare[3:]:
+        pivot = len(dajare) // 2
+        if dajare[:pivot] == dajare[pivot:]:
             return False
 
         # convert dajare to reading & morphemes
