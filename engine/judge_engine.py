@@ -33,8 +33,8 @@ class JudgeEngine(engine.Engine):
         if dajare[:pivot] == dajare[pivot:]:
             return False
 
-        # convert dajare to reading & morphes
-        reading, morphes = self.to_reading_and_morphes(dajare, use_api)
+        # convert dajare to reading & morphs
+        reading, morphs = self.to_reading_and_morphs(dajare, use_api)
 
         # pre judge
         tri_gram = self.n_gram(reading, 3)
@@ -42,22 +42,22 @@ class JudgeEngine(engine.Engine):
             return True
 
         # preprocessing
-        reading, morphes = self.preprocessing(reading, morphes)
+        reading, morphs = self.preprocessing(reading, morphs)
 
         # exclude 'ッ'
         reading_excluded_tu = reading.replace('ッ', '')
-        morphes_excluded_tu = [m.replace('ッ', '') for m in morphes]
+        morphs_excluded_tu = [m.replace('ッ', '') for m in morphs]
 
-        if self.judge(reading, morphes):
+        if self.judge(reading, morphs):
             return True
-        if self.judge(reading_excluded_tu, morphes_excluded_tu):
+        if self.judge(reading_excluded_tu, morphs_excluded_tu):
             return True
 
         return False
 
-    def judge(self, reading, morphes):
-        # whether morphe is included multiple
-        for m in morphes:
+    def judge(self, reading, morphs):
+        # whether morph is included multiple
+        for m in morphs:
             if reading.count(m) >= 2:
                 return True
 
@@ -107,7 +107,7 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def to_reading_and_morphes(self, dajare, use_api=True):
+    def to_reading_and_morphs(self, dajare, use_api=True):
         reading = ''
 
         # use docomo api
@@ -130,11 +130,11 @@ class JudgeEngine(engine.Engine):
                     # token with known word's reading
                     reading += reading
 
-        # extract morphes (len >= 2)
-        morphes = []
+        # extract morphs (len >= 2)
+        morphs = []
         for token in self.tokenize.tokenize(dajare):
             if len(token.reading) >= 2:
-                morphes.append(token.reading)
+                morphs.append(token.reading)
 
         # force convert reading
         reading = jaconv.hira2kata(reading)
@@ -142,9 +142,9 @@ class JudgeEngine(engine.Engine):
         # exclude noises
         reading = ''.join(re.findall('[ァ-ヴー]+', reading))
 
-        return reading, morphes
+        return reading, morphs
 
-    def preprocessing(self, reading, morphes):
+    def preprocessing(self, reading, morphs):
         # nomalize text
         nomalize_pair = [
             'ヂガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ',
@@ -155,9 +155,9 @@ class JudgeEngine(engine.Engine):
                 nomalize_pair[0][i],
                 nomalize_pair[1][i],
             )
-            morphes = [m.replace(
+            morphs = [m.replace(
                 nomalize_pair[0][i],
-                nomalize_pair[1][i]) for m in morphes]
+                nomalize_pair[1][i]) for m in morphs]
 
         # convert looped vowel text to '-'
         for ci in range(len(reading) - 1):
@@ -178,7 +178,7 @@ class JudgeEngine(engine.Engine):
                 if pyboin.text2boin(bi_char) == sub[0]:
                     reading = reading.replace(bi_char, sub[1])
 
-        return reading, morphes
+        return reading, morphs
 
     def n_gram(self, dajare, n):
         return [dajare[idx:idx + n] for idx in range(len(dajare) - n + 1)]
