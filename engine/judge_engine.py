@@ -17,7 +17,7 @@ from engine import engine
 
 class JudgeEngine(engine.Engine):
     def __init__(self):
-        self.tokenize = Tokenizer()
+        self.tokenizer = Tokenizer()
         self.force_pass_pattern = open('config/force_judge_pattern.txt').read().split('\n')
         self.force_pass_pattern.remove('')
 
@@ -109,6 +109,7 @@ class JudgeEngine(engine.Engine):
 
     def to_reading_and_morphs(self, dajare, use_api=True):
         reading = ''
+        morphs = []
 
         # use docomo api
         if use_api:
@@ -120,21 +121,23 @@ class JudgeEngine(engine.Engine):
                 dajare = dajare.replace(ch, int2kanji(int(ch)))
 
             # morphological analysis
-            for token in self.tokenize.tokenize(dajare):
-                reading = token.reading
-
-                if reading == '*':
+            for token in self.tokenizer.tokenize(dajare):
+                if token.reading == '*':
                     # token with unknown word's reading
                     reading += jaconv.hira2kata(token.surface)
                 else:
                     # token with known word's reading
-                    reading += reading
+                    reading += token.reading
+
+                # extract morphs (len >= 2)
+                if len(token.reading) >= 2:
+                    morphs.append(token.reading)
 
         # extract morphs (len >= 2)
-        morphs = []
-        for token in self.tokenize.tokenize(dajare):
-            if len(token.reading) >= 2:
-                morphs.append(token.reading)
+        if morphs == []:
+            for token in self.tokenizer.tokenize(dajare):
+                if len(token.reading) >= 2:
+                    morphs.append(token.reading)
 
         # force convert reading
         reading = jaconv.hira2kata(reading)
@@ -177,6 +180,9 @@ class JudgeEngine(engine.Engine):
             for sub in vowel_pattern:
                 if pyboin.text2boin(bi_char) == sub[0]:
                     reading = reading.replace(bi_char, sub[1])
+
+        # unified looped hyphen
+        reading = re.sub(r'ー+', 'ー', reading)
 
         return reading, morphs
 
