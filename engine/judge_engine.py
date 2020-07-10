@@ -46,13 +46,7 @@ class JudgeEngine(engine.Engine):
         if len(set(tri_gram)) != len(tri_gram):
             return True
 
-        # exclude 'ッ'
-        reading_excluded_tu = reading.replace('ッ', '')
-        morphs_excluded_tu = [m.replace('ッ', '') for m in morphs]
-
         if self.judge(reading, morphs):
-            return True
-        if self.judge(reading_excluded_tu, morphs_excluded_tu):
             return True
 
         return False
@@ -77,21 +71,14 @@ class JudgeEngine(engine.Engine):
                     if pyboin.text2boin(tri1) == pyboin.text2boin(tri2):
                         return True
 
+        # exclude 'ー'
         if 'ー' in reading:
-            # exclude 'ー'
             if self.judge(reading.replace('ー', ''), morphs):
                 return True
 
-            # convert 'ー' to last vowel
-            # ex. 'カー' -> 'カア'
-            hyphen_to_vowel_reading = reading
-            patterns = re.findall(r'[^ー]ー', reading)
-            for ch in patterns:
-                hyphen_to_vowel_reading = hyphen_to_vowel_reading.replace(
-                    ch,
-                    ch[0] + pyboin.text2boin(ch[0])
-                )
-            if self.judge(hyphen_to_vowel_reading, morphs):
+        # exclude 'ッ'
+        if 'ッ' in reading:
+            if self.judge(reading.replace('ッ', ''), [m.replace('ッ', '') for m in morphs]):
                 return True
 
         # convert char to next lower's vowel
