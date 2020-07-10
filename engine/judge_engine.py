@@ -35,6 +35,7 @@ class JudgeEngine(engine.Engine):
 
         # convert dajare to reading & morphs
         reading, morphs = self.to_reading_and_morphs(dajare, use_api)
+        reading, morphs = self.preprocessing(reading, morphs)
 
         # only ~3 chars are used -> not dajare
         chars = [ch for ch in reading]
@@ -45,9 +46,6 @@ class JudgeEngine(engine.Engine):
         tri_gram = self.n_gram(reading, 3)
         if len(set(tri_gram)) != len(tri_gram):
             return True
-
-        # preprocessing
-        reading, morphs = self.preprocessing(reading, morphs)
 
         # exclude 'ッ'
         reading_excluded_tu = reading.replace('ッ', '')
@@ -82,19 +80,19 @@ class JudgeEngine(engine.Engine):
 
         if 'ー' in reading:
             # exclude 'ー'
-            if self.judge(reading.replace('ー', ''), []):
+            if self.judge(reading.replace('ー', ''), morphs):
                 return True
 
             # convert 'ー' to last vowel
             # ex. 'カー' -> 'カア'
-            hyphen_to_vowel_reading = ''
-            patterns = re.findall(r'.ー', reading)
+            hyphen_to_vowel_reading = reading
+            patterns = re.findall(r'[^ー]ー', reading)
             for ch in patterns:
-                hyphen_to_vowel_reading = reading.replace(
+                hyphen_to_vowel_reading = hyphen_to_vowel_reading.replace(
                     ch,
                     ch[0] + pyboin.text2boin(ch[0])
                 )
-            if self.judge(hyphen_to_vowel_reading, []):
+            if self.judge(hyphen_to_vowel_reading, morphs):
                 return True
 
         # convert char to next lower's vowel
@@ -107,7 +105,7 @@ class JudgeEngine(engine.Engine):
                     ch,
                     pyboin.text2boin(ch[1])
                 )
-            if self.judge(lower_to_vowel_reading, []):
+            if self.judge(lower_to_vowel_reading, morphs):
                 return True
 
         return False
@@ -155,8 +153,8 @@ class JudgeEngine(engine.Engine):
     def preprocessing(self, reading, morphs):
         # nomalize text
         nomalize_pair = [
-            'ヂガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ',
-            'ジカキクケコサシスセソタチツテトハヒフヘホハヒフヘホ'
+            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ',
+            'オジカキクケコサシスセソタチツテトハヒフヘホハヒフヘホ'
         ]
         for i in range(len(nomalize_pair[0])):
             reading = reading.replace(
@@ -166,6 +164,9 @@ class JudgeEngine(engine.Engine):
             morphs = [m.replace(
                 nomalize_pair[0][i],
                 nomalize_pair[1][i]) for m in morphs]
+
+        # exclude 3~ times looped chars
+        reading = re.sub(r'(.)\1{2,}', r'\1', reading)
 
         # convert looped vowel text to '-'
         for ci in range(len(reading) - 1):
@@ -178,13 +179,13 @@ class JudgeEngine(engine.Engine):
 
         # convert vowel text to pronunciation
         vowel_pattern = [
-            ['オウ', 'オー'],
-            ['エイ', 'エー'],
+            ['オウ', lambda ch: ch[0] + 'ー'],
+            ['エイ', lambda ch: ch[0] + 'ー'],
         ]
         for bi_char in self.n_gram(reading, 2):
             for sub in vowel_pattern:
-                if pyboin.text2boin(bi_char) == sub[0]:
-                    reading = reading.replace(bi_char, sub[1])
+                if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
+                    reading = reading.replace(bi_char, sub[1](bi_char))
 
         # unified looped hyphen
         reading = re.sub(r'ー+', 'ー', reading)
