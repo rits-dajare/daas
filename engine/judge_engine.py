@@ -37,7 +37,7 @@ class JudgeEngine(engine.Engine):
         reading, morphs = self.preprocessing(reading, morphs)
 
         # only ~3 chars are used -> not dajare
-        chars = [ch for ch in reading]
+        chars = [ch for ch in dajare]
         if len(set(chars)) <= 3:
             return False
 
