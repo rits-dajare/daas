@@ -50,5 +50,5 @@ class Engine():
             if re.match(pattern[0], dajare) is not None:
                 sensitive_tags.append(pattern[1])
 
-        return sensitive_tags
+        return list(set(sensitive_tags))
 
