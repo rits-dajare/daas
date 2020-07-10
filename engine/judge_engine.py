@@ -36,7 +36,12 @@ class JudgeEngine(engine.Engine):
         # convert dajare to reading & morphs
         reading, morphs = self.to_reading_and_morphs(dajare, use_api)
 
-        # pre judge
+        # only ~3 chars are used -> not dajare
+        chars = [ch for ch in reading]
+        if len(set(chars)) <= 3:
+            return False
+
+        # tri-gram is matched
         tri_gram = self.n_gram(reading, 3)
         if len(set(tri_gram)) != len(tri_gram):
             return True
