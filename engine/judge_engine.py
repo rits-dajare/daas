@@ -17,13 +17,12 @@ from engine import engine
 
 class JudgeEngine(engine.Engine):
     def __init__(self):
+        super().__init__()
         self.tokenizer = Tokenizer()
-        self.force_pass_pattern = open('config/force_judge_pattern.txt').read().split('\n')
-        self.force_pass_pattern.remove('')
 
     def is_dajare(self, dajare, use_api=True):
         # force pass as dajare
-        for pattern in self.force_pass_pattern:
+        for pattern in self.force_judge_pattern:
             if re.match(pattern, dajare) is not None:
                 return True
 
