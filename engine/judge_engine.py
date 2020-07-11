@@ -176,6 +176,10 @@ class JudgeEngine(engine.Engine):
         # unified looped hyphen
         reading = re.sub(r'ー+', 'ー', reading)
 
+        # 'イウ' -> 'ユー'
+        reading = reading.replace('イウ', 'ユー')
+        morphs = [m.replace('イウ', 'ユー') for m in morphs]
+
         return reading, morphs
 
     def n_gram(self, dajare, n):
