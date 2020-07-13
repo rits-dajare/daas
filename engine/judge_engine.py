@@ -41,6 +41,10 @@ class JudgeEngine(engine.Engine):
         if len(set(chars)) <= 3:
             return False
 
+        # only ~4 chars are used & length >= 7 -> not dajare
+        if len(set(chars)) <= 4 and len(dajare) <= 7:
+            return False
+
         # tri-gram is matched
         tri_gram = self.n_gram(reading, 3)
         if len(set(tri_gram)) != len(tri_gram):
