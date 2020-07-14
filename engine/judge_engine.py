@@ -89,14 +89,14 @@ class JudgeEngine(engine.Engine):
                 return True
 
         # convert char to next lower's vowel
-        # ex. 'シュン' -> 'ウン'
+        # ex. 'シュン' -> 'スン'
         matches = re.findall(r'.[ァィゥェォャュョヮ]', reading)
         if matches != []:
             lower_to_vowel_reading = reading
             for ch in matches:
                 lower_to_vowel_reading = lower_to_vowel_reading.replace(
                     ch,
-                    pyboin.text2boin(ch[1])
+                    pyboin.romanize(ch[0], pyboin.text2boin(ch[1]))
                 )
             if self.judge(lower_to_vowel_reading, morphs):
                 return True
