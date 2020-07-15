@@ -88,6 +88,27 @@ class JudgeEngine(engine.Engine):
             if self.judge(reading.replace('ッ', ''), [m.replace('ッ', '') for m in morphs]):
                 return True
 
+        # convert vowel text to pronunciation
+        vowel_pattern = [
+            ['オウ', lambda ch: ch[0] + 'ー'],
+            ['エイ', lambda ch: ch[0] + 'ー'],
+        ]
+        converted_reading = reading
+        converted_morphs = morphs
+        for bi_char in self.n_gram(reading, 2):
+            for sub in vowel_pattern:
+                if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
+                    converted_reading = converted_reading.replace(bi_char, sub[1](bi_char))
+                    converted_morphs = [m.replace(bi_char, sub[1](bi_char)) for m in converted_morphs]
+        if converted_reading != reading:
+            if self.judge(converted_reading, converted_morphs):
+                return True
+
+        # 'イウ' -> 'ユー'
+        if 'イウ' in reading:
+            if self.judge(reading.replace('イウ', 'ユー'), [m.replace('イウ', 'ユー') for m in morphs]):
+                return True
+
         # convert char to next lower's vowel
         # ex. 'シュン' -> 'スン'
         matches = re.findall(r'.[ァィゥェォャュョヮ]', reading)
@@ -170,22 +191,8 @@ class JudgeEngine(engine.Engine):
                     pyboin.text2boin(reading[ci+1]):
                 reading = reading[:ci+1] + 'ー' + reading[ci+2:]
 
-        # convert vowel text to pronunciation
-        vowel_pattern = [
-            ['オウ', lambda ch: ch[0] + 'ー'],
-            ['エイ', lambda ch: ch[0] + 'ー'],
-        ]
-        for bi_char in self.n_gram(reading, 2):
-            for sub in vowel_pattern:
-                if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
-                    reading = reading.replace(bi_char, sub[1](bi_char))
-
         # unified looped hyphen
         reading = re.sub(r'ー+', 'ー', reading)
-
-        # 'イウ' -> 'ユー'
-        reading = reading.replace('イウ', 'ユー')
-        morphs = [m.replace('イウ', 'ユー') for m in morphs]
 
         return reading, morphs
 
