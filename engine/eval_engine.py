@@ -14,6 +14,7 @@ from tensorflow.keras.callbacks import *
 from tensorflow.keras.optimizers import *
 from tensorflow.keras.models import *
 from tensorflow.keras import Sequential
+import emoji
 from engine import engine
 # --------------------------------------------------------------------------------------
 
@@ -66,6 +67,9 @@ class EvalEngine(engine.Engine):
 
     def eval(self, dajare, max_length=100):
         reading = self.to_reading(dajare)
+
+        # exclude emoji
+        reading = ''.join([ch for ch in reading if ch not in emoji.UNICODE_EMOJI])
 
         vec = [ord(c) for c in reading]
         # reshape (trimming or padding)
