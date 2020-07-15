@@ -73,9 +73,14 @@ class JudgeEngine(engine.Engine):
                 if tri1 == tri2:
                     return True
 
-                # 2 chars match && all vowels match
+                # 2 chars match
                 if self.count_str_match(tri1, tri2) == 2:
+                    # all vowels match
                     if pyboin.text2boin(tri1) == pyboin.text2boin(tri2):
+                        return True
+                    #all consonant match
+                    if [pyboin.romanize(s, 'ア') for s in tri1] == \
+                            [pyboin.romanize(s, 'ア') for s in tri2]:
                         return True
 
         # exclude 'ー'
