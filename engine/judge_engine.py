@@ -49,6 +49,10 @@ class JudgeEngine(engine.Engine):
             if len(set(chars)) <= rule[0] and len(dajare) >= rule[1]:
                 return False
 
+        # not pass ~4 length pattern
+        if len(reading) <= 4:
+            return False
+
         # tri-gram is matched
         tri_gram = self.n_gram(reading, 3)
         if len(set(tri_gram)) != len(tri_gram):
