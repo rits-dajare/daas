@@ -90,7 +90,7 @@ class JudgeEngine(engine.Engine):
 
         # exclude 'ー'
         if 'ー' in reading:
-            if self.judge(reading.replace('ー', ''), morphs):
+            if self.judge(reading.replace('ー', ''), [m.replace('ー', '') for m in morphs]):
                 return True
 
         # exclude 'ッ'
