@@ -47,7 +47,7 @@ class Engine():
 
         # force add sensitive tag
         for pattern in self.force_sensitive_pattern:
-            if re.match(pattern[0], dajare) is not None:
+            if re.search(pattern[0], dajare) is not None:
                 sensitive_tags.append(pattern[1])
 
         return list(set(sensitive_tags))
