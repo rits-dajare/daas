@@ -79,11 +79,13 @@ class JudgeEngine(engine.Engine):
         for char in [tri_char, four_char]:
             for i, ch1 in enumerate(char):
                 for ch2 in char[(i+1):]:
-                    if self.count_str_match(ch1, ch2) < 2:
-                        continue
+                    # 1 char match
+                    if self.count_str_match(ch1, ch2) == 1:
+                        if sorted(ch1) == sorted(ch2):
+                            return True
 
                     # 2~ chars match
-                    if self.count_str_match(ch1, ch2) >= 2:
+                    elif self.count_str_match(ch1, ch2) >= 2:
                         # all vowels match
                         if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                             return True
