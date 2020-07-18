@@ -82,22 +82,14 @@ class JudgeEngine(engine.Engine):
                     if self.count_str_match(ch1, ch2) < 2:
                         continue
 
-                    # sort string
-                    ch1_sorted = ''.join(sorted(ch1))
-                    ch2_sorted = ''.join(sorted(ch2))
-
-                    # all match
-                    if ch1_sorted == ch2_sorted:
-                        return True
-
                     # 2~ chars match
                     if self.count_str_match(ch1, ch2) >= 2:
                         # all vowels match
-                        if sorted(pyboin.text2boin(ch1_sorted)) == sorted(pyboin.text2boin(ch2_sorted)):
+                        if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                             return True
                         #all consonant match
-                        if [pyboin.romanize(ch, 'ア') for ch in ch1_sorted] == \
-                                [pyboin.romanize(ch, 'ア') for ch in ch2_sorted]:
+                        if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
+                                sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
                             return True
         # ================================================================
 
