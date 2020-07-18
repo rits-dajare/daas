@@ -61,17 +61,18 @@ class JudgeEngine(engine.Engine):
         if self.judge(reading, morphs):
             return True
 
+
         return False
 
     def judge(self, reading, morphs):
+        # whether judgment rules holds ===================================
         # whether morph is included multiple
         for m in morphs:
             if reading.count(m) >= 2:
                 return True
 
-        # whether judgment rules holds
+        # tri-gram
         tri_char = self.n_gram(reading, 3)
-
         for i, tri1 in enumerate(tri_char):
             for tri2 in tri_char[(i+1):]:
                 # all match
@@ -87,6 +88,32 @@ class JudgeEngine(engine.Engine):
                     if [pyboin.romanize(s, 'ア') for s in tri1] == \
                             [pyboin.romanize(s, 'ア') for s in tri2]:
                         return True
+
+        # pattern in which the chars are swapped (ABCD - BACD)
+        four_char = self.n_gram(reading, 4)
+        for i, four1 in enumerate(four_char):
+            for four2 in four_char[(i+1):]:
+                if self.count_str_match(four1, four2) < 2:
+                    continue
+
+                # sort the string
+                four_sorted1 = ''.join(sorted(four1))
+                four_sorted2 = ''.join(sorted(four2))
+
+                # all match
+                if four_sorted1 == four_sorted2:
+                    return True
+
+                # 2 chars match
+                if self.count_str_match(four_sorted1, four_sorted2) == 2:
+                    # all vowels match
+                    if pyboin.text2boin(four_sorted1) == pyboin.text2boin(four_sorted2):
+                        return True
+                    #all consonant match
+                    if [pyboin.romanize(s, 'ア') for s in four_sorted1] == \
+                            [pyboin.romanize(s, 'ア') for s in four_sorted2]:
+                        return True
+        # ================================================================
 
         # exclude 'ー'
         if 'ー' in reading:
