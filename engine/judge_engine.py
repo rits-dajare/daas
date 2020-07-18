@@ -93,7 +93,7 @@ class JudgeEngine(engine.Engine):
                     # 2~ chars match
                     if self.count_str_match(ch1, ch2) >= 2:
                         # all vowels match
-                        if pyboin.text2boin(ch1_sorted) == pyboin.text2boin(ch2_sorted):
+                        if sorted(pyboin.text2boin(ch1_sorted)) == sorted(pyboin.text2boin(ch2_sorted)):
                             return True
                         #all consonant match
                         if [pyboin.romanize(ch, 'ア') for ch in ch1_sorted] == \
