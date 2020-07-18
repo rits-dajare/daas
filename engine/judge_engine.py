@@ -190,8 +190,8 @@ class JudgeEngine(engine.Engine):
     def preprocessing(self, reading, morphs):
         # nomalize text
         nomalize_pair = [
-            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ',
-            'オジカキクケコサシスセソタチツテトハヒフヘホハヒフヘホ'
+            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ',
+            'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホ'
         ]
         for i in range(len(nomalize_pair[0])):
             reading = reading.replace(
