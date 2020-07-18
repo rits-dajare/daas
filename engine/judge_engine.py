@@ -24,7 +24,7 @@ class JudgeEngine(engine.Engine):
     def is_dajare(self, dajare, use_api=True):
         # force pass as dajare
         for pattern in self.force_judge_pattern:
-            if re.match(pattern, dajare) is not None:
+            if re.search(pattern, dajare) is not None:
                 return True
 
         # not pass symmetry(xxx|xxx) pattern
