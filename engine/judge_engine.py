@@ -71,48 +71,34 @@ class JudgeEngine(engine.Engine):
             if reading.count(m) >= 2:
                 return True
 
+        # whether the divided readings match
         # tri-gram
         tri_char = self.n_gram(reading, 3)
-        for i, tri1 in enumerate(tri_char):
-            for tri2 in tri_char[(i+1):]:
-                # all match
-                if tri1 == tri2:
-                    return True
-
-                # 2 chars match
-                if self.count_str_match(tri1, tri2) == 2:
-                    # all vowels match
-                    if pyboin.text2boin(tri1) == pyboin.text2boin(tri2):
-                        return True
-                    #all consonant match
-                    if [pyboin.romanize(s, 'ア') for s in tri1] == \
-                            [pyboin.romanize(s, 'ア') for s in tri2]:
-                        return True
-
-        # pattern in which the chars are swapped (ABCD - BACD)
         four_char = self.n_gram(reading, 4)
-        for i, four1 in enumerate(four_char):
-            for four2 in four_char[(i+1):]:
-                if self.count_str_match(four1, four2) < 2:
-                    continue
 
-                # sort the string
-                four_sorted1 = ''.join(sorted(four1))
-                four_sorted2 = ''.join(sorted(four2))
+        for char in [tri_char, four_char]:
+            for i, ch1 in enumerate(char):
+                for ch2 in char[(i+1):]:
+                    if self.count_str_match(ch1, ch2) < 2:
+                        continue
 
-                # all match
-                if four_sorted1 == four_sorted2:
-                    return True
+                    # sort string
+                    ch1_sorted = ''.join(sorted(ch1))
+                    ch2_sorted = ''.join(sorted(ch2))
 
-                # 2 chars match
-                if self.count_str_match(four_sorted1, four_sorted2) == 2:
-                    # all vowels match
-                    if pyboin.text2boin(four_sorted1) == pyboin.text2boin(four_sorted2):
+                    # all match
+                    if ch1_sorted == ch2_sorted:
                         return True
-                    #all consonant match
-                    if [pyboin.romanize(s, 'ア') for s in four_sorted1] == \
-                            [pyboin.romanize(s, 'ア') for s in four_sorted2]:
-                        return True
+
+                    # 2~ chars match
+                    if self.count_str_match(ch1, ch2) >= 2:
+                        # all vowels match
+                        if pyboin.text2boin(ch1_sorted) == pyboin.text2boin(ch2_sorted):
+                            return True
+                        #all consonant match
+                        if [pyboin.romanize(ch, 'ア') for ch in ch1_sorted] == \
+                                [pyboin.romanize(ch, 'ア') for ch in ch2_sorted]:
+                            return True
         # ================================================================
 
         # exclude 'ー'
