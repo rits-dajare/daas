@@ -61,7 +61,6 @@ class JudgeEngine(engine.Engine):
         if self.judge(reading, morphs):
             return True
 
-
         return False
 
     def judge(self, reading, morphs):
@@ -103,6 +102,11 @@ class JudgeEngine(engine.Engine):
         # exclude 'ッ'
         if 'ッ' in reading:
             if self.judge(reading.replace('ッ', ''), [m.replace('ッ', '') for m in morphs]):
+                return True
+
+        # exclude 'ン'
+        if 'ン' in reading:
+            if self.judge(reading.replace('ン', ''), [m.replace('ン', '') for m in morphs]):
                 return True
 
         # convert vowel text to pronunciation
@@ -222,7 +226,7 @@ class JudgeEngine(engine.Engine):
     def count_str_match(self, s1, s2):
         count = 0
         for i in range(len(s1)):
-            if s1[i] == s2[i%len(s2)]:
+            if s1[i] == s2[i]:
                 count += 1
 
         return count
