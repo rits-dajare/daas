@@ -26,6 +26,10 @@ class JudgeEngine(engine.Engine):
             if re.search(pattern, dajare) is not None:
                 return True
 
+        # not pass 30~ chars
+        if len(dajare) >= 30:
+            return False
+
         # not pass symmetry(xxx|xxx) & ABCDABCD pattern
         # ex. テストテスト -> not dajare
         pivot = len(dajare) // 2
