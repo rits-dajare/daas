@@ -35,7 +35,7 @@ class JudgeEngine(engine.Engine):
             return False
 
         # not pass only alphabet chars
-        if re.fullmatch(r'[\da-zA-Z 　]*', dajare) is not None:
+        if re.fullmatch(r'[\da-zA-Z 　,]*', dajare) is not None:
             return False
 
         # not pass xxxoxxxo(x: not hiragana, o: hiragana) pattern
