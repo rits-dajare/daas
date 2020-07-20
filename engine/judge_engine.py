@@ -27,10 +27,12 @@ class JudgeEngine(engine.Engine):
             if re.search(pattern, dajare) is not None:
                 return True
 
-        # not pass symmetry(xxx|xxx) pattern
+        # not pass symmetry(xxx|xxx) & ABCDABCD pattern
         # ex. テストテスト -> not dajare
         pivot = len(dajare) // 2
-        if dajare[:pivot] == dajare[pivot:]:
+        if dajare[:pivot] == dajare[pivot + len(dajare)%2:]:
+            return False
+        if dajare[:pivot] == dajare[pivot + len(dajare)%2:][::-1]:
             return False
 
         # not pass only English one word pattern
