@@ -67,6 +67,9 @@ class EvalEngine(engine.Engine):
 
     def eval(self, dajare, max_length=100):
         reading = self.to_reading(dajare)
+        for noise in re.findall('[^\u30A1-\u30FF]', reading):
+            reading = reading.replace(noise, '')
+        print(reading)
 
         # exclude emoji
         reading = ''.join([ch for ch in reading if ch not in emoji.UNICODE_EMOJI])
