@@ -73,6 +73,8 @@ class JudgeEngine(engine.Engine):
         # whether judgment rules holds ===================================
         # whether morph is included multiple
         for m in morphs:
+            if len(m) < 2:
+                continue
             if reading.count(m) >= 2:
                 return True
 
@@ -90,9 +92,10 @@ class JudgeEngine(engine.Engine):
                         continue
 
                     # 1 char match
-                    if self.count_str_match(ch1, ch2) == 1:
-                        if sorted(ch1) == sorted(ch2):
-                            return True
+                    if len(ch1) == 3:
+                        if self.count_str_match(ch1, ch2) == 1:
+                            if sorted(ch1) == sorted(ch2):
+                                return True
 
                     # 2~ chars match
                     elif self.count_str_match(ch1, ch2) >= 2:
