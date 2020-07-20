@@ -35,7 +35,7 @@ class JudgeEngine(engine.Engine):
         if dajare[:pivot] == dajare[pivot + len(dajare)%2:][::-1]:
             return False
 
-        # not pass only English one word pattern
+        # not pass only alphabet chars
         if re.fullmatch(r'[a-zA-Z 　]*', dajare) is not None:
             return False
 
@@ -43,7 +43,7 @@ class JudgeEngine(engine.Engine):
         reading, morphs = self.to_reading_and_morphs(dajare, use_api)
         reading, morphs = self.preprocessing(reading, morphs)
 
-        # only ~x chars are used & length >= y -> not dajare
+        # not pass only ~x chars are used & length >= y
         # [x, y]  x: chars, y: length
         chars_length_rules = [
             [3, 0],
