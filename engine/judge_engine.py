@@ -58,15 +58,7 @@ class JudgeEngine(engine.Engine):
         if len(reading) <= 4:
             return False
 
-        # tri-gram is matched
-        tri_gram = self.n_gram(reading, 3)
-        if len(set(tri_gram)) != len(tri_gram):
-            return True
-
-        if len(reading) >= 20:
-            return self.judge(reading, morphs, True)
-        else:
-            return self.judge(reading, morphs, False)
+        return self.judge(reading, morphs, len(reading) >= 3)
 
     def judge(self, reading, morphs, is_tight=False):
         # whether judgment rules holds ===================================
@@ -92,7 +84,8 @@ class JudgeEngine(engine.Engine):
 
                     if is_tight:
                         if self.count_str_match(ch1, ch2) >= 3:
-                            return True
+                            if ch1.count('ー') < 2:
+                                return True
                     else:
                         # 1 char match
                         if len(ch1) == 3:
