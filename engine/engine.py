@@ -47,7 +47,7 @@ class Engine():
 
         words = re.findall(r'[a-zA-Z]+', dajare)
         for w in words:
-            reading = reading.replace(alphabet.convert_word_to_alphabet(w), '')
+            reading = reading.replace(alphabet.convert_word_to_alphabet(w.lower()), '')
 
         return reading
 
