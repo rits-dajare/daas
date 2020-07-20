@@ -35,7 +35,7 @@ class JudgeEngine(engine.Engine):
             return False
 
         # not pass only alphabet chars
-        if re.fullmatch(r'[a-zA-Z 　]*', dajare) is not None:
+        if re.fullmatch(r'[\da-zA-Z 　]*', dajare) is not None:
             return False
 
         # convert dajare to reading & morphs
