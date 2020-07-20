@@ -11,7 +11,6 @@ from janome.tokenizer import Tokenizer
 from kanjize import int2kanji
 import jaconv
 import pyboin
-import emoji
 from engine import engine
 # --------------------------------------------------------------------------------------
 
@@ -213,9 +212,6 @@ class JudgeEngine(engine.Engine):
             morphs = [m.replace(
                 nomalize_pair[0][i],
                 nomalize_pair[1][i]) for m in morphs]
-
-        # exclude emoji
-        reading = ''.join([ch for ch in reading if ch not in emoji.UNICODE_EMOJI])
 
         # exclude 3~ times looped chars
         reading = re.sub(r'(.)\1{2,}', r'\1', reading)

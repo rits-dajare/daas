@@ -28,13 +28,19 @@ class Engine():
                     self.force_sensitive_pattern.append(row)
 
     def to_reading(self, dajare):
+        reading = ''
+
         res = webapi.docomo.to_reading(dajare)
         body = res.json()
 
         if 'converted' in body:
-            return body['converted'].replace(' ', '')
+            reading = body['converted'].replace(' ', '')
 
-        return ''
+        # exclude noises
+        noise = re.compile(r'[^0-9A-Za-z\u3041-\u3096\u30A1-\u30F6\u3005-\u3006\u3400-\u3fff\u2E80-\u2FDF\u3005-\u3007\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\U00020000-\U0002EBEFー]')
+        reading = noise.sub('', reading)
+
+        return reading
 
     def find_sensitive_tags(self, dajare):
         res = webapi.docomo.find_sensitive_tags(dajare)
