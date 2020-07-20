@@ -49,7 +49,7 @@ class JudgeEngine(engine.Engine):
             [4, 7],
             [5, 10]
         ]
-        chars = [ch for ch in reading]
+        chars = [ch for ch in dajare]
         for rule in chars_length_rules:
             if len(set(chars)) <= rule[0] and len(dajare) >= rule[1]:
                 return False
@@ -58,7 +58,7 @@ class JudgeEngine(engine.Engine):
         if len(reading) <= 4:
             return False
 
-        return self.judge(reading, morphs, len(reading) >= 3)
+        return self.judge(reading, morphs, len(reading) >= 20)
 
     def judge(self, reading, morphs, is_tight=False):
         # whether judgment rules holds ===================================
