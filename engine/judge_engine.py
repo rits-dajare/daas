@@ -38,6 +38,14 @@ class JudgeEngine(engine.Engine):
         if re.fullmatch(r'[\da-zA-Z 　]*', dajare) is not None:
             return False
 
+        # not pass xxxoxxxo(x: not hiragana, o: hiragana) pattern
+        if re.fullmatch(r'[^\u3041-\u3096]+[\u3041-\u3096]*[^\u3041-\u3096]+[\u3041-\u3096]*', dajare) is not None:
+            noise = re.compile(r'[\u3041-\u3096]')
+            tmp_dajare = noise.sub('', dajare)
+            pivot = len(tmp_dajare) // 2
+            if tmp_dajare[:pivot] == tmp_dajare[pivot:]:
+                return False
+
         # convert dajare to reading & morphs
         reading, morphs = self.to_reading_and_morphs(dajare, use_api)
         reading, morphs = self.preprocessing(reading, morphs)
