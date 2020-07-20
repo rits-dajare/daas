@@ -9,6 +9,7 @@ import re
 import csv
 from webapi import docomo
 import webapi
+from engine import alphabet
 # --------------------------------------------------------------------------------------
 
 
@@ -43,6 +44,10 @@ class Engine():
 
         if 'converted' in body:
             reading = body['converted'].replace(' ', '')
+
+        words = re.findall(r'[a-zA-Z]+', dajare)
+        for w in words:
+            reading = reading.replace(alphabet.convert_word_to_alphabet(w), '')
 
         return reading
 
