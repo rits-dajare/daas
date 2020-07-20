@@ -33,6 +33,10 @@ class JudgeEngine(engine.Engine):
         if dajare[:pivot] == dajare[pivot:]:
             return False
 
+        # not pass only English one word pattern
+        if re.fullmatch(r'[a-zA-Z]*', dajare) is not None:
+            return False
+
         # convert dajare to reading & morphs
         reading, morphs = self.to_reading_and_morphs(dajare, use_api)
         reading, morphs = self.preprocessing(reading, morphs)
@@ -44,7 +48,7 @@ class JudgeEngine(engine.Engine):
             [4, 7],
             [5, 10]
         ]
-        chars = [ch for ch in dajare]
+        chars = [ch for ch in reading]
         for rule in chars_length_rules:
             if len(set(chars)) <= rule[0] and len(dajare) >= rule[1]:
                 return False
