@@ -63,12 +63,12 @@ class JudgeEngine(engine.Engine):
         if len(set(tri_gram)) != len(tri_gram):
             return True
 
-        if self.judge(reading, morphs):
-            return True
+        if len(reading) >= 20:
+            return self.judge(reading, morphs, True)
+        else:
+            return self.judge(reading, morphs, False)
 
-        return False
-
-    def judge(self, reading, morphs):
+    def judge(self, reading, morphs, is_tight=False):
         # whether judgment rules holds ===================================
         # whether morph is included multiple
         for m in morphs:
@@ -90,22 +90,29 @@ class JudgeEngine(engine.Engine):
                             re.fullmatch(r'[あいうえおぁぃぅぇぉアイウエオァィゥェォ]+', ch2):
                         continue
 
-                    # 1 char match
-                    if len(ch1) == 3:
-                        if self.count_str_match(ch1, ch2) == 1:
-                            if sorted(ch1) == sorted(ch2):
-                                return True
+                    if is_tight:
+                        if self.count_str_match(ch1, ch2) >= 3:
+                            return True
+                    else:
+                        # 1 char match
+                        if len(ch1) == 3:
+                            if self.count_str_match(ch1, ch2) == 1:
+                                if sorted(ch1) == sorted(ch2):
+                                    return True
 
-                    # 2~ chars match
-                    elif self.count_str_match(ch1, ch2) >= 2:
-                        # all vowels match
-                        if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
-                            return True
-                        #all consonant match
-                        if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
-                                sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
-                            return True
+                        # 2~ chars match
+                        elif self.count_str_match(ch1, ch2) >= 2:
+                            # all vowels match
+                            if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
+                                return True
+                            #all consonant match
+                            if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
+                                    sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
+                                return True
         # ================================================================
+
+        if is_tight:
+            return False
 
         # exclude 'ー'
         if 'ー' in reading:
@@ -187,8 +194,9 @@ class JudgeEngine(engine.Engine):
         # extract morphs (len >= 2)
         if morphs == []:
             for token in self.tokenizer.tokenize(dajare):
-                if len(token.reading) >= 2:
-                    morphs.append(token.reading)
+                if token.part_of_speech.split(',')[0] in ['名詞', '形容詞']:
+                    if len(token.reading) >= 2:
+                        morphs.append(token.reading)
 
         # force convert reading
         reading = jaconv.hira2kata(reading)

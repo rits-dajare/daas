@@ -44,7 +44,6 @@ class Engine():
         if 'converted' in body:
             reading = body['converted'].replace(' ', '')
 
-        print(reading)
         return reading
 
     def find_sensitive_tags(self, dajare):
