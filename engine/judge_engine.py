@@ -40,7 +40,7 @@ class JudgeEngine(engine.Engine):
         # only ~x chars are used & length >= y -> not dajare
         # [x, y]  x: chars, y: length
         chars_length_rules = [
-            [3, float('inf')],
+            [3, 0],
             [4, 7],
             [5, 10]
         ]
