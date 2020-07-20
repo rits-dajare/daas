@@ -21,6 +21,8 @@ from engine import engine
 class EvalEngine(engine.Engine):
     def __init__(self, model_path='model/model.hdf5'):
         # -----*----- コンストラクタ -----*----- ##
+        self.score_cahce = []
+
         # set TensorFlow's warning lever
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -65,6 +67,11 @@ class EvalEngine(engine.Engine):
         return model
 
     def eval(self, dajare, max_length=100):
+        # check the score's cache
+        for cache in self.score_cahce:
+            if cache['dajare'] in dajare or dajare in cache['dajare']:
+                return cache['score']
+
         reading = self.to_reading(dajare)
 
         vec = [ord(c) for c in reading]
@@ -88,6 +95,13 @@ class EvalEngine(engine.Engine):
                 score += abs(bias*0.313)
             if score > 5.0:
                 score -= abs(bias*0.313)
+
+        # cache
+        if len(self.score_cahce) >= 10:
+            self.score_cahce.pop(0)
+            self.score_cahce[-1] = {'dajare': dajare,  'score': score}
+        else:
+            self.score_cahce.append({'dajare': dajare,  'score': score})
 
         return score
 
