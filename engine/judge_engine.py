@@ -100,8 +100,8 @@ class JudgeEngine(engine.Engine):
                                 return True
                     else:
                         # 1 char match
-                        if len(ch1) == 3:
-                            if self.count_str_match(ch1, ch2) == 1:
+                        if self.count_str_match(ch1, ch2) == 1:
+                            if len(ch1) == 3:
                                 if sorted(ch1) == sorted(ch2):
                                     return True
 
@@ -121,17 +121,17 @@ class JudgeEngine(engine.Engine):
 
         # exclude 'ー'
         if 'ー' in reading:
-            if self.judge(reading.replace('ー', ''), [m.replace('ー', '') for m in morphs]):
+            if self.judge(reading.replace('ー', ''), [m.replace('ー', '') for m in morphs], is_tight):
                 return True
 
         # exclude 'ッ'
         if 'ッ' in reading:
-            if self.judge(reading.replace('ッ', ''), [m.replace('ッ', '') for m in morphs]):
+            if self.judge(reading.replace('ッ', ''), [m.replace('ッ', '') for m in morphs], is_tight):
                 return True
 
         # exclude 'ン'
         if 'ン' in reading:
-            if self.judge(reading.replace('ン', ''), [m.replace('ン', '') for m in morphs]):
+            if self.judge(reading.replace('ン', ''), [m.replace('ン', '') for m in morphs], is_tight):
                 return True
 
         # convert vowel text to pronunciation
@@ -147,12 +147,12 @@ class JudgeEngine(engine.Engine):
                     converted_reading = converted_reading.replace(bi_char, sub[1](bi_char))
                     converted_morphs = [m.replace(bi_char, sub[1](bi_char)) for m in converted_morphs]
         if converted_reading != reading:
-            if self.judge(converted_reading, converted_morphs):
+            if self.judge(converted_reading, converted_morphs, is_tight):
                 return True
 
         # 'イウ' -> 'ユー'
         if 'イウ' in reading:
-            if self.judge(reading.replace('イウ', 'ユー'), [m.replace('イウ', 'ユー') for m in morphs]):
+            if self.judge(reading.replace('イウ', 'ユー'), [m.replace('イウ', 'ユー') for m in morphs], is_tight):
                 return True
 
         # convert char to next lower's vowel
@@ -165,7 +165,7 @@ class JudgeEngine(engine.Engine):
                     ch,
                     pyboin.romanize(ch[0], pyboin.text2boin(ch[1]))
                 )
-            if self.judge(lower_to_vowel_reading, morphs):
+            if self.judge(lower_to_vowel_reading, morphs, is_tight):
                 return True
 
         return False
