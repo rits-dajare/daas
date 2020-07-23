@@ -45,10 +45,11 @@ class Engine():
         if 'converted' in body:
             reading = body['converted'].replace(' ', '')
 
-        words = re.findall(r'[a-zA-Z]+', dajare)
+        words = re.findall(r'[a-zA-Z]{4,}', dajare)
         for w in words:
             reading = reading.replace(alphabet.convert_word_to_alphabet(w.lower()), '')
 
+        print(reading)
         return reading
 
     def find_sensitive_tags(self, dajare):
