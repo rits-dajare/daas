@@ -28,10 +28,14 @@ class Engine():
                 if row != []:
                     self.force_sensitive_pattern.append(row)
 
-    def to_reading(self, dajare):
-        # exclude noises
+    def exclude_noise(self, dajare):
         noise = re.compile(r'[^0-9A-Za-z\u3041-\u3096\u30A1-\u30F6\u3005-\u3006\u3400-\u3fff\u2E80-\u2FDF\u3005-\u3007\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\U00020000-\U0002EBEFー]')
         dajare = noise.sub('', dajare)
+
+        return dajare
+
+    def to_reading(self, dajare):
+        dajare = self.exclude_noise(dajare)
 
         # exclude tail's 'w'
         noise = re.compile(r'w+$')

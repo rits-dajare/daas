@@ -21,38 +21,36 @@ class JudgeEngine(engine.Engine):
         self.tokenizer = Tokenizer()
 
     def is_dajare(self, dajare, use_api=True):
+        dajare_cleaned = self.exclude_noise(dajare)
+
         # force pass as dajare
         for pattern in self.force_judge_pattern:
             if re.search(pattern, dajare) is not None:
                 return True
 
         # not pass 30~ chars
-        if len(dajare) >= 30:
+        if len(dajare_cleaned) >= 30:
             return False
 
         # not pass symmetry(xxx|xxx) & ABCDABCD pattern
         # ex. テストテスト -> not dajare
-        pivot = len(dajare) // 2
-        if dajare[:pivot] == dajare[pivot + len(dajare)%2:]:
+        pivot = len(dajare_cleaned) // 2
+        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare)%2:]:
             return False
-        if dajare[:pivot] == dajare[pivot + len(dajare)%2:][::-1]:
+        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare)%2:][::-1]:
             return False
 
         # not pass only alphabet chars
-        if re.fullmatch(r'[\da-zA-Z 　,]*', dajare) is not None:
+        if re.fullmatch(r'[\da-zA-Z 　,]*', dajare_cleaned) is not None:
             return False
 
         # not pass xxxoxxxo(x: not hiragana, o: hiragana) pattern
-        if re.fullmatch(r'[^\u3041-\u3096]+[\u3041-\u3096]*[^\u3041-\u3096]+[\u3041-\u3096]*', dajare) is not None:
+        if re.fullmatch(r'[^\u3041-\u3096]+[\u3041-\u3096]*[^\u3041-\u3096]+[\u3041-\u3096]*', dajare_cleaned) is not None:
             noise = re.compile(r'[\u3041-\u3096]')
-            tmp_dajare = noise.sub('', dajare)
+            tmp_dajare = noise.sub('', dajare_cleaned)
             pivot = len(tmp_dajare) // 2
             if tmp_dajare[:pivot] == tmp_dajare[pivot:]:
                 return False
-
-        # convert dajare to reading & morphs
-        reading, morphs = self.to_reading_and_morphs(dajare, use_api)
-        reading, morphs = self.preprocessing(reading, morphs)
 
         # not pass only ~x chars are used & length >= y
         # [x, y]  x: chars, y: length
@@ -61,14 +59,14 @@ class JudgeEngine(engine.Engine):
             [4, 7],
             [5, 10]
         ]
-        chars = [ch for ch in dajare]
+        chars = [ch for ch in dajare_cleaned]
         for rule in chars_length_rules:
-            if len(set(chars)) <= rule[0] and len(dajare) >= rule[1]:
+            if len(set(chars)) <= rule[0] and len(dajare_cleaned) >= rule[1]:
                 return False
 
-        # not pass ~4 length pattern
-        if len(reading) <= 4:
-            return False
+        # convert dajare to reading & morphs
+        reading, morphs = self.to_reading_and_morphs(dajare, use_api)
+        reading, morphs = self.preprocessing(reading, morphs)
 
         return self.judge(reading, morphs, len(reading) >= 20)
 
