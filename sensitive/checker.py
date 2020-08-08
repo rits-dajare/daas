@@ -4,14 +4,14 @@ import requests
 import json
 import csv
 import re
+from tokens.docomo import DocomoTokens
 
 
 class SensitiveChecker():
     def __init__(self):
-        # load api keys
-        self.docomo_keys = []
-        self.line_keys = []
-        self.__load_apikeys()
+        # set docomo api access token
+        tokens = DocomoTokens()
+        self.tokens = tokens.get_tokens()
 
         # load force tagging pattern
         self.force_sensitive_pattern = []
@@ -42,32 +42,15 @@ class SensitiveChecker():
                     continue
                 self.force_sensitive_pattern.append(row)
 
-    def __load_apikeys(self):
-        docomo_token_file = './config/docomo_token'
-        line_token_file = './config/line_token'
-
-        if not os.path.isfile(docomo_token_file):
-            raise Exception('docomo apiのアクセストークンを指定してください')
-        if not os.path.isfile(line_token_file):
-            raise Exception('LINE apiのアクセストークンを指定してください')
-
-        # それぞれAPIキーをリストに格納
-        with open(docomo_token_file, 'r') as f:
-            self.docomo_keys.extend(f.read().split('\n'))
-        with open(line_token_file, 'r') as f:
-            self.line_keys.extend(f.read().split('\n'))
-        self.docomo_keys.remove('')
-        self.line_keys.remove('')
-
     def __call_api(self, text):
         url = 'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck?APIKEY={}'
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         params = {'text': text}
 
-        for key in self.docomo_keys:
+        for token in self.tokens:
             # API呼び出し
             res = requests.post(
-                url.format(key),
+                url.format(token),
                 headers=headers,
                 data=params
             )
