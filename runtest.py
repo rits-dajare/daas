@@ -15,6 +15,20 @@ class TestDajare(unittest.TestCase):
         text = '!@#$%^^&*()，。/-_=+;:こんにちは'
         self.assertEqual('こんにちは', judge_engine.exclude_noise(text))
 
+    def test_judge_dajare(self):
+        judge_engine = JudgeEngine()
+        texts = [
+            [True, '布団が吹っ飛んだ'],
+            [True, '紅茶が凍っちゃった'],
+            [True, 'ダジャレを言うのは誰じゃ'],
+            [False, 'テストテスト'],
+            [True, 'ニューヨークで入浴'],
+            [True, '芸夢なゲーム'],
+            [True, '臭いサイ'],
+        ]
+        for text in texts:
+            self.assertEqual(text[0], judge_engine.is_dajare(text[1], False))
+
     def test_n_gram(self):
         judge_engine = JudgeEngine()
         text = 'こんにちは。'
