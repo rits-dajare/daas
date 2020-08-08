@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import requests
-import datetime
 import json
 from reading.converter import Converter
 
