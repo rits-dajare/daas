@@ -15,11 +15,6 @@ class JudgeEngine(engine.Engine):
     def is_dajare(self, dajare, use_api=True):
         dajare_cleaned = self.exclude_noise(dajare)
 
-        # force pass as dajare
-        for pattern in self.force_judge_pattern:
-            if re.search(pattern, dajare) is not None:
-                return True
-
         # not pass 30~ chars
         if len(dajare_cleaned) >= 30:
             return False
@@ -172,7 +167,7 @@ class JudgeEngine(engine.Engine):
 
         # not use api || cannot use api
         if reading == '':
-            for ch in re.findall('\d+', dajare):
+            for ch in re.findall(r'\d+', dajare):
                 dajare = dajare.replace(ch, int2kanji(int(ch)))
 
             # morphological analysis
