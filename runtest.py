@@ -40,5 +40,15 @@ class TestDajareJudge(unittest.TestCase):
             self.judge_engine.n_gram(text, 3))
 
 
+class TestReading(unittest.TestCase):
+    def setUp(self):
+        from reading.withapi import WithAPI
+        self.conv_with_api = WithAPI()
+
+    def test_convert_with_api(self):
+        text = 'こんにちは'
+        self.assertEqual('コンニチハ', self.conv_with_api.text_to_reading(text)[0])
+
+
 if __name__ == '__main__':
     unittest.main()
