@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# --------------------------------------------------------------------------------------
-import sys
-from pathlib import Path
-sys.path.append(str(Path('__file__').resolve().parent))
-# --------------------------------------------------------------------------------------
 import os
 import re
 from janome.tokenizer import Tokenizer
@@ -12,7 +6,6 @@ from kanjize import int2kanji
 import jaconv
 import pyboin
 from engine import engine
-# --------------------------------------------------------------------------------------
 
 
 class JudgeEngine(engine.Engine):

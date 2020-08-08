@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# --------------------------------------------------------------------------------------
-import sys
-from pathlib import Path
-sys.path.append(str(Path('__file__').resolve().parent))
-# --------------------------------------------------------------------------------------
 import os
 import re
 import numpy as np
@@ -15,7 +9,6 @@ from tensorflow.keras.optimizers import *
 from tensorflow.keras.models import *
 from tensorflow.keras import Sequential
 from engine import engine
-# --------------------------------------------------------------------------------------
 
 
 class EvalEngine(engine.Engine):
