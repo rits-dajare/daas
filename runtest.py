@@ -6,7 +6,9 @@ import unittest
 class TestDajareJudge(unittest.TestCase):
     def setUp(self):
         from engine.judge_engine import JudgeEngine
-        self.judge_engine = JudgeEngine()
+        from reading.reading_service import ReadingService
+        converter = ReadingService()
+        self.judge_engine = JudgeEngine(converter)
 
     def test_to_reading(self):
         text = 'こんにちは'

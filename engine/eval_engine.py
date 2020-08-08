@@ -19,7 +19,7 @@ from engine import engine
 
 
 class EvalEngine(engine.Engine):
-    def __init__(self, model_path='model/model.hdf5'):
+    def _setup(self):
         # -----*----- コンストラクタ -----*----- ##
         self.score_cahce = []
 
@@ -28,8 +28,8 @@ class EvalEngine(engine.Engine):
 
         self.__model = self.build_model()
 
-
         # load model
+        model_path='model/model.hdf5'
         if os.path.exists(model_path):
             self.__model.load_weights(model_path)
 

@@ -16,8 +16,7 @@ from engine import engine
 
 
 class JudgeEngine(engine.Engine):
-    def __init__(self):
-        super().__init__()
+    def _setup(self):
         self.tokenizer = Tokenizer()
 
     def is_dajare(self, dajare, use_api=True):
