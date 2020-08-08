@@ -12,7 +12,13 @@ class JudgeEngine(engine.Engine):
     def _setup(self):
         self.tokenizer = Tokenizer()
 
+        self.pass_pattern = self.__load_pass_pattern()
+
     def is_dajare(self, dajare, use_api=True):
+        # force pass as dajare
+        if self.__force_pass(dajare):
+            return True
+
         dajare_cleaned = self.exclude_noise(dajare)
 
         # not pass 30~ chars
@@ -213,3 +219,17 @@ class JudgeEngine(engine.Engine):
                 count += 1
 
         return count
+
+    def __force_pass(self, text):
+        for pattern in self.pass_pattern:
+            if re.search(pattern, text) is not None:
+                return True
+        return False
+
+    def __load_pass_pattern(self):
+        result = []
+        with open('config/force_judge_pattern.txt') as f:
+            result = f.read().split('\n')
+            result.remove('')
+
+        return result
