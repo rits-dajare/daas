@@ -27,6 +27,7 @@ alphabets = {
     'z': 'ゼット',
 }
 
+
 def convert_word_to_alphabet(text):
     alphabet_text = ''
 

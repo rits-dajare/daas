@@ -13,7 +13,6 @@ from engine import engine
 
 class EvalEngine(engine.Engine):
     def _setup(self):
-        # -----*----- コンストラクタ -----*----- ##
         self.score_cahce = []
 
         # set TensorFlow's warning lever
@@ -22,7 +21,7 @@ class EvalEngine(engine.Engine):
         self.__model = self.build_model()
 
         # load model
-        model_path='model/model.hdf5'
+        model_path = 'model/model.hdf5'
         if os.path.exists(model_path):
             self.__model.load_weights(model_path)
 
@@ -34,8 +33,9 @@ class EvalEngine(engine.Engine):
 
         convs = []
         for filter_size in filter_sizes:
-            conv = Conv2D(filter_num, (filter_size, embed_size), activation='relu')(emb_ex)
-            pool = MaxPooling2D((max_length - filter_size + 1 , 1))(conv)
+            conv = Conv2D(filter_num, (filter_size, embed_size),
+                          activation='relu')(emb_ex)
+            pool = MaxPooling2D((max_length - filter_size + 1, 1))(conv)
             convs.append(pool)
 
         convs_merged = Concatenate()(convs)
@@ -97,4 +97,3 @@ class EvalEngine(engine.Engine):
             self.score_cahce.append({'dajare': dajare,  'score': score})
 
         return score
-

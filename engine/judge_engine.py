@@ -27,9 +27,9 @@ class JudgeEngine(engine.Engine):
         # not pass symmetry(xxx|xxx) & ABCDABCD pattern
         # ex. テストテスト -> not dajare
         pivot = len(dajare_cleaned) // 2
-        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare)%2:]:
+        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare) % 2:]:
             return False
-        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare)%2:][::-1]:
+        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare) % 2:][::-1]:
             return False
 
         # not pass only alphabet chars
@@ -100,7 +100,7 @@ class JudgeEngine(engine.Engine):
                             # all vowels match
                             if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                                 return True
-                            #all consonant match
+                            # all consonant match
                             if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
                                     sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
                                 return True
@@ -134,8 +134,10 @@ class JudgeEngine(engine.Engine):
         for bi_char in self.n_gram(reading, 2):
             for sub in vowel_pattern:
                 if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
-                    converted_reading = converted_reading.replace(bi_char, sub[1](bi_char))
-                    converted_morphs = [m.replace(bi_char, sub[1](bi_char)) for m in converted_morphs]
+                    converted_reading = converted_reading.replace(
+                        bi_char, sub[1](bi_char))
+                    converted_morphs = [
+                        m.replace(bi_char, sub[1](bi_char)) for m in converted_morphs]
         if converted_reading != reading:
             if self.judge(converted_reading, converted_morphs, is_tight):
                 return True
@@ -243,4 +245,3 @@ class JudgeEngine(engine.Engine):
                 count += 1
 
         return count
-
