@@ -1,6 +1,6 @@
 # DaaS
 
-[![build](https://github.com/AjxLab/DaaS/workflows/build/badge.svg)](https://github.com/AjxLab/DaaS/actions)
+[![build](https://github.com/rits-dajare/DaaS/workflows/build/badge.svg)](https://github.com/rits-dajare/DaaS/actions)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![Twitter](https://img.shields.io/badge/Twitter-%40rits_dajare-blue?style=flat-square&logo=twitter)](https://twitter.com/rits_dajare)
 
