@@ -9,7 +9,8 @@ class DocomoTokens(Tokens):
 
         token_file = './config/docomo_token'
         if not os.path.isfile(token_file):
-            raise Exception('アクセストークンを指定してください')
+            print('アクセストークンを指定してください')
+            return result
 
         with open(token_file, 'r') as f:
             result = f.read().split('\n')
