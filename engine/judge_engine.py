@@ -157,44 +157,17 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def to_reading_and_morphs(self, dajare, use_api=True):
+    def to_reading_and_morphs(self, text, use_api=True):
         reading = ''
         morphs = []
 
-        # use docomo api
-        if use_api:
-            reading = self.to_reading(dajare)
-
-        # not use api || cannot use api
-        if reading == '':
-            for ch in re.findall(r'\d+', dajare):
-                dajare = dajare.replace(ch, int2kanji(int(ch)))
-
-            # morphological analysis
-            for token in self.tokenizer.tokenize(dajare):
-                if token.reading == '*':
-                    # token with unknown word's reading
-                    reading += jaconv.hira2kata(token.surface)
-                else:
-                    # token with known word's reading
-                    reading += token.reading
-
-                # extract morphs (len >= 2)
-                if len(token.reading) >= 2:
-                    morphs.append(token.reading)
+        reading = self.to_reading(text, use_api)
 
         # extract morphs (len >= 2)
-        if morphs == []:
-            for token in self.tokenizer.tokenize(dajare):
-                if token.part_of_speech.split(',')[0] in ['名詞', '形容詞']:
-                    if len(token.reading) >= 2:
-                        morphs.append(token.reading)
-
-        # force convert reading
-        reading = jaconv.hira2kata(reading)
-
-        # exclude noises
-        reading = ''.join(re.findall('[ァ-ヴー]+', reading))
+        for token in self.tokenizer.tokenize(text):
+            if token.part_of_speech.split(',')[0] in ['名詞', '形容詞']:
+                if len(token.reading) >= 2:
+                    morphs.append(token.reading)
 
         return reading, morphs
 
@@ -230,8 +203,8 @@ class JudgeEngine(engine.Engine):
 
         return reading, morphs
 
-    def n_gram(self, dajare, n):
-        return [dajare[idx:idx + n] for idx in range(len(dajare) - n + 1)]
+    def n_gram(self, text, n):
+        return [text[idx:idx + n] for idx in range(len(text) - n + 1)]
 
     def count_str_match(self, s1, s2):
         count = 0

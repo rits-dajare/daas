@@ -4,12 +4,17 @@
 from flask import Flask, jsonify, abort, make_response, request
 from engine.judge_engine import JudgeEngine
 from engine.eval_engine import EvalEngine
+from reading.reading_service import ReadingService
+from sensitive.checker import SensitiveChecker
 
 app = Flask(__name__)
 
 # dajare engine
-judge_engine = JudgeEngine()
-eval_engine = EvalEngine()
+reading_converter = ReadingService()
+judge_engine = JudgeEngine(reading_converter)
+eval_engine = EvalEngine(reading_converter)
+
+sensitive_checker = SensitiveChecker()
 
 
 @app.route('/dajare/judge/', methods=['GET'])
@@ -53,7 +58,7 @@ def dajare_judge():
 
     # sensitive check
     response['sensitive_tags'] = \
-        judge_engine.find_sensitive_tags(params['dajare'])
+        sensitive_checker.find_tags(params['dajare'])
     if response['sensitive_tags'] != []:
         response['include_sensitive'] = True
 
@@ -129,7 +134,7 @@ def dajare_reading():
         return make_response(jsonify(response), 400)
 
     # convert to reading
-    response['reading'] = judge_engine.to_reading(params['dajare'])
+    response['reading'] = reading_converter.convert(params['dajare'])
 
     return make_response(jsonify(response), 200)
 
