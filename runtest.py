@@ -42,18 +42,15 @@ class TestDajareJudge(unittest.TestCase):
 
 class TestReading(unittest.TestCase):
     def setUp(self):
-        from reading.withapi import WithAPI
-        from reading.withoutapi import WithoutAPI
-        self.conv_with_api = WithAPI()
-        self.conv_without_api = WithoutAPI()
+        from reading.reading_service import ReadingService
+        self.converter = ReadingService()
 
-    def test_convert_with_api(self):
+    def test_convert_to_reading(self):
         text = 'こんにちは'
-        self.assertEqual('コンニチハ', self.conv_with_api.text_to_reading(text)[0])
-
-    def test_convert_without_api(self):
-        text = 'こんにちは'
-        self.assertEqual('コンニチハ', self.conv_without_api.text_to_reading(text)[0])
+        # with api
+        self.assertEqual('コンニチハ', self.converter.convert(text, True))
+        # without api
+        self.assertEqual('コンニチハ', self.converter.convert(text, False))
 
 
 if __name__ == '__main__':

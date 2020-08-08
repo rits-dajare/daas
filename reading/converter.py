@@ -25,5 +25,4 @@ class Converter():
         raise Exception('サブクラスの責務')
 
     def __extract_katakana(self, text):
-        noise = re.compile(r'[^ァ-ヴ]')
-        return noise.sub('', jaconv.hira2kata(text))
+        return ''.join(re.findall('[ァ-ヴー]+', text))
