@@ -36,13 +36,13 @@ $ pip install -r requirements.txt
 
 ## Wiki
 
-Please look at the [documents](https://github.com/AjxLab/DaaS/wiki).
+Please look at the [documents](https://github.com/rits-dajare/DaaS/wiki).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/AjxLab/DaaS](https://github.com/AjxLab/DaaS).
+Bug reports and pull requests are welcome on GitHub at [https://github.com/rits-dajare/DaaS](https://github.com/rits-dajare/DaaS).
 
 ## Author
 
-- Tatsuya Abe
-- abe12@mccc.jp
+- [Averak](https://github.com/averak)
+- `abe12<at>mccc.jp`
