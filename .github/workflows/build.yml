@@ -33,4 +33,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Test
       run: |
-        python -m unittest runtest.TestReading runtest.TestDajareJudge
+        python -m unittest tests.test_judge_dajare tests.test_reading

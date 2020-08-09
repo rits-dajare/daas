@@ -2,7 +2,7 @@
 import unittest
 
 
-class TestDajareJudge(unittest.TestCase):
+class TestJudgeDajare(unittest.TestCase):
     def setUp(self):
         from engine.judge_engine import JudgeEngine
         from text.reading.reading_service import ReadingService
@@ -39,32 +39,3 @@ class TestDajareJudge(unittest.TestCase):
         self.assertEqual(
             ['こんに', 'んにち', 'にちは', 'ちは。'],
             self.judge_engine.n_gram(text, 3))
-
-
-class TestReading(unittest.TestCase):
-    def setUp(self):
-        from text.reading.reading_service import ReadingService
-        self.converter = ReadingService()
-
-    def test_convert_to_reading(self):
-        text = 'こんにちは'
-        # with api
-        self.assertEqual('コンニチハ', self.converter.convert(text, True))
-        # without api
-        self.assertEqual('コンニチハ', self.converter.convert(text, False))
-
-
-class TestSensitive(unittest.TestCase):
-    def setUp(self):
-        from text.sensitive.checker import SensitiveChecker
-        self.checker = SensitiveChecker()
-
-    def test_sensitive_tags(self):
-        text = '殺人，麻薬'
-        self.assertEqual(
-            ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
-            self.checker.find_tags(text))
-
-
-if __name__ == '__main__':
-    unittest.main()
