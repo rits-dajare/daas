@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 import numpy as np
 from tensorflow.keras import *
 from tensorflow.keras.layers import *
@@ -59,13 +58,13 @@ class EvalEngine(engine.Engine):
 
         return model
 
-    def eval(self, dajare, max_length=100):
+    def eval(self, text, max_length=100):
         # check the score's cache
         for cache in self.score_cahce:
-            if cache['dajare'] in dajare or dajare in cache['dajare']:
+            if cache['text'] in text or text in cache['text']:
                 return cache['score']
 
-        reading = self.to_reading(dajare)
+        reading = self.to_reading(text)
 
         vec = [ord(c) for c in reading]
         # reshape (trimming or padding)
@@ -92,8 +91,8 @@ class EvalEngine(engine.Engine):
         # cache
         if len(self.score_cahce) >= 10:
             self.score_cahce.pop(0)
-            self.score_cahce[-1] = {'dajare': dajare,  'score': score}
+            self.score_cahce[-1] = {'text': text,  'score': score}
         else:
-            self.score_cahce.append({'dajare': dajare,  'score': score})
+            self.score_cahce.append({'text': text,  'score': score})
 
         return score
