@@ -5,7 +5,8 @@ from janome.tokenizer import Tokenizer
 from kanjize import int2kanji
 import jaconv
 import pyboin
-from engine import engine
+from . import engine
+from . import alphabet
 
 
 class JudgeEngine(engine.Engine):
@@ -66,7 +67,6 @@ class JudgeEngine(engine.Engine):
     def __rec_judge(self, reading, morphs, is_tight=False):
         if self.__judge(reading, morphs, is_tight):
             return True
-
         if is_tight:
             return False
 
@@ -186,7 +186,7 @@ class JudgeEngine(engine.Engine):
         if text[:pivot] == text[pivot + len(text) % 2:]:
             return True
         # アルファベットのみ
-        if re.fullmatch(r'[\da-zA-Z 　,.]*', text) is not None:
+        if re.fullmatch(r'[\da-zA-Z,.]*', text) is not None:
             return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [

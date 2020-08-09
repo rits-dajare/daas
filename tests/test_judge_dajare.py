@@ -48,8 +48,7 @@ class TestJudgeDajare(unittest.TestCase):
             [False, 'あいうえおあいうえお-あ'],
         ]
         for text in texts:
-            if self.judge_engine.is_dajare(text[1], False) != text[0]:
-                print(text[1])
             self.assertEqual(
-                text[0], self.judge_engine.is_dajare(text[1], False))
-
+                text[0],
+                self.judge_engine.is_dajare(text[1], False)
+            )
