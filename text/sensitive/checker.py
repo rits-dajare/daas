@@ -4,7 +4,7 @@ import requests
 import json
 import csv
 import re
-from tokens.docomo import DocomoTokens
+from ..tokens.docomo import DocomoTokens
 
 
 class SensitiveChecker():

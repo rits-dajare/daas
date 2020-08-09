@@ -3,8 +3,8 @@
 
 class ReadingService():
     def __init__(self):
-        from reading.withapi import WithAPI
-        from reading.withoutapi import WithoutAPI
+        from .withapi import WithAPI
+        from .withoutapi import WithoutAPI
         self.conv_with_api = WithAPI()
         self.conv_without_api = WithoutAPI()
 

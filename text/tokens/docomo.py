@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from tokens.tokens import Tokens
+from .tokens import Tokens
 
 
 class DocomoTokens(Tokens):

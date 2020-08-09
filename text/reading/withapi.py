@@ -2,8 +2,8 @@
 import os
 import requests
 import json
-from reading.converter import Converter
-from tokens.docomo import DocomoTokens
+from .converter import Converter
+from ..tokens.docomo import DocomoTokens
 
 
 class WithAPI(Converter):

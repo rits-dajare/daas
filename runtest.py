@@ -5,7 +5,7 @@ import unittest
 class TestDajareJudge(unittest.TestCase):
     def setUp(self):
         from engine.judge_engine import JudgeEngine
-        from reading.reading_service import ReadingService
+        from text.reading.reading_service import ReadingService
         converter = ReadingService()
         self.judge_engine = JudgeEngine(converter)
 
@@ -43,7 +43,7 @@ class TestDajareJudge(unittest.TestCase):
 
 class TestReading(unittest.TestCase):
     def setUp(self):
-        from reading.reading_service import ReadingService
+        from text.reading.reading_service import ReadingService
         self.converter = ReadingService()
 
     def test_convert_to_reading(self):
@@ -56,7 +56,7 @@ class TestReading(unittest.TestCase):
 
 class TestSensitive(unittest.TestCase):
     def setUp(self):
-        from sensitive.checker import SensitiveChecker
+        from text.sensitive.checker import SensitiveChecker
         self.checker = SensitiveChecker()
 
     def test_sensitive_tags(self):

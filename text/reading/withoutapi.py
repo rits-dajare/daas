@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from janome.tokenizer import Tokenizer
-from reading.converter import Converter
+from text.reading.converter import Converter
 
 
 class WithoutAPI(Converter):
