@@ -38,7 +38,7 @@ class TestJudgeDajare(unittest.TestCase):
             [True, 'かきいカキー-んン'],
             [True, 'かこうカコー-んン'],
             [True, 'かけいカケー-んン'],
-            [True, 'かいうカユー'],
+            [True, 'あいうアユー'],
             [True, 'しゃんあサンア'],
             [False, 'こんにちはこんにちは'],
             [False, 'こんにちははちにんこ'],
@@ -53,11 +53,3 @@ class TestJudgeDajare(unittest.TestCase):
             self.assertEqual(
                 text[0], self.judge_engine.is_dajare(text[1], False))
 
-    def test_n_gram(self):
-        text = 'こんにちは。'
-        self.assertEqual(
-            ['こん', 'んに', 'にち', 'ちは', 'は。'],
-            self.judge_engine.n_gram(text, 2))
-        self.assertEqual(
-            ['こんに', 'んにち', 'にちは', 'ちは。'],
-            self.judge_engine.n_gram(text, 3))
