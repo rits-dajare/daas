@@ -37,18 +37,9 @@ class JudgeEngine(engine.Engine):
         if re.fullmatch(r'[\da-zA-Z 　,]*', dajare_cleaned) is not None:
             return False
 
-        # not pass xxxoxxxo(x: not hiragana, o: hiragana) pattern
-        if re.fullmatch(r'[^\u3041-\u3096]+[\u3041-\u3096]*[^\u3041-\u3096]+[\u3041-\u3096]*', dajare_cleaned) is not None:
-            noise = re.compile(r'[\u3041-\u3096]')
-            tmp_dajare = noise.sub('', dajare_cleaned)
-            pivot = len(tmp_dajare) // 2
-            if tmp_dajare[:pivot] == tmp_dajare[pivot:]:
-                return False
-
         # not pass only ~x chars are used & length >= y
         # [x, y]  x: chars, y: length
         chars_length_rules = [
-            [3, 0],
             [4, 7],
             [5, 10]
         ]
