@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import csv
-from engine import alphabet
 
 
 class Engine():
@@ -18,17 +17,5 @@ class Engine():
         return noise.sub('', text)
 
     def to_reading(self, text, use_api=True):
-        result = self.exclude_noise(text)
-
-        # '笑'を意味する'w'を削除
-        noise = re.compile(r'[^a-vx-zA-VX-Z]w+')
-        result = noise.sub('', result)
-
-        result = self.reading_converter.convert(result, use_api)
-
-        # 読みの分からない4文字以上の英単語を削除
-        words = re.findall(r'[a-zA-Z][a-z]{3,}', text)
-        for w in words:
-            result = result.replace(alphabet.convert_word_to_alphabet(w.lower()), '')
-
-        return result
+        text = self.exclude_noise(text)
+        return self.reading_converter.convert(text, use_api)

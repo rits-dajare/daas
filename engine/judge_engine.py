@@ -6,7 +6,6 @@ from kanjize import int2kanji
 import jaconv
 import pyboin
 from . import engine
-from . import alphabet
 
 
 class JudgeEngine(engine.Engine):
