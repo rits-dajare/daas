@@ -14,45 +14,19 @@ class JudgeEngine(engine.Engine):
 
         self.pass_pattern = self.__load_pass_pattern()
 
-    def is_dajare(self, dajare, use_api=True):
+    def is_dajare(self, text, use_api=True):
         # force pass as dajare
-        if self.__force_pass(dajare):
+        if self.__force_pass(text):
             return True
-
-        dajare_cleaned = self.exclude_noise(dajare)
-
-        # not pass 30~ chars
-        if len(dajare_cleaned) >= 30:
+        # not pass as dajare
+        if self.__not_pass(text):
             return False
-
-        # not pass symmetry(xxx|xxx) & ABCDABCD pattern
-        # ex. テストテスト -> not dajare
-        pivot = len(dajare_cleaned) // 2
-        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare) % 2:]:
-            return False
-        if dajare_cleaned[:pivot] == dajare_cleaned[pivot + len(dajare) % 2:][::-1]:
-            return False
-
-        # not pass only alphabet chars
-        if re.fullmatch(r'[\da-zA-Z 　,]*', dajare_cleaned) is not None:
-            return False
-
-        # not pass only ~x chars are used & length >= y
-        # [x, y]  x: chars, y: length
-        chars_length_rules = [
-            [4, 7],
-            [5, 10]
-        ]
-        chars = [ch for ch in dajare_cleaned]
-        for rule in chars_length_rules:
-            if len(set(chars)) <= rule[0] and len(dajare_cleaned) >= rule[1]:
-                return False
 
         # convert dajare to reading & morphs
-        reading, morphs = self.to_reading_and_morphs(dajare, use_api)
+        reading, morphs = self.to_reading_and_morphs(text, use_api)
         reading, morphs = self.preprocessing(reading, morphs)
 
-        return self.judge(reading, morphs, len(reading) >= 20)
+        return self.rec_judge(reading, morphs, len(reading) >= 20)
 
     def judge(self, reading, morphs, is_tight=False):
         # whether judgment rules holds ===================================
@@ -78,8 +52,7 @@ class JudgeEngine(engine.Engine):
 
                     if is_tight:
                         if self.count_str_match(ch1, ch2) >= 3:
-                            if ch1.count('ー') < 2:
-                                return True
+                            return True
                     else:
                         # 1 char match
                         if self.count_str_match(ch1, ch2) == 1:
@@ -96,7 +69,10 @@ class JudgeEngine(engine.Engine):
                             if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
                                     sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
                                 return True
-        # ================================================================
+
+    def rec_judge(self, reading, morphs, is_tight=False):
+        if self.judge(reading, morphs, is_tight):
+            return True
 
         if is_tight:
             return False
@@ -210,6 +186,30 @@ class JudgeEngine(engine.Engine):
                 count += 1
 
         return count
+
+    def __not_pass(self, text):
+        text = self.exclude_noise(text)
+        # 30文字以上
+        if len(text) >= 30:
+            return True
+        # シンメトリー(xxx|xxx) & ABCDABCD パターン
+        pivot = len(text) // 2
+        if text[:pivot] == text[pivot + len(text) % 2:][::-1]:
+            return True
+        if text[:pivot] == text[pivot + len(text) % 2:]:
+            return True
+        # アルファベットのみ
+        if re.fullmatch(r'[\da-zA-Z 　,.]*', text) is not None:
+            return True
+        # [x, y]：文字がx種類以下 && 文字列がy文字以上
+        chars_length_rules = [
+            [4, 7],
+            [5, 10],
+        ]
+        chars = [ch for ch in text]
+        for rule in chars_length_rules:
+            if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
+                return True
 
     def __force_pass(self, text):
         for pattern in self.pass_pattern:
