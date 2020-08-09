@@ -4,8 +4,8 @@
 from flask import Flask, jsonify, abort, make_response, request
 from engine.judge_engine import JudgeEngine
 from engine.eval_engine import EvalEngine
-from reading.reading_service import ReadingService
-from sensitive.checker import SensitiveChecker
+from text.reading.reading_service import ReadingService
+from text.sensitive.checker import SensitiveChecker
 
 app = Flask(__name__)
 
