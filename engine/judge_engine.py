@@ -3,6 +3,7 @@ import os
 import re
 from janome.tokenizer import Tokenizer
 from kanjize import int2kanji
+import collections
 import jaconv
 import pyboin
 from . import engine
@@ -190,6 +191,9 @@ class JudgeEngine(engine.Engine):
         if text[:pivot] == text[pivot + len(text) % 2:][::-1]:
             return True
         if text[:pivot] == text[pivot + len(text) % 2:]:
+            return True
+        # 同じ文字が6回以上使われている
+        if collections.Counter(text).most_common()[0][1] >= 6:
             return True
         # アルファベットのみ
         if re.fullmatch(r'[\da-zA-Z,.]*', text) is not None:
