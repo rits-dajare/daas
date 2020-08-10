@@ -189,8 +189,8 @@ class JudgeEngine(engine.Engine):
         # 同じ文字が6回以上使われている
         if collections.Counter(text).most_common()[0][1] >= 6:
             return True
-        # アルファベットのみ
-        if re.fullmatch(r'[\da-zA-Z,.]*', text) is not None:
+        # 半角文字のみ
+        if re.fullmatch(r'[\da-zA-Z]*', text) is not None:
             return True
         # 原文でも判定された場合
         if self.__judge(text, [], True):
