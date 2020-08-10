@@ -198,6 +198,10 @@ class JudgeEngine(engine.Engine):
         # アルファベットのみ
         if re.fullmatch(r'[\da-zA-Z,.]*', text) is not None:
             return True
+        # 原文でも判定された場合
+        if self.__judge(text, [], True):
+            print(text)
+            return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [
             [4, 7],
