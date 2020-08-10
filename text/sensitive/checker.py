@@ -35,7 +35,7 @@ class SensitiveChecker():
         return result
 
     def __load_tagging_pattern(self):
-        with open('config/force_sensitive_pattern.csv') as f:
+        with open('config/sensitive_pattern.csv') as f:
             reader = csv.reader(f)
             for row in reader:
                 if row == []:
