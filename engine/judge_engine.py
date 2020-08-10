@@ -186,12 +186,6 @@ class JudgeEngine(engine.Engine):
         # 30文字以上
         if len(text) >= 30:
             return True
-        # シンメトリー(xxx|xxx) & ABCDABCD パターン
-        pivot = len(text) // 2
-        if text[:pivot] == text[pivot + len(text) % 2:][::-1]:
-            return True
-        if text[:pivot] == text[pivot + len(text) % 2:]:
-            return True
         # 同じ文字が6回以上使われている
         if collections.Counter(text).most_common()[0][1] >= 6:
             return True
@@ -200,7 +194,6 @@ class JudgeEngine(engine.Engine):
             return True
         # 原文でも判定された場合
         if self.__judge(text, [], True):
-            print(text)
             return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [
