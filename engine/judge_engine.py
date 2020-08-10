@@ -13,6 +13,7 @@ class JudgeEngine(engine.Engine):
         self.tokenizer = Tokenizer()
 
         self.pass_pattern = self.__load_pass_pattern()
+        self.not_pass_pattern = self.__load_not_pass_pattern()
 
     def is_dajare(self, text, use_api=True):
         # ダジャレとみなす
@@ -174,7 +175,13 @@ class JudgeEngine(engine.Engine):
         return count
 
     def __not_pass(self, text):
+        # 弾くパターン
+        for pattern in self.not_pass_pattern:
+            if re.search(pattern, text) is not None:
+                return True
+
         text = self.exclude_noise(text)
+
         # 30文字以上
         if len(text) >= 30:
             return True
@@ -201,11 +208,20 @@ class JudgeEngine(engine.Engine):
         for pattern in self.pass_pattern:
             if re.search(pattern, text) is not None:
                 return True
+
         return False
 
     def __load_pass_pattern(self):
         result = []
-        with open('config/force_judge_pattern.txt') as f:
+        with open('config/pass_pattern.txt') as f:
+            result = f.read().split('\n')
+            result.remove('')
+
+        return result
+
+    def __load_not_pass_pattern(self):
+        result = []
+        with open('config/not_pass_pattern.txt') as f:
             result = f.read().split('\n')
             result.remove('')
 
