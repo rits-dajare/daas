@@ -40,6 +40,7 @@ class TestJudgeDajare(unittest.TestCase):
             [True, 'かけいカケー-んン'],
             [True, 'あいうアユー'],
             [True, 'しゃんあサンア'],
+            [False, 'あいうあいう-ん'],
             [False, 'こんにちはこんにちは'],
             [False, 'こんにちははちにんこ'],
             [False, 'あいあいあいあいあいあい-かきくけこ'],
