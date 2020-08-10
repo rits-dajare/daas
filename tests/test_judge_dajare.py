@@ -42,6 +42,7 @@ class TestJudgeDajare(unittest.TestCase):
             [True, 'しゃんあサンア'],
             [False, 'こんにちはこんにちは'],
             [False, 'こんにちははちにんこ'],
+            [False, 'あいあいあいあいあいあい-かきくけこ'],
             [False, '布団が吹っ飛んだ布団が吹っ飛んだあいうえおかきくけこさしすせ'],
             [False, 'See you later, alligator'],
             [False, 'あいうえあいうえ-あ'],
