@@ -191,6 +191,10 @@ class JudgeEngine(engine.Engine):
         # 原文でも判定された場合
         if self.__judge(text, [], True):
             return True
+        # 同じ2文字が含まれている
+        cols = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z]', text)
+        if len(cols) != len(set(cols)):
+            return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [
             [4, 7],
