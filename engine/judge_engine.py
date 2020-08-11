@@ -24,9 +24,10 @@ class JudgeEngine(engine.Engine):
         if self.__not_pass(text):
             return False
 
-        # textを読み/形態素に変換
-        reading, morphs = self.__reading_and_morphs(text, use_api)
-        reading, morphs = self.__nomalize(reading, morphs)
+        reading, morphs = self.__nomalize(
+            self.to_reading(text, use_api),
+            self.__morphs_analysis(text)
+        )
 
         return self.__rec_judge(reading, morphs, len(reading) >= 20)
 
@@ -119,33 +120,27 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def __reading_and_morphs(self, text, use_api=True):
-        reading = ''
-        morphs = []
+    def __morphs_analysis(self, text):
+        result = []
 
-        reading = self.to_reading(text, use_api)
-
-        # 2文字以上の形態素のみ抽出
         for token in self.tokenizer.tokenize(text):
-            if token.part_of_speech.split(',')[0] in ['名詞', '形容詞']:
-                if len(token.reading) >= 2:
-                    morphs.append(token.reading)
+            result.append(token.reading)
 
-        return reading, morphs
+        return result
 
     def __nomalize(self, reading, morphs):
-        nomalize_pair = [
+        sub_pair = [
             'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ',
             'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホ'
         ]
-        for i in range(len(nomalize_pair[0])):
+        for i in range(len(sub_pair[0])):
             reading = reading.replace(
-                nomalize_pair[0][i],
-                nomalize_pair[1][i],
+                sub_pair[0][i],
+                sub_pair[1][i],
             )
             morphs = [m.replace(
-                nomalize_pair[0][i],
-                nomalize_pair[1][i]) for m in morphs]
+                sub_pair[0][i],
+                sub_pair[1][i]) for m in morphs]
 
         # 3回以上繰り返された文字を1文字に圧縮
         reading = re.sub(r'(.)\1{2,}', r'\1', reading)
@@ -176,7 +171,6 @@ class JudgeEngine(engine.Engine):
         return count
 
     def __not_pass(self, text):
-        # 弾くパターン
         for pattern in self.not_pass_pattern:
             if re.search(pattern, text) is not None:
                 return True
@@ -187,8 +181,10 @@ class JudgeEngine(engine.Engine):
         if len(text) >= 30:
             return True
         # 同じ文字が6回以上使われている
-        if collections.Counter(text).most_common()[0][1] >= 6:
-            return True
+        cnt_ch = collections.Counter(text).most_common()
+        if cnt_ch != []:
+            if cnt_ch[0][1] >= 6:
+                return True
         # 半角文字のみ
         if re.fullmatch(r'[\da-zA-Z]*', text) is not None:
             return True
@@ -212,18 +208,16 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def __load_pass_pattern(self):
+    def __load_pattern_file(self, file):
         result = []
-        with open('config/pass_pattern.txt') as f:
+        with open(file, 'r') as f:
             result = f.read().split('\n')
             result.remove('')
 
         return result
+
+    def __load_pass_pattern(self):
+        return self.__load_pattern_file('config/pass_pattern.txt')
 
     def __load_not_pass_pattern(self):
-        result = []
-        with open('config/not_pass_pattern.txt') as f:
-            result = f.read().split('\n')
-            result.remove('')
-
-        return result
+        return self.__load_pattern_file('config/not_pass_pattern.txt')
