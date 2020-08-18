@@ -188,12 +188,19 @@ class JudgeEngine(engine.Engine):
         # 半角文字のみ
         if re.fullmatch(r'[\da-zA-Z]*', text) is not None:
             return True
-        # 原文でも判定された場合
-        if self.__judge(text, [], True):
+        # 同じひらがな/カタカナのブロックが重複
+        chars = []
+        chars.extend(re.findall(r'[ぁ-んー]{3,}', text))
+        chars.extend(re.findall(r'[ァ-ンー]{3,}', text))
+        if len(set(chars)) != len(chars):
             return True
         # 同じ2文字が含まれている
         cols = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z]', text)
         if len(cols) != len(set(cols)):
+            return True
+        # ABCD|ABCDパターン
+        pivot = len(text) // 2
+        if text[:pivot] == text[pivot + len(text) % 2:]:
             return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [
