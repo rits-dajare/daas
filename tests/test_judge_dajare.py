@@ -25,6 +25,7 @@ class TestJudgeDajare(unittest.TestCase):
             [True, '紅茶が凍っちゃった'],
             [True, 'ニューヨークで入浴'],
             [True, 'アヒージョはアチーよ'],
+            [True, '過大な課題www'],
             [True, '臭いサイ'],
             [True, 'この卵エッグ'],
             [True, 'かきくカケク'],

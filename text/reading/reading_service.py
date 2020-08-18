@@ -15,7 +15,7 @@ class ReadingService():
         api_status = False
 
         # '笑'を意味する'w'を削除
-        noise = re.compile(r'[^a-vx-zA-VX-Z]w+')
+        noise = re.compile(r'(?![a-vx-zA-VX-Z])w+')
         text = noise.sub('', text)
 
         if use_api:
