@@ -105,6 +105,19 @@ class JudgeEngine(engine.Engine):
             if self.__rec_judge(converted_reading, converted_morphs, is_tight):
                 return True
 
+        # 連続された母音の末尾をハイフンに変換
+        converted_reading = reading
+        for ci in range(len(reading) - 1):
+            if converted_reading[ci+1] not in 'アイウエオ':
+                continue
+            if pyboin.text2boin(converted_reading[ci]) == \
+                    pyboin.text2boin(converted_reading[ci+1]):
+                converted_reading = converted_reading[:ci+1] + 'ー' + converted_reading[ci+2:]
+        converted_reading = re.sub(r'ー+', 'ー', converted_reading)
+        if converted_reading != reading:
+            if self.__rec_judge(converted_reading, morphs, is_tight):
+                return True
+
         # 小文字の直前文字を小文字の母音に変換
         # ex. 'シュン' -> 'スン'
         matches = re.findall(r'.[ァィゥェォャュョヮ]', reading)
@@ -144,18 +157,6 @@ class JudgeEngine(engine.Engine):
 
         # 3回以上繰り返された文字を1文字に圧縮
         reading = re.sub(r'(.)\1{2,}', r'\1', reading)
-
-        # 連続された母音の末尾をハイフンに変換
-        for ci in range(len(reading) - 1):
-            if reading[ci+1] not in 'アイウエオ':
-                continue
-
-            if pyboin.text2boin(reading[ci]) == \
-                    pyboin.text2boin(reading[ci+1]):
-                reading = reading[:ci+1] + 'ー' + reading[ci+2:]
-
-        # 連続したハイフンを圧縮
-        reading = re.sub(r'ー+', 'ー', reading)
 
         return reading, morphs
 
