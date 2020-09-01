@@ -205,6 +205,7 @@ class JudgeEngine(engine.Engine):
             return True
         # [x, y]：文字がx種類以下 && 文字列がy文字以上
         chars_length_rules = [
+            [3, 0],
             [4, 7],
             [5, 10],
         ]
