@@ -145,4 +145,8 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, threaded=True)
+    context = (
+        '/etc/letsencrypt/live/conoha.abelab.dev/fullchain.pem',
+        '/etc/letsencrypt/live/conoha.abelab.dev/privkey.pem'
+    )
+    app.run(host='0.0.0.0', port=8080, threaded=True, ssl_context=context)
