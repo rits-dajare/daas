@@ -25,8 +25,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        cd app
         pip install -U pip
         pip install -r requirements.txt
     - name: Run Test
       run: |
+        cd app
         python -m unittest tests.test_judge_dajare
