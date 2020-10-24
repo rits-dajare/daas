@@ -1,17 +1,8 @@
 from flask import Blueprint, request
 from flask_restful import Resource, Api
 from .api import API
-from engine.judge_engine import JudgeEngine
-from text.reading.reading_service import ReadingService
-from text.sensitive.checker import SensitiveChecker
+from engine.api import *
 
-
-# dajare engine
-reading_converter = ReadingService()
-judge_engine = JudgeEngine(reading_converter)
-sensitive_checker = SensitiveChecker()
-
-# API
 app = Blueprint('judge', __name__)
 api = Api(app)
 

@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 import unittest
+from engine.api import *
 
 
 class TestReading(unittest.TestCase):
-    def setUp(self):
-        from text.reading.reading_service import ReadingService
-        self.converter = ReadingService()
-
     def test_convert_to_reading(self):
         text = 'こんにちは'
         # with api
-        self.assertEqual('コンニチハ', self.converter.convert(text, True))
+        self.assertEqual('コンニチハ', reading_converter.convert(text, True))
         # without api
-        self.assertEqual('コンニチハ', self.converter.convert(text, False))
+        self.assertEqual('コンニチハ', reading_converter.convert(text, False))
 
     def test_convert_eng_word_to_reading(self):
         texts = [
@@ -24,5 +21,5 @@ class TestReading(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                self.converter.convert(text[1])
+                reading_converter.convert(text[1])
             )

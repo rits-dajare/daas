@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 import unittest
+from engine.api import *
 
 
 class TestJudgeDajare(unittest.TestCase):
-    def setUp(self):
-        from engine.judge_engine import JudgeEngine
-        from text.reading.reading_service import ReadingService
-        converter = ReadingService()
-        self.judge_engine = JudgeEngine(converter)
-
     def test_to_reading(self):
         text = 'こんにちは'
-        self.assertEqual('コンニチハ', self.judge_engine.to_reading(text))
+        self.assertEqual('コンニチハ', judge_engine.to_reading(text))
 
     def test_exclude_noises(self):
         text = '!@#$%^^&*()，。/-_=+;:こんにちは'
-        self.assertEqual('こんにちは', self.judge_engine.exclude_noise(text))
+        self.assertEqual('こんにちは', judge_engine.exclude_noise(text))
 
     def test_judge_dajare(self):
         texts = [
@@ -56,5 +51,5 @@ class TestJudgeDajare(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                self.judge_engine.is_dajare(text[1], False)
+                judge_engine.is_dajare(text[1], False)
             )

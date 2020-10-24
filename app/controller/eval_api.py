@@ -1,15 +1,8 @@
 from flask import Blueprint, request
 from flask_restful import Resource, Api
 from .api import API
-from engine.eval_engine import EvalEngine
-from text.reading.reading_service import ReadingService
+from engine.api import *
 
-
-# dajare engine
-reading_converter = ReadingService()
-eval_engine = EvalEngine(reading_converter)
-
-# API
 app = Blueprint('eval', __name__)
 api = Api(app)
 
