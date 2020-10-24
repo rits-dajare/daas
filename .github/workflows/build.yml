@@ -31,4 +31,4 @@ jobs:
     - name: Run Test
       run: |
         cd app
-        python -m unittest tests.test_judge_dajare
+        python -m unittest test.test_judge
