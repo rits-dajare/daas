@@ -17,11 +17,11 @@ eval_engine = EvalEngine(reading_converter)
 sensitive_checker = SensitiveChecker()
 
 
-@app.route('/dajare/judge/', methods=['GET'])
+@app.route('/judge/', methods=['GET'])
 def dajare_judge():
     '''
     uri：
-        /dajare/judge
+        /judge
     method：
         GET
     headers：
@@ -65,11 +65,11 @@ def dajare_judge():
     return make_response(jsonify(response), 200)
 
 
-@app.route('/dajare/eval/', methods=['GET'])
+@app.route('/eval/', methods=['GET'])
 def dajare_evaluate():
     '''
     uri：
-        /dajare/eval
+        /eval
     method：
         GET
     headers：
@@ -102,11 +102,11 @@ def dajare_evaluate():
     return make_response(jsonify(response), 200)
 
 
-@app.route('/dajare/reading/', methods=['GET'])
+@app.route('/reading/', methods=['GET'])
 def dajare_reading():
     '''
     uri：
-        /dajare/reading
+        /reading
     method：
         GET
     headers：
