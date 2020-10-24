@@ -7,5 +7,4 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-#CMD ["uwsgi", "--ini", "/var/www/uwsgi.ini"]
 CMD ["flask", "run", "--port=3031", "--host=0.0.0.0"]
