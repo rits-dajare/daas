@@ -20,7 +20,7 @@ class EvalEngine(engine.Engine):
         self.__model = self.build_model()
 
         # load model
-        model_path = 'model/model.hdf5'
+        model_path = 'ckpt/eval.h5'
         if os.path.exists(model_path):
             self.__model.load_weights(model_path)
 
