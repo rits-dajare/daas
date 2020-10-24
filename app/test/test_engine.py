@@ -3,7 +3,7 @@ import unittest
 from engine.api import *
 
 
-class TestJudgeDajare(unittest.TestCase):
+class TestEngine(unittest.TestCase):
     def test_to_reading(self):
         text = 'こんにちは'
         self.assertEqual('コンニチハ', judge_engine.to_reading(text))
@@ -53,3 +53,32 @@ class TestJudgeDajare(unittest.TestCase):
                 text[0],
                 judge_engine.is_dajare(text[1], False)
             )
+
+    @unittest.skip('TESTSKIP')
+    def test_convert_to_reading(self):
+        text = 'こんにちは'
+        # with api
+        self.assertEqual('コンニチハ', reading_converter.convert(text, True))
+        # without api
+        self.assertEqual('コンニチハ', reading_converter.convert(text, False))
+
+    @unittest.skip('TESTSKIP')
+    def test_convert_eng_word_to_reading(self):
+        texts = [
+            ['エービーシーディー', 'ABCD'],
+            ['エービーシー', 'ABC'],
+            ['', 'abcd'],
+            ['ハロー', 'hello'],
+        ]
+        for text in texts:
+            self.assertEqual(
+                text[0],
+                reading_converter.convert(text[1])
+            )
+
+    @unittest.skip('TESTSKIP')
+    def test_sensitive_tags(self):
+        text = '殺人，麻薬'
+        self.assertEqual(
+            ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
+            sensitive_checker.find_tags(text))

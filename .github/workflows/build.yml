@@ -31,4 +31,5 @@ jobs:
     - name: Run Test
       run: |
         cd app
-        python -m unittest test.test_judge
+        python -m unittest discover test
+
