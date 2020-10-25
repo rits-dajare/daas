@@ -5,7 +5,7 @@ from ..text_engine import TextEngine
 
 class SensitiveChecker(TextEngine):
     def _sub_init(self):
-        self.force_sensitive_patterns = self.__load_patterns()
+        self.sensitive_patterns = self.__load_patterns()
 
     def check(self, text, use_api=True):
         result = []
@@ -26,7 +26,7 @@ class SensitiveChecker(TextEngine):
 
     def __force_tagging(self, text):
         result = []
-        for pattern in self.force_sensitive_patterns:
+        for pattern in self.sensitive_patterns:
             if re.search(pattern[0], text) is None:
                 continue
             result.append(pattern[1])

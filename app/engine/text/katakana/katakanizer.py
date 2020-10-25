@@ -1,4 +1,5 @@
 import re
+import csv
 import json
 import jaconv
 from janome.tokenizer import Tokenizer
@@ -9,15 +10,19 @@ from ..text_engine import TextEngine
 
 class Katakanizer(TextEngine):
     def _sub_init(self):
+        self.katakanize_patterns = self.__load_patterns()
         self.tokenizer = Tokenizer()
 
     @lru_cache(maxsize=255)
     def katakanize(self, text, use_api=True):
-        result = ''
+        result = text
+
+        # カタカナ化するパターンを元に変換
+        result = self.__force_katakanize(result)
 
         # '笑'を意味する'w'を除去
         noise = re.compile(r'(?![a-vx-zA-VX-Z])w+')
-        result = noise.sub('', text)
+        result = noise.sub('', result)
 
         # カタカナ化
         if use_api and self.token_valid:
@@ -57,5 +62,24 @@ class Katakanizer(TextEngine):
             else:
                 # token with known word's reading
                 result += token.reading
+
+        return result
+
+    def __force_katakanize(self, text):
+        result = text
+
+        for pattern in self.katakanize_patterns:
+            result = re.sub(*pattern, result)
+
+        return result
+
+    def __load_patterns(self):
+        result = []
+        with open('config/katakanize_patterns.csv') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if row == []:
+                    continue
+                result.append(row)
 
         return result
