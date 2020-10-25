@@ -76,7 +76,7 @@ class TestEngine(unittest.TestCase):
                 reading_converter.convert(text[1])
             )
 
-    @unittest.skip('TESTSKIP')
+    @unittest.skipIf(not sensitive_checker.token_valid, 'TESTSKIP')
     def test_sensitive_tags(self):
         text = '殺人，麻薬'
         self.assertEqual(

@@ -1,25 +1,23 @@
-# -*- coding: utf-8 -*-
-import os
-import requests
-import json
 import csv
 import re
-from ..tokens.docomo import DocomoTokens
+from ..text_engine import TextEngine
 
 
-class SensitiveChecker():
-    def __init__(self):
-        # set docomo api access token
-        docomo_token = DocomoTokens()
-        self.tokens = docomo_token.tokens
-        self.valid_api = docomo_token.is_valid
-
-        # load force tagging pattern
-        self.force_sensitive_pattern = []
-        self.__load_tagging_pattern()
+class SensitiveChecker(TextEngine):
+    def _sub_init(self):
+        self.force_sensitive_patterns = self.__load_patterns()
 
     def find_tags(self, text):
-        result = self.__call_api(text)
+        result = []
+
+        if self.token_valid:
+            body = self._call_api(
+                'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck',
+                {'Content-Type': 'application/x-www-form-urlencoded'},
+                {'text': text},
+            )
+            result.extend(self.__exctract_tags_from_res(body))
+
         result.extend(self.__force_tagging(text))
         result = list(set(result))
         result.sort()
@@ -28,44 +26,29 @@ class SensitiveChecker():
 
     def __force_tagging(self, text):
         result = []
-        for pattern in self.force_sensitive_pattern:
+        for pattern in self.force_sensitive_patterns:
             if re.search(pattern[0], text) is None:
                 continue
             result.append(pattern[1])
 
         return result
 
-    def __load_tagging_pattern(self):
-        with open('config/sensitive_pattern.csv') as f:
+    def __load_patterns(self):
+        result = []
+        with open('config/sensitive_patterns.csv') as f:
             reader = csv.reader(f)
             for row in reader:
                 if row == []:
                     continue
-                self.force_sensitive_pattern.append(row)
+                result.append(row)
 
-    def __call_api(self, text):
-        url = 'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck?APIKEY={}'
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        params = {'text': text}
+        return result
 
-        for token in self.tokens:
-            # API呼び出し
-            res = requests.post(
-                url.format(token),
-                headers=headers,
-                data=params
-            )
-
-            # レスポンスが正常な場合
-            if self.__check_health(res):
-                return self.__exctract_tags_from_res(res)
-
-        return []
-
-    def __exctract_tags_from_res(self, res):
+    def __exctract_tags_from_res(self, body):
         result = []
 
-        body = res.json()
+        if body == None:
+            return result
         if 'quotients' not in body:
             return result
 
@@ -76,10 +59,3 @@ class SensitiveChecker():
                 result.append(tag)
 
         return result
-
-    def __check_health(self, res):
-        code = res.status_code
-        if code == requests.codes.ok:
-            return True
-        else:
-            return False
