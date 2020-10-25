@@ -16,7 +16,7 @@ class SensitiveChecker(TextEngine):
                 {'Content-Type': 'application/x-www-form-urlencoded'},
                 {'text': text},
             )
-            result.extend(self.__exctract_tags_from_res(body))
+            result.extend(self.__extract_tags_from_res(body))
 
         result.extend(self.__force_tagging(text))
         result = list(set(result))
@@ -44,7 +44,7 @@ class SensitiveChecker(TextEngine):
 
         return result
 
-    def __exctract_tags_from_res(self, body):
+    def __extract_tags_from_res(self, body):
         result = []
 
         if body is None:
