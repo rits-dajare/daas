@@ -7,10 +7,10 @@ class SensitiveChecker(TextEngine):
     def _sub_init(self):
         self.force_sensitive_patterns = self.__load_patterns()
 
-    def find_tags(self, text):
+    def check(self, text, use_api=True):
         result = []
 
-        if self.token_valid:
+        if use_api and self.token_valid:
             body = self._call_api(
                 'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck',
                 {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -47,7 +47,7 @@ class SensitiveChecker(TextEngine):
     def __exctract_tags_from_res(self, body):
         result = []
 
-        if body == None:
+        if body is None:
             return result
         if 'quotients' not in body:
             return result

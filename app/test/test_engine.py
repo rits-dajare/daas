@@ -54,7 +54,7 @@ class TestEngine(unittest.TestCase):
                 judge_engine.is_dajare(text[1], False)
             )
 
-    @unittest.skip('TESTSKIP')
+    @unittest.skipIf(not reading_converter.token_valid, 'TESTSKIP')
     def test_convert_to_reading(self):
         text = 'こんにちは'
         # with api
@@ -62,7 +62,7 @@ class TestEngine(unittest.TestCase):
         # without api
         self.assertEqual('コンニチハ', reading_converter.convert(text, False))
 
-    @unittest.skip('TESTSKIP')
+    @unittest.skipIf(not reading_converter.token_valid, 'TESTSKIP')
     def test_convert_eng_word_to_reading(self):
         texts = [
             ['エービーシーディー', 'ABCD'],
@@ -81,4 +81,4 @@ class TestEngine(unittest.TestCase):
         text = '殺人，麻薬'
         self.assertEqual(
             ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
-            sensitive_checker.find_tags(text))
+            sensitive_checker.check(text))
