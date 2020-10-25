@@ -3,8 +3,8 @@ import re
 
 
 class Engine():
-    def __init__(self, reading_converter):
-        self.reading_converter = reading_converter
+    def __init__(self, katakanizer):
+        self.katakanizer = katakanizer
         self._setup()
 
     def _setup(self):
@@ -17,4 +17,4 @@ class Engine():
 
     def to_reading(self, text, use_api=True):
         text = self.exclude_noise(text)
-        return self.reading_converter.convert(text, use_api)
+        return self.katakanizer.katakanize(text, use_api)

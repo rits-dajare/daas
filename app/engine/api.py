@@ -1,10 +1,10 @@
 from .judge_engine import JudgeEngine
 from .eval_engine import EvalEngine
-from .text.reading.reading_converter import ReadingConverter
+from .text.katakana.katakanizer import Katakanizer
 from .text.sensitive.checker import SensitiveChecker
 
 
-reading_converter = ReadingConverter()
+katakanizer = Katakanizer()
 sensitive_checker = SensitiveChecker()
-judge_engine = JudgeEngine(reading_converter)
-eval_engine = EvalEngine(reading_converter)
+judge_engine = JudgeEngine(katakanizer)
+eval_engine = EvalEngine(katakanizer)

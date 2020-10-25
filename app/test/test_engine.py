@@ -54,16 +54,16 @@ class TestEngine(unittest.TestCase):
                 judge_engine.is_dajare(text[1], False)
             )
 
-    @unittest.skipIf(not reading_converter.token_valid, 'TESTSKIP')
-    def test_convert_to_reading(self):
+    @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
+    def test_katakanize(self):
         text = 'こんにちは'
         # with api
-        self.assertEqual('コンニチハ', reading_converter.convert(text, True))
+        self.assertEqual('コンニチハ', katakanizer.katakanize(text, True))
         # without api
-        self.assertEqual('コンニチハ', reading_converter.convert(text, False))
+        self.assertEqual('コンニチハ', katakanizer.katakanize(text, False))
 
-    @unittest.skipIf(not reading_converter.token_valid, 'TESTSKIP')
-    def test_convert_eng_word_to_reading(self):
+    @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
+    def test_katakanize_eng(self):
         texts = [
             ['エービーシーディー', 'ABCD'],
             ['エービーシー', 'ABC'],
@@ -73,7 +73,7 @@ class TestEngine(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                reading_converter.convert(text[1])
+                katakanizer.katakanize(text[1])
             )
 
     @unittest.skipIf(not sensitive_checker.token_valid, 'TESTSKIP')

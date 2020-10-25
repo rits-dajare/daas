@@ -7,12 +7,12 @@ from . import alphabet
 from ..text_engine import TextEngine
 
 
-class ReadingConverter(TextEngine):
+class Katakanizer(TextEngine):
     def _sub_init(self):
         self.tokenizer = Tokenizer()
 
     @lru_cache(maxsize=255)
-    def convert(self, text, use_api=True):
+    def katakanize(self, text, use_api=True):
         result = ''
 
         # '笑'を意味する'w'を除去

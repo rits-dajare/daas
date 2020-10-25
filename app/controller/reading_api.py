@@ -22,7 +22,7 @@ class ReadingAPI(API):
             'reading': None,
         }
 
-        result['reading'] = reading_converter.convert(args['dajare'])
+        result['reading'] = katakanizer.katakanize(args['dajare'])
 
         return result
 

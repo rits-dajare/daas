@@ -13,8 +13,8 @@ class JudgeEngine(engine.Engine):
     def _setup(self):
         self.tokenizer = Tokenizer()
 
-        self.pass_pattern = self.__load_pass_pattern()
-        self.not_pass_pattern = self.__load_not_pass_pattern()
+        self.pass_patterns = self.__load_pass_patterns()
+        self.not_pass_patterns = self.__load_not_pass_patterns()
 
     def is_dajare(self, text, use_api=True):
         # ダジャレとみなす
@@ -73,13 +73,13 @@ class JudgeEngine(engine.Engine):
             return False
 
         # パターンが含まれている場合，置換して再判定
-        replace_pattern = [
+        replace_patterns = [
             ['ー', ''],
             ['ッ', ''],
             ['ン', ''],
             ['イウ', 'ユー'],
         ]
-        for pattern in replace_pattern:
+        for pattern in replace_patterns:
             if pattern[0] in reading:
                 if self.__rec_judge(
                         reading.replace(pattern[0], pattern[1]),
@@ -88,14 +88,14 @@ class JudgeEngine(engine.Engine):
                     return True
 
         # 母音を発音に変換
-        vowel_pattern = [
+        vowel_patterns = [
             ['オウ', lambda ch: ch[0] + 'ー'],
             ['エイ', lambda ch: ch[0] + 'ー'],
         ]
         converted_reading = reading
         converted_morphs = morphs
         for bi_char in self.__n_gram(reading, 2):
-            for sub in vowel_pattern:
+            for sub in vowel_patterns:
                 if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
                     converted_reading = converted_reading.replace(
                         bi_char, sub[1](bi_char))
@@ -172,7 +172,7 @@ class JudgeEngine(engine.Engine):
         return count
 
     def __not_pass(self, text):
-        for pattern in self.not_pass_pattern:
+        for pattern in self.not_pass_patterns:
             if re.search(pattern, text) is not None:
                 return True
 
@@ -215,13 +215,13 @@ class JudgeEngine(engine.Engine):
                 return True
 
     def __force_pass(self, text):
-        for pattern in self.pass_pattern:
+        for pattern in self.pass_patterns:
             if re.search(pattern, text) is not None:
                 return True
 
         return False
 
-    def __load_pattern_file(self, file):
+    def __load_patterns_file(self, file):
         result = []
         with open(file, 'r') as f:
             result = f.read().split('\n')
@@ -229,8 +229,8 @@ class JudgeEngine(engine.Engine):
 
         return result
 
-    def __load_pass_pattern(self):
-        return self.__load_pattern_file('config/pass_pattern.txt')
+    def __load_pass_patterns(self):
+        return self.__load_patterns_file('config/pass_patterns.txt')
 
-    def __load_not_pass_pattern(self):
-        return self.__load_pattern_file('config/not_pass_pattern.txt')
+    def __load_not_pass_patterns(self):
+        return self.__load_patterns_file('config/not_pass_patterns.txt')
