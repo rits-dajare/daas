@@ -2,7 +2,7 @@
 import os
 import jaconv
 from janome.tokenizer import Tokenizer
-from text.reading.converter import Converter
+from .converter import Converter
 
 
 class WithoutAPI(Converter):

@@ -9,8 +9,9 @@ from ..tokens.docomo import DocomoTokens
 class WithAPI(Converter):
     def _setup(self):
         # set docomo api access token
-        tokens = DocomoTokens()
-        self.tokens = tokens.get_tokens()
+        docomo_token = DocomoTokens()
+        self.tokens = docomo_token.tokens
+        self.valid_api = docomo_token.is_valid
 
     def _convert_reading(self, text):
         return self.__call_api(text)

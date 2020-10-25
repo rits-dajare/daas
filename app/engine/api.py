@@ -1,7 +1,7 @@
-from engine.judge_engine import JudgeEngine
-from engine.eval_engine import EvalEngine
-from text.reading.reading_service import ReadingService
-from text.sensitive.checker import SensitiveChecker
+from .judge_engine import JudgeEngine
+from .eval_engine import EvalEngine
+from .text.reading.reading_service import ReadingService
+from .text.sensitive.checker import SensitiveChecker
 
 
 reading_converter = ReadingService()
