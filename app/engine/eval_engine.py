@@ -1,85 +1,40 @@
-# -*- coding: utf-8 -*-
 import os
 import numpy as np
-from tensorflow.keras import *
-from tensorflow.keras.layers import *
-from tensorflow.keras.callbacks import *
-from tensorflow.keras.optimizers import *
-from tensorflow.keras.models import *
-from tensorflow.keras import Sequential
 from . import engine
 
 
 class EvalEngine(engine.Engine):
     def _setup(self):
-        self.score_cahce = []
+        self.score_cache = []
 
-        # set TensorFlow's warning lever
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+        self.__max_length = 100
+        self.__model = self.nnet()
 
-        self.__model = self.build_model()
+    def nnet(self, weight_path='ckpt/cnn.h5'):
+        from .nnet import cnn
 
-        # load model
-        model_path = 'ckpt/eval.h5'
-        if os.path.exists(model_path):
-            self.__model.load_weights(model_path)
+        result = cnn.nnet(max_length=self.__max_length)
+        if os.path.exists(weight_path):
+            result.load_weights(weight_path)
+        else:
+            raise Exception('学習済みモデル%sが存在しません' % weight_path)
 
-    def build_model(self, embed_size=128, max_length=100, filter_sizes=(2, 3, 4, 5), filter_num=64, learning_rate=0.0005):
-        input_ts = Input(shape=(max_length, ))
+        return result
 
-        emb = Embedding(0xffff, embed_size)(input_ts)
-        emb_ex = Reshape((max_length, embed_size, 1))(emb)
-
-        convs = []
-        for filter_size in filter_sizes:
-            conv = Conv2D(filter_num, (filter_size, embed_size),
-                          activation='relu')(emb_ex)
-            pool = MaxPooling2D((max_length - filter_size + 1, 1))(conv)
-            convs.append(pool)
-
-        convs_merged = Concatenate()(convs)
-        reshape = Reshape((filter_num * len(filter_sizes),))(convs_merged)
-        fc1 = Dense(64, activation='relu')(reshape)
-        bn1 = BatchNormalization()(fc1)
-        do1 = Dropout(0.5)(bn1)
-        fc2 = Dense(5, activation='softmax')(do1)
-
-        model = Model(
-            inputs=[input_ts],
-            outputs=[fc2]
-        )
-
-        # compile!
-        model.compile(
-            optimizer=Adam(lr=learning_rate),
-            loss='sparse_categorical_crossentropy',
-            metrics=["accuracy"]
-        )
-
-        return model
-
-    def eval(self, text, max_length=100):
-        # check the score's cache
-        for cache in self.score_cahce:
+    def eval(self, text):
+        # キャッシュを確認
+        for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
 
-        reading = self.to_reading(text)
+        vec = self.__text_to_vector(text)
 
-        vec = [ord(c) for c in reading]
-        # reshape (trimming or padding)
-        vec = vec[:max_length]
-        if len(vec) < max_length:
-            vec += ([0] * (max_length - len(vec)))
-
-        # predict with character level CNN
+        # スコア化
         pred = self.__model.predict(np.array([vec]))[0]
         bias = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
         bias[np.argmax(pred)] = 0.0
         bias = np.sum(pred * bias) * 10.0
         pred *= np.array([8.4, 0.7, 0.12, 2.3, 0.8])
-
-        # dajare's score (1.0 ~ 5.0)
         score = np.argmax(pred) + bias + 1.0
 
         while score < 1.0 or score > 5.0:
@@ -88,11 +43,23 @@ class EvalEngine(engine.Engine):
             if score > 5.0:
                 score -= abs(bias*0.313)
 
-        # cache
-        if len(self.score_cahce) >= 10:
-            self.score_cahce.pop(0)
-            self.score_cahce[-1] = {'text': text,  'score': score}
+        # キャッシュ
+        if len(self.score_cache) >= 10:
+            self.score_cache.pop(0)
+            self.score_cache[-1] = {'text': text, 'score': score}
         else:
-            self.score_cahce.append({'text': text,  'score': score})
+            self.score_cache.append({'text': text, 'score': score})
 
         return score
+
+    def __text_to_vector(self, text):
+        reading = self.to_reading(text)
+
+        # 文字コードのベクトルに変換
+        result = list(map(ord, reading))
+        # トリミング
+        result = result[:self.__max_length]
+        # パディング
+        result += [0] * (self.__max_length - len(result))
+
+        return result
