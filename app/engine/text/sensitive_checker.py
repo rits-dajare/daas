@@ -1,6 +1,6 @@
 import csv
 import re
-from ..text_engine import TextEngine
+from .text_engine import TextEngine
 
 
 class SensitiveChecker(TextEngine):

@@ -10,22 +10,23 @@ from . import engine
 
 
 class JudgeEngine(engine.Engine):
-    def _setup(self):
+    def _sub_init(self):
         self.tokenizer = Tokenizer()
 
-        self.pass_patterns = self.__load_pass_patterns()
-        self.not_pass_patterns = self.__load_not_pass_patterns()
+        self.pass_patterns = self.__load_patterns('config/pass_patterns.txt')
+        self.not_pass_patterns = self.__load_patterns(
+            'config/not_pass_patterns.txt')
 
     def is_dajare(self, text, use_api=True):
         # ダジャレとみなす
         if self.__force_pass(text):
             return True
         # ダジャレとみなさない
-        if self.__not_pass(text):
+        if self.__force_not_pass(text):
             return False
 
         reading, morphs = self.__nomalize(
-            self.to_reading(text, use_api),
+            self.katakanize(text, use_api),
             self.__morphs_analysis(text)
         )
 
@@ -112,7 +113,8 @@ class JudgeEngine(engine.Engine):
                 continue
             if pyboin.text2boin(converted_reading[ci]) == \
                     pyboin.text2boin(converted_reading[ci+1]):
-                converted_reading = converted_reading[:ci+1] + 'ー' + converted_reading[ci+2:]
+                converted_reading = converted_reading[:ci +
+                                                      1] + 'ー' + converted_reading[ci+2:]
         converted_reading = re.sub(r'ー+', 'ー', converted_reading)
         if converted_reading != reading:
             if self.__rec_judge(converted_reading, morphs, is_tight):
@@ -171,7 +173,14 @@ class JudgeEngine(engine.Engine):
 
         return count
 
-    def __not_pass(self, text):
+    def __force_pass(self, text):
+        for pattern in self.pass_patterns:
+            if re.search(pattern, text) is not None:
+                return True
+
+        return False
+
+    def __force_not_pass(self, text):
         for pattern in self.not_pass_patterns:
             if re.search(pattern, text) is not None:
                 return True
@@ -214,23 +223,12 @@ class JudgeEngine(engine.Engine):
             if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
                 return True
 
-    def __force_pass(self, text):
-        for pattern in self.pass_patterns:
-            if re.search(pattern, text) is not None:
-                return True
-
         return False
 
-    def __load_patterns_file(self, file):
+    def __load_patterns(self, file):
         result = []
         with open(file, 'r') as f:
             result = f.read().split('\n')
             result.remove('')
 
         return result
-
-    def __load_pass_patterns(self):
-        return self.__load_patterns_file('config/pass_patterns.txt')
-
-    def __load_not_pass_patterns(self):
-        return self.__load_patterns_file('config/not_pass_patterns.txt')

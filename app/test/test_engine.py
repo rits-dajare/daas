@@ -4,10 +4,6 @@ from engine.api import *
 
 
 class TestEngine(unittest.TestCase):
-    def test_to_reading(self):
-        text = 'こんにちは'
-        self.assertEqual('コンニチハ', judge_engine.to_reading(text))
-
     def test_exclude_noises(self):
         text = '!@#$%^^&*()，。/-_=+;:こんにちは'
         self.assertEqual('こんにちは', judge_engine.exclude_noise(text))

@@ -5,7 +5,7 @@ import jaconv
 from janome.tokenizer import Tokenizer
 from functools import lru_cache
 from . import alphabet
-from ..text_engine import TextEngine
+from .text_engine import TextEngine
 
 
 class Katakanizer(TextEngine):

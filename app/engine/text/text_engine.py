@@ -1,42 +1,55 @@
-import requests
+import os
 import json
-from .tokens.docomo import DocomoTokens
+import requests
+from .token import Token
 
 
 class TextEngine():
     def __init__(self):
-        docomo_token = DocomoTokens()
-        self.__tokens = docomo_token.tokens
-        self.__token_valid = docomo_token.is_valid
+        self.__tokens = self.__read_tokens()
 
-        # call sub class's constructor
         self._sub_init()
 
     def _sub_init(self):
         pass
 
     def _call_api(self, url, headers, params):
-        for token in self.__tokens:
+        for i in range(len(self.__tokens)):
             res = requests.post(
-                '%s?APIKEY=%s' % (url, token),
+                '%s?APIKEY=%s' % (url, self.__tokens[i].token),
                 headers=headers,
                 data=params,
             )
 
             if self.__check_health(res):
-                self.__token_valid = True
+                self.__tokens[i].enable()
                 return res.json()
+            else:
+                self.__tokens[i].disable()
 
-        self.__token_valid = False
         return None
 
     def __check_health(self, res):
         code = res.status_code
-        if code == requests.codes.ok:
-            return True
-        else:
-            return False
+        return code == requests.codes.ok
+
+    def __read_tokens(self, tokens_file='config/docomo_token'):
+        result = []
+        if not os.path.exists(tokens_file):
+            print('ファイル%sが存在しません' % tokens_file)
+            return result
+
+        with open(tokens_file, 'r') as f:
+            result = f.read().split('\n')
+        result.remove('')
+        result = list(map(Token, result))
+
+        return result
 
     @property
     def token_valid(self):
-        return self.__token_valid
+        for token in self.__tokens:
+            if token.is_valid:
+                return True
+
+        return False

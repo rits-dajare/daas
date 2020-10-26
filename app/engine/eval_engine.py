@@ -4,7 +4,7 @@ from . import engine
 
 
 class EvalEngine(engine.Engine):
-    def _setup(self):
+    def _sub_init(self):
         self.score_cache = []
 
         self.__max_length = 100
@@ -53,7 +53,7 @@ class EvalEngine(engine.Engine):
         return score
 
     def __text_to_vector(self, text):
-        reading = self.to_reading(text)
+        reading = self.katakanize(text)
 
         # 文字コードのベクトルに変換
         result = list(map(ord, reading))

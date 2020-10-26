@@ -1,7 +1,7 @@
 from .judge_engine import JudgeEngine
 from .eval_engine import EvalEngine
-from .text.katakana.katakanizer import Katakanizer
-from .text.sensitive.checker import SensitiveChecker
+from .text.katakanizer import Katakanizer
+from .text.sensitive_checker import SensitiveChecker
 
 
 katakanizer = Katakanizer()
