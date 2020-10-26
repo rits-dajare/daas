@@ -54,6 +54,10 @@ class TestEngine(unittest.TestCase):
                 judge_engine.is_dajare(text[1], False)
             )
 
+    def test_eval(self):
+        score = eval_engine.eval("布団が吹っ飛んだ")
+        self.assertTrue(score >= 1.0 and score <= 5.0)
+
     @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
     def test_katakanize(self):
         text = 'こんにちは'
