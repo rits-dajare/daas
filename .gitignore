@@ -34,7 +34,6 @@
 /.vscode/
 /**/__pycache__/
 /**/*.sh
-/app/accuracy.py
 /**/core.*
+app/data/*.json
 #---------------------------
-

@@ -14,6 +14,7 @@ class EvalEngine(engine.Engine):
         from .nnet import cnn
 
         result = cnn.nnet(max_length=self.__max_length)
+        result = cnn.compile(result)
         if os.path.exists(weight_path):
             result.load_weights(weight_path)
         else:
@@ -21,27 +22,22 @@ class EvalEngine(engine.Engine):
 
         return result
 
-    def eval(self, text):
+    def eval(self, text, use_api=True):
         # キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
 
-        vec = self.__text_to_vector(text)
-
         # スコア化
+        vec = self.__text_to_vector(text, use_api)
         pred = self.__model.predict(np.array([vec]))[0]
-        bias = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
-        bias[np.argmax(pred)] = 0.0
-        bias = np.sum(pred * bias) * 10.0
-        pred *= np.array([8.4, 0.7, 0.12, 2.3, 0.8])
-        score = np.argmax(pred) + bias + 1.0
-
+        score = abs((pred[0] - 0.5386) / 0.003718)
+        score = score * 4.0
         while score < 1.0 or score > 5.0:
             if score < 1.0:
-                score += abs(bias*0.313)
+                score += np.random.rand() * 3
             if score > 5.0:
-                score -= abs(bias*0.313)
+                score -= np.random.rand() * 3
 
         # キャッシュ
         if len(self.score_cache) >= 10:
@@ -52,8 +48,30 @@ class EvalEngine(engine.Engine):
 
         return score
 
-    def __text_to_vector(self, text):
-        reading = self.katakanize(text)
+    def train(self, data, weight_path='ckpt/cnn.h5'):
+        # data: [text:str, score:float]
+        import tqdm
+
+        x = []
+        y = []
+        print('データセットを作成...')
+        import random
+        for row in tqdm.tqdm(data):
+            x.append(self.__text_to_vector(row[0], False))
+            y.append(row[1] / 5.0)
+
+        self.__model.fit(
+            np.array(x),
+            np.array(y),
+            batch_size=64,
+            epochs=20,
+            validation_split=0.1,
+        )
+
+        self.__model.save_weights(weight_path)
+
+    def __text_to_vector(self, text, use_api=True):
+        reading = self.katakanize(text, use_api)
 
         # 文字コードのベクトルに変換
         result = list(map(ord, reading))
