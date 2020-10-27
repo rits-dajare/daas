@@ -21,8 +21,8 @@ class Katakanizer(TextEngine):
         result = self.__force_katakanize(result)
 
         # '笑'を意味する'w'を除去
-        noise = re.compile(r'(?![a-vx-zA-VX-Z])w+')
-        result = noise.sub('', result)
+        result = re.sub(r'^(?![a-vx-zA-Z])w+^(?![a-vx-zA-Z])', '', result)
+        result = re.sub(r'w{2,}', '', result)
 
         # カタカナ化
         if use_api and self.token_valid:
@@ -32,7 +32,9 @@ class Katakanizer(TextEngine):
 
         # 読みの分からない英単語を除去
         words = re.findall(r'[a-zA-Z][a-z]{3,}', text)
+        words.extend(re.findall(r'[a-z]+', text))
         for w in words:
+            result = result.replace(w, '')
             result = result.replace(
                 alphabet.convert_word_to_alphabet(w.lower()), '')
 

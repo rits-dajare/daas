@@ -69,6 +69,7 @@ class TestEngine(unittest.TestCase):
             ['エービーシー', 'ABC'],
             ['', 'abcd'],
             ['ハロー', 'hello'],
+            ['チョオマエ', 'ちょwお前www'],
         ]
         for text in texts:
             self.assertEqual(
