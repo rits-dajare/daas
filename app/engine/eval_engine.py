@@ -31,13 +31,13 @@ class EvalEngine(engine.Engine):
         # スコア化
         vec = self.__text_to_vector(text, use_api)
         pred = self.__model.predict(np.array([vec]))[0]
-        score = abs((pred[0] - 0.5386) / 0.003718)
-        score = score * 4.0
+        score = abs((pred[0] - 0.5638) / 0.02292)
+        score = score * 4.0 + 1.0
         while score < 1.0 or score > 5.0:
             if score < 1.0:
-                score += np.random.rand() * 3
+                score += 2.0
             if score > 5.0:
-                score -= np.random.rand() * 3
+                score -= 2.5
 
         # キャッシュ
         if len(self.score_cache) >= 10:
@@ -57,7 +57,7 @@ class EvalEngine(engine.Engine):
         print('データセットを作成...')
         for row in tqdm.tqdm(data):
             x.append(self.__text_to_vector(row[0], False))
-            y.append(row[1])
+            y.append(row[1] / 5.0)
 
         self.__model.fit(
             np.array(x),

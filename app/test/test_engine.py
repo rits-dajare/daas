@@ -56,20 +56,13 @@ class TestEngine(unittest.TestCase):
 
     @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
     def test_katakanize(self):
-        text = 'こんにちは'
-        # with api
-        self.assertEqual('コンニチハ', katakanizer.katakanize(text, True))
-        # without api
-        self.assertEqual('コンニチハ', katakanizer.katakanize(text, False))
-
-    @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
-    def test_katakanize_eng(self):
         texts = [
+            ['コンニチハ', 'こんにちは'],
+            ['チョオマエ', 'ちょwお前www'],
             ['エービーシーディー', 'ABCD'],
             ['エービーシー', 'ABC'],
             ['', 'abcd'],
             ['ハロー', 'hello'],
-            ['チョオマエ', 'ちょwお前www'],
         ]
         for text in texts:
             self.assertEqual(

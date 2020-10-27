@@ -41,8 +41,10 @@ if enable_eval:
     print('評価AIの評価...')
     score_map = [0, 0, 0, 0, 0]
 
+    a = []
     for row in tqdm.tqdm(data):
         score = eval_engine.eval(row['joke'], False)
+        a.append(score)
         score = int(round(score))
         score_map[score - 1] += 1
 

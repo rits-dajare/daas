@@ -16,6 +16,7 @@ for file in glob.glob('data/*.json'):
         data.extend(json.load(f))
 
 random.shuffle(data)
+data = data[:500]
 data = [[row['joke'], row['score']] for row in data]
 
 eval_engine.train(data)
