@@ -55,10 +55,9 @@ class EvalEngine(engine.Engine):
         x = []
         y = []
         print('データセットを作成...')
-        import random
         for row in tqdm.tqdm(data):
             x.append(self.__text_to_vector(row[0], False))
-            y.append(row[1] / 5.0)
+            y.append(row[1])
 
         self.__model.fit(
             np.array(x),
