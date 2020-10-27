@@ -145,8 +145,8 @@ class JudgeEngine(engine.Engine):
 
     def __nomalize(self, reading, morphs):
         sub_pair = [
-            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ',
-            'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホ'
+            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
+            'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
         ]
         for i in range(len(sub_pair[0])):
             reading = reading.replace(
