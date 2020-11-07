@@ -1,4 +1,4 @@
-name: build
+name: test
 
 on:
   push:
@@ -27,9 +27,11 @@ jobs:
       run: |
         cd app
         pip install -U pip
-        pip install -r requirements.txt
+        pip install pipenv
+        pipenv install
+        pipenv install --dev
     - name: Run Test
       run: |
         cd app
-        python -m unittest discover test
+        pipenv run test
 
