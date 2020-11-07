@@ -33,16 +33,14 @@ class TextEngine():
         code = res.status_code
         return code == requests.codes.ok
 
-    def __read_tokens(self, tokens_file='config/docomo_token'):
+    def __read_tokens(self, tokens_env='DOCOMO_TOKENS'):
         result = []
-        if not os.path.exists(tokens_file):
-            print('ファイル%sが存在しません' % tokens_file)
+        if tokens_env not in os.environ:
+            print('%s環境変数が存在しません' % tokens_env)
             return result
 
-        with open(tokens_file, 'r') as f:
-            result = f.read().split('\n')
-        result.remove('')
-        result = list(map(Token, result))
+        tokens = os.environ['DOCOMO_TOKENS'].split(' ')
+        result = list(map(Token, tokens))
 
         return result
 

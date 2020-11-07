@@ -1,5 +1,0 @@
-【{timestamp}】
-docomo APIのアクセスに失敗
-ステータスコード：{code}
-URL：{url}
-JSON：{json}

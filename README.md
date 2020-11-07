@@ -17,8 +17,8 @@ Automatically determines whether a posted sentence is pun, and if true, gives a 
 
 ## Requiremenst
 
-- Python 3
-- flask
+- Python ~> 3.8
+- pipenv
 
 ## Installation
 
@@ -26,8 +26,24 @@ Automatically determines whether a posted sentence is pun, and if true, gives a 
 $ git clone <this repo>
 $ cd <this repo>
 
-$ pip install --upgrade pip
-$ pip install -r requirements.txt
+$ cd app
+$ pip install -U pip
+$ pip install pipenv
+$ pipenv install
+```
+
+## Usage
+
+### Set token
+
+```sh
+$ echo "tokens(space delimited)" > app/.env
+```
+
+### Run
+
+```sh
+$ docker-compose up -d --build
 ```
 
 ## References
