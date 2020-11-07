@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-restful = "*"
+requests = "*"
+tensorflow = "==2.2.0"
+Janome = "*"
+jaconv = "*"
+kanjize = "*"
+tqdm = "*"
+pyboin = "*"
+emoji = "*"
+
+[dev-packages]
+flake8 = "*"
+autopep8 = "*"
+
+[requires]
+python_version = "3.8"
+
+[scripts]
+start = "flask run --port=3031 --host=0.0.0.0"
+test = "python -m unittest discover test"
+format = "autopep8 -ivr ."
+lint = "flake8 --show-source ."
