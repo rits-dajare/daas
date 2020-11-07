@@ -1,1 +1,2 @@
-core.*
+/.venv/
+/__pycache__/
