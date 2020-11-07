@@ -3,15 +3,6 @@ from flask_restful import Api
 from .api import API
 import engine
 
-app = Blueprint('reading', __name__)
-api = Api(app)
-
-
-@app.after_request
-def add_header(res):
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    return res
-
 
 class ReadingAPI(API):
     def _args_validation(self, args):
@@ -27,4 +18,6 @@ class ReadingAPI(API):
         return result
 
 
-api.add_resource(ReadingAPI, '/reading/')
+bp = Blueprint('reading', __name__)
+api = Api(bp)
+api.add_resource(ReadingAPI, '')

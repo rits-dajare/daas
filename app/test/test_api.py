@@ -4,7 +4,7 @@ import app
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        self.app = app.app.test_client()
+        self.app = app.create_app().test_client()
 
     def test_judge(self):
         res = self.app.get('judge/', query_string={'dajare': '布団が吹っ飛んだ'})

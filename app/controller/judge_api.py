@@ -3,15 +3,6 @@ from flask_restful import Api
 from .api import API
 import engine
 
-app = Blueprint('judge', __name__)
-api = Api(app)
-
-
-@app.after_request
-def add_header(res):
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    return res
-
 
 class JudgeAPI(API):
     def _args_validation(self, args):
@@ -32,4 +23,6 @@ class JudgeAPI(API):
         return result
 
 
-api.add_resource(JudgeAPI, '/judge/')
+bp = Blueprint('judge', __name__)
+api = Api(bp)
+api.add_resource(JudgeAPI, '')
