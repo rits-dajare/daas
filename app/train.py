@@ -7,7 +7,7 @@
 import json
 import glob
 import random
-from engine.api import *
+import engine
 
 # 訓練データを作成
 data = []
@@ -19,4 +19,4 @@ random.shuffle(data)
 data = data[:500]
 data = [[row['joke'], row['score']] for row in data]
 
-eval_engine.train(data)
+engine.eval_engine.train(data)

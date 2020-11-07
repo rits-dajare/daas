@@ -1,7 +1,7 @@
-from flask import Blueprint, request
-from flask_restful import Resource, Api
+from flask import Blueprint
+from flask_restful import Api
 from .api import API
-from engine.api import *
+import engine
 
 app = Blueprint('eval', __name__)
 api = Api(app)
@@ -22,7 +22,7 @@ class EvalAPI(API):
             'score': None,
         }
 
-        result['score'] = eval_engine.eval(args['dajare'])
+        result['score'] = engine.eval_engine.eval(args['dajare'])
 
         return result
 

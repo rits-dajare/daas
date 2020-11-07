@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-import os
 import re
 from janome.tokenizer import Tokenizer
-from kanjize import int2kanji
 import collections
-import jaconv
 import pyboin
 from . import engine
 
@@ -47,7 +43,7 @@ class JudgeEngine(engine.Engine):
         ]
         for char in n_gram:
             for i, ch1 in enumerate(char):
-                for ch2 in char[(i+1):]:
+                for ch2 in char[(i + 1):]:
                     if is_tight:
                         if self.__count_str_match(ch1, ch2) >= 3:
                             return True
@@ -109,12 +105,13 @@ class JudgeEngine(engine.Engine):
         # 連続された母音の末尾をハイフンに変換
         converted_reading = reading
         for ci in range(len(reading) - 1):
-            if converted_reading[ci+1] not in 'アイウエオ':
+            if converted_reading[ci + 1] not in 'アイウエオ':
                 continue
             if pyboin.text2boin(converted_reading[ci]) == \
-                    pyboin.text2boin(converted_reading[ci+1]):
-                converted_reading = converted_reading[:ci +
-                                                      1] + 'ー' + converted_reading[ci+2:]
+                    pyboin.text2boin(converted_reading[ci + 1]):
+                converted_reading = \
+                    converted_reading[:ci + 1] + 'ー' + \
+                    converted_reading[ci + 2:]
         converted_reading = re.sub(r'ー+', 'ー', converted_reading)
         if converted_reading != reading:
             if self.__rec_judge(converted_reading, morphs, is_tight):

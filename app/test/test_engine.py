@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import unittest
-from engine.api import *
+import engine
 
 
 class TestEngine(unittest.TestCase):
     def test_exclude_noises(self):
         text = '!@#$%^^&*()，。/-_=+;:こんにちは'
-        self.assertEqual('こんにちは', judge_engine.exclude_noise(text))
+        self.assertEqual('こんにちは', engine.judge_engine.exclude_noise(text))
 
     def test_judge_dajare(self):
         texts = [
@@ -47,14 +47,14 @@ class TestEngine(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                judge_engine.is_dajare(text[1], False)
+                engine.judge_engine.is_dajare(text[1], False)
             )
 
     def test_eval(self):
-        score = eval_engine.eval("布団が吹っ飛んだ")
+        score = engine.eval_engine.eval("布団が吹っ飛んだ")
         self.assertTrue(score >= 1.0 and score <= 5.0)
 
-    @unittest.skipIf(not katakanizer.token_valid, 'TESTSKIP')
+    @unittest.skipIf(not engine.katakanizer.token_valid, 'TESTSKIP')
     def test_katakanize(self):
         texts = [
             ['コンニチハ', 'こんにちは'],
@@ -67,12 +67,12 @@ class TestEngine(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                katakanizer.katakanize(text[1])
+                engine.katakanizer.katakanize(text[1])
             )
 
-    @unittest.skipIf(not sensitive_checker.token_valid, 'TESTSKIP')
+    @unittest.skipIf(not engine.sensitive_checker.token_valid, 'TESTSKIP')
     def test_sensitive_tags(self):
         text = '殺人，麻薬'
         self.assertEqual(
             ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
-            sensitive_checker.check(text))
+            engine.sensitive_checker.check(text))

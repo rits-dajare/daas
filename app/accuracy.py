@@ -8,7 +8,7 @@ import json
 import glob
 import tqdm
 import random
-from engine.api import *
+import engine
 
 enable_judge = True
 enable_eval = True
@@ -18,6 +18,8 @@ data = []
 for file in glob.glob('data/*.json'):
     with open(file) as f:
         data.extend(json.load(f))
+if len(data) == 0:
+    exit(0)
 
 random.shuffle(data)
 data = data[:300]
@@ -27,7 +29,8 @@ if enable_judge:
     n_correct = 0
     for row in tqdm.tqdm(data):
         try:
-            if row['is_joke'] == judge_engine.is_dajare(row['joke'], False):
+            if row['is_joke'] == \
+                    engine.judge_engine.is_dajare(row['joke'], False):
                 n_correct += 1
             else:
                 pass
@@ -43,7 +46,7 @@ if enable_eval:
 
     a = []
     for row in tqdm.tqdm(data):
-        score = eval_engine.eval(row['joke'], False)
+        score = engine.eval_engine.eval(row['joke'], False)
         a.append(score)
         score = int(round(score))
         score_map[score - 1] += 1

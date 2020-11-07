@@ -1,7 +1,7 @@
-from flask import Blueprint, request
-from flask_restful import Resource, Api
+from flask import Blueprint
+from flask_restful import Api
 from .api import API
-from engine.api import *
+import engine
 
 app = Blueprint('judge', __name__)
 api = Api(app)
@@ -24,8 +24,9 @@ class JudgeAPI(API):
             'sensitive_tags': None,
         }
 
-        result['is_dajare'] = judge_engine.is_dajare(args['dajare'])
-        result['sensitive_tags'] = sensitive_checker.check(args['dajare'])
+        result['is_dajare'] = engine.judge_engine.is_dajare(args['dajare'])
+        result['sensitive_tags'] = engine.sensitive_checker.check(
+            args['dajare'])
         result['include_sensitive'] = result['sensitive_tags'] != []
 
         return result

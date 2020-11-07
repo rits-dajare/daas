@@ -1,7 +1,7 @@
-from flask import Blueprint, request
-from flask_restful import Resource, Api
+from flask import Blueprint
+from flask_restful import Api
 from .api import API
-from engine.api import *
+import engine
 
 app = Blueprint('reading', __name__)
 api = Api(app)
@@ -22,7 +22,7 @@ class ReadingAPI(API):
             'reading': None,
         }
 
-        result['reading'] = katakanizer.katakanize(args['dajare'])
+        result['reading'] = engine.katakanizer.katakanize(args['dajare'])
 
         return result
 

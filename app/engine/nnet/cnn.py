@@ -24,7 +24,7 @@ def nnet(max_length=100, embed_size=128, filter_sizes=(2, 3, 4, 5), filter_num=6
     fc1 = layers.Dense(64, activation='relu')(reshape)
     bn1 = layers.BatchNormalization()(fc1)
     do1 = layers.Dropout(0.5)(bn1)
-    #fc2 = layers.Dense(5, activation='softmax')(do1)
+    # fc2 = layers.Dense(5, activation='softmax')(do1)
     fc2 = layers.Dense(1, activation='sigmoid')(do1)
 
     return Model(inputs=[input_ts], outputs=[fc2])
