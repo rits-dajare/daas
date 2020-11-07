@@ -37,6 +37,7 @@ class SensitiveChecker(TextEngine):
         result = []
         with open('config/sensitive_patterns.csv') as f:
             reader = csv.reader(f)
+            next(reader)
             for row in reader:
                 if row == []:
                     continue

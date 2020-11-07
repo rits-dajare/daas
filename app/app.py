@@ -1,7 +1,4 @@
 from flask import Flask
-from controller import judge_api
-from controller import eval_api
-from controller import reading_api
 
 
 def create_app() -> Flask:

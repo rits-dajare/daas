@@ -79,6 +79,7 @@ class Katakanizer(TextEngine):
         result = []
         with open('config/katakanize_patterns.csv') as f:
             reader = csv.reader(f)
+            next(reader)
             for row in reader:
                 if row == []:
                     continue
