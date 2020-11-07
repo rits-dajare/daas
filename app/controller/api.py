@@ -6,7 +6,7 @@ class API(Resource):
     def catch_req(self):
         result = {"status": "OK", "message": "success"}
         args = {}
-        if request.method  == 'GET':
+        if request.method == 'GET':
             args = request.args
         if request.method == 'POST':
             args = request.json
