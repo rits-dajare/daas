@@ -4,10 +4,6 @@ import engine
 
 
 class TestEngine(unittest.TestCase):
-    def test_exclude_noises(self):
-        text = '!@#$%^^&*()，。/-_=+;:こんにちは'
-        self.assertEqual('こんにちは', engine.judge_engine.exclude_noise(text))
-
     def test_judge_dajare(self):
         texts = [
             [True, '布団が吹っ飛んだ'],
@@ -16,7 +12,6 @@ class TestEngine(unittest.TestCase):
             [True, '紅茶が凍っちゃった'],
             [True, 'ニューヨークで入浴'],
             [True, 'アヒージョはアチーよ'],
-            [True, '過大な課題www'],
             [True, '臭いサイ'],
             [True, 'この卵エッグ'],
             [True, 'かきくカケク'],
@@ -36,7 +31,6 @@ class TestEngine(unittest.TestCase):
             [False, 'あいうあいう-ん'],
             [False, 'あいあいあいあいあいあい-かきくけこ'],
             [False, '布団が吹っ飛んだ布団が吹っ飛んだあいうえおかきくけこさしすせ'],
-            [False, 'See you later, alligator'],
             [False, '野球は野球だ'],
             [False, 'AはAだ'],
             [False, 'ああいあい'],
