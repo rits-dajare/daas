@@ -11,8 +11,8 @@ class JudgeEngine(engine.Engine):
         self.__text_service = TextService()
 
         self.pass_patterns = self.__load_patterns('config/pass_patterns.txt')
-        self.not_pass_patterns = self.__load_patterns(
-            'config/not_pass_patterns.txt')
+        self.reject_patterns = self.__load_patterns(
+            'config/reject_patterns.txt')
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
@@ -20,7 +20,7 @@ class JudgeEngine(engine.Engine):
         if self.__force_pass(text):
             return True
         # ダジャレとみなさない
-        if self.__force_not_pass(text):
+        if self.__force_reject(text):
             return False
 
         katakana = self.__text_service.katakanize(text, use_api)
@@ -83,7 +83,7 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def __force_not_pass(self, text):
+    def __force_reject(self, text):
         text = self.__text_service.cleaned(text)
 
         methods = [
@@ -225,7 +225,7 @@ class JudgeEngine(engine.Engine):
         return False
 
     def __reject_force_patterns(self, text):
-        for ptrn in self.not_pass_patterns:
+        for ptrn in self.reject_patterns:
             if re.search(ptrn, text) is not None:
                 return True
 
