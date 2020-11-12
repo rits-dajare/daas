@@ -41,14 +41,23 @@ class TextService:
             'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
             'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
         ]
-
         for i in range(len(patterns[0])):
             text = text.replace(
                 patterns[0][i],
                 patterns[1][i]
             )
 
+        # 3回以上繰り返された文字を1文字に圧縮
+        text = re.sub(r'(.)\1{2,}', r'\1', text)
+
         return text
 
-    def conv_vector(self, text):
-        return list(map(ord, text))
+    def conv_vector(self, text, size=None):
+        result = list(map(ord, text))
+
+        # トリミング&パディング
+        if size is not None:
+            result = result[:size]
+            result += [0] * (size - len(result))
+
+        return result

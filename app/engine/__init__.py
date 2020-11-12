@@ -7,5 +7,5 @@ from .text.sensitive_checker import SensitiveChecker
 text_service = TextService()
 katakanizer = Katakanizer()
 sensitive_checker = SensitiveChecker()
-judge_engine = JudgeEngine(katakanizer)
-eval_engine = EvalEngine(katakanizer)
+judge_engine = JudgeEngine()
+eval_engine = EvalEngine()

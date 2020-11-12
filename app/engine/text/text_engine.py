@@ -10,7 +10,7 @@ class TextEngine():
         self._sub_init()
 
     def _sub_init(self):
-        pass
+        raise Exception('サブクラスの責務')
 
     def _call_api(self, url, headers, params):
         for i in range(len(self.__tokens)):

@@ -29,7 +29,8 @@ class EvalEngine(engine.Engine):
                 return cache['score']
 
         # スコア化
-        vec = self.__text_to_vector(text, use_api)
+        katakana = self.text_service.katakanize(text, False)
+        vec = self.text_service.conv_vector(katakana, self.__max_length)
         pred = self.__model.predict(np.array([vec]))[0]
         score = abs((pred[0] - 0.5638) / 0.02292)
         score = score * 4.0 + 1.0
@@ -56,7 +57,9 @@ class EvalEngine(engine.Engine):
         y = []
         print('データセットを作成...')
         for row in tqdm.tqdm(data):
-            x.append(self.__text_to_vector(row[0], False))
+            katakana = self.text_service.katakanize(row[0], False)
+            x.append(self.text_service.conv_vector(
+                katakana, self.__max_length))
             y.append(row[1] / 5.0)
 
         self.__model.fit(
@@ -68,15 +71,3 @@ class EvalEngine(engine.Engine):
         )
 
         self.__model.save_weights(weight_path)
-
-    def __text_to_vector(self, text, use_api=True):
-        reading = self.katakanize(text, use_api)
-
-        # 文字コードのベクトルに変換
-        result = list(map(ord, reading))
-        # トリミング
-        result = result[:self.__max_length]
-        # パディング
-        result += [0] * (self.__max_length - len(result))
-
-        return result

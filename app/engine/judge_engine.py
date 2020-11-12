@@ -1,5 +1,4 @@
 import re
-from janome.tokenizer import Tokenizer
 import collections
 import pyboin
 from . import engine
@@ -7,8 +6,6 @@ from . import engine
 
 class JudgeEngine(engine.Engine):
     def _sub_init(self):
-        self.tokenizer = Tokenizer()
-
         self.pass_patterns = self.__load_patterns('config/pass_patterns.txt')
         self.not_pass_patterns = self.__load_patterns(
             'config/not_pass_patterns.txt')
@@ -21,10 +18,10 @@ class JudgeEngine(engine.Engine):
         if self.__force_not_pass(text):
             return False
 
-        reading, morphs = self.__nomalize(
-            self.katakanize(text, use_api),
-            self.__morphs_analysis(text)
-        )
+        reading = self.text_service.katakanize(text, use_api)
+        reading = self.text_service.normalize(reading)
+        morphs = self.text_service.morphs(text)
+        morphs = [self.text_service.normalize(m) for m in morphs]
 
         return self.__rec_judge(reading, morphs, len(reading) >= 20)
 
@@ -38,23 +35,23 @@ class JudgeEngine(engine.Engine):
 
         # n-gramの重複を確認
         n_gram = [
-            self.__n_gram(reading, 3),
-            self.__n_gram(reading, 4),
+            self.text_service.n_gram(reading, 3),
+            self.text_service.n_gram(reading, 4),
         ]
         for char in n_gram:
             for i, ch1 in enumerate(char):
                 for ch2 in char[(i + 1):]:
                     if is_tight:
-                        if self.__count_str_match(ch1, ch2) >= 3:
+                        if self.text_service.count_char_matches(ch1, ch2) >= 3:
                             return True
                     else:
                         # 1文字一致
-                        if self.__count_str_match(ch1, ch2) == 1:
+                        if self.text_service.count_char_matches(ch1, ch2) == 1:
                             if len(ch1) == 3:
                                 if sorted(ch1) == sorted(ch2):
                                     return True
                         # 2文字一致
-                        elif self.__count_str_match(ch1, ch2) >= 2:
+                        elif self.text_service.count_char_matches(ch1, ch2) >= 2:
                             # 母音一致
                             if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                                 return True
@@ -91,7 +88,7 @@ class JudgeEngine(engine.Engine):
         ]
         converted_reading = reading
         converted_morphs = morphs
-        for bi_char in self.__n_gram(reading, 2):
+        for bi_char in self.text_service.n_gram(reading, 2):
             for sub in vowel_patterns:
                 if pyboin.text2boin(bi_char[0]) + bi_char[1] == sub[0]:
                     converted_reading = converted_reading.replace(
@@ -132,44 +129,6 @@ class JudgeEngine(engine.Engine):
 
         return False
 
-    def __morphs_analysis(self, text):
-        result = []
-
-        for token in self.tokenizer.tokenize(text):
-            result.append(token.reading)
-
-        return result
-
-    def __nomalize(self, reading, morphs):
-        sub_pair = [
-            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
-            'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
-        ]
-        for i in range(len(sub_pair[0])):
-            reading = reading.replace(
-                sub_pair[0][i],
-                sub_pair[1][i],
-            )
-            morphs = [m.replace(
-                sub_pair[0][i],
-                sub_pair[1][i]) for m in morphs]
-
-        # 3回以上繰り返された文字を1文字に圧縮
-        reading = re.sub(r'(.)\1{2,}', r'\1', reading)
-
-        return reading, morphs
-
-    def __n_gram(self, text, n):
-        return [text[idx:idx + n] for idx in range(len(text) - n + 1)]
-
-    def __count_str_match(self, s1, s2):
-        count = 0
-        for i in range(len(s1)):
-            if s1[i] == s2[i]:
-                count += 1
-
-        return count
-
     def __force_pass(self, text):
         for pattern in self.pass_patterns:
             if re.search(pattern, text) is not None:
@@ -182,7 +141,7 @@ class JudgeEngine(engine.Engine):
             if re.search(pattern, text) is not None:
                 return True
 
-        text = self.exclude_noise(text)
+        text = self.text_service.cleaned(text)
 
         # 30文字以上
         if len(text) >= 30:
