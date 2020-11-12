@@ -13,7 +13,7 @@ class EvalAPI(API):
             'score': None,
         }
 
-        result['score'] = engine.eval_engine.eval(args['dajare'])
+        result['score'] = engine.eval_engine.execute(args['dajare'])
 
         return result
 

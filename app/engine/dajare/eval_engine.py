@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from . import engine
+from .. import engine
 
 
 class EvalEngine(engine.Engine):
@@ -11,7 +11,7 @@ class EvalEngine(engine.Engine):
         self.__model = self.nnet()
 
     def nnet(self, weight_path='ckpt/cnn.h5'):
-        from .nnet import cnn
+        from ..nnet import cnn
 
         result = cnn.nnet(max_length=self.__max_length)
         result = cnn.compile(result)
@@ -22,22 +22,16 @@ class EvalEngine(engine.Engine):
 
         return result
 
-    def eval(self, text, use_api=True):
+    def execute(self, text, use_api=True):
         # キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
 
         # スコア化
-        vec = self.__text_to_vector(text, use_api)
-        pred = self.__model.predict(np.array([vec]))[0]
-        score = abs((pred[0] - 0.5638) / 0.02292)
-        score = score * 4.0 + 1.0
-        while score < 1.0 or score > 5.0:
-            if score < 1.0:
-                score += 2.0
-            if score > 5.0:
-                score -= 2.5
+        katakana = self.text_service.katakanize(text, False)
+        vec = self.text_service.conv_vector(katakana, self.__max_length)
+        score = self.__eval(vec)
 
         # キャッシュ
         if len(self.score_cache) >= 10:
@@ -48,6 +42,19 @@ class EvalEngine(engine.Engine):
 
         return score
 
+    def __eval(self, vec):
+        pred = self.__model.predict(np.array([vec]))[0]
+        result = abs((pred[0] - 0.5638) / 0.02292)
+        result = result * 4.0 + 1.0
+
+        while result < 1.0 or result > 5.0:
+            if result < 1.0:
+                result += 2.0
+            if result > 5.0:
+                result -= 2.5
+
+        return result
+
     def train(self, data, weight_path='ckpt/cnn.h5'):
         # data: [text:str, score:float]
         import tqdm
@@ -56,7 +63,9 @@ class EvalEngine(engine.Engine):
         y = []
         print('データセットを作成...')
         for row in tqdm.tqdm(data):
-            x.append(self.__text_to_vector(row[0], False))
+            katakana = self.text_service.katakanize(row[0], False)
+            x.append(self.text_service.conv_vector(
+                katakana, self.__max_length))
             y.append(row[1] / 5.0)
 
         self.__model.fit(
@@ -68,15 +77,3 @@ class EvalEngine(engine.Engine):
         )
 
         self.__model.save_weights(weight_path)
-
-    def __text_to_vector(self, text, use_api=True):
-        reading = self.katakanize(text, use_api)
-
-        # 文字コードのベクトルに変換
-        result = list(map(ord, reading))
-        # トリミング
-        result = result[:self.__max_length]
-        # パディング
-        result += [0] * (self.__max_length - len(result))
-
-        return result

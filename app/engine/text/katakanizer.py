@@ -20,10 +20,6 @@ class Katakanizer(TextEngine):
         # カタカナ化するパターンを元に変換
         result = self.__force_katakanize(result)
 
-        # '笑'を意味する'w'を除去
-        result = re.sub(r'^(?![a-vx-zA-Z])w+^(?![a-vx-zA-Z])', '', result)
-        result = re.sub(r'w{2,}', '', result)
-
         # カタカナ化
         if use_api and self.token_valid:
             result = self.__conv_with_api(result)
@@ -37,6 +33,16 @@ class Katakanizer(TextEngine):
             result = result.replace(w, '')
             result = result.replace(
                 alphabet.convert_word_to_alphabet(w.lower()), '')
+
+        return result
+
+    def morphs(self, text):
+        result = []
+        for token in self.tokenizer.tokenize(text):
+            if token.reading == '*':
+                result.append(jaconv.hira2kata(token.surface))
+            else:
+                result.append(token.reading)
 
         return result
 
@@ -55,17 +61,7 @@ class Katakanizer(TextEngine):
         return body['converted'].replace(' ', '')
 
     def __conv_without_api(self, text):
-        result = ''
-
-        for token in self.tokenizer.tokenize(text):
-            if token.reading == '*':
-                # token with unknown word's reading
-                result += jaconv.hira2kata(token.surface)
-            else:
-                # token with known word's reading
-                result += token.reading
-
-        return result
+        return ''.join(self.morphs(text))
 
     def __force_katakanize(self, text):
         result = text
