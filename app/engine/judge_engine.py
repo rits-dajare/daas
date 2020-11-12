@@ -10,7 +10,7 @@ class JudgeEngine(engine.Engine):
         self.not_pass_patterns = self.__load_patterns(
             'config/not_pass_patterns.txt')
 
-    def is_dajare(self, text, use_api=True):
+    def execute(self, text, use_api=True):
         # ダジャレとみなす
         if self.__force_pass(text):
             return True

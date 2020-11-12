@@ -15,7 +15,7 @@ class JudgeAPI(API):
             'sensitive_tags': None,
         }
 
-        result['is_dajare'] = engine.judge_engine.is_dajare(args['dajare'])
+        result['is_dajare'] = engine.judge_engine.execute(args['dajare'])
         result['sensitive_tags'] = engine.sensitive_checker.check(
             args['dajare'])
         result['include_sensitive'] = result['sensitive_tags'] != []

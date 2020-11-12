@@ -22,7 +22,7 @@ class EvalEngine(engine.Engine):
 
         return result
 
-    def eval(self, text, use_api=True):
+    def execute(self, text, use_api=True):
         # キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
@@ -31,14 +31,7 @@ class EvalEngine(engine.Engine):
         # スコア化
         katakana = self.text_service.katakanize(text, False)
         vec = self.text_service.conv_vector(katakana, self.__max_length)
-        pred = self.__model.predict(np.array([vec]))[0]
-        score = abs((pred[0] - 0.5638) / 0.02292)
-        score = score * 4.0 + 1.0
-        while score < 1.0 or score > 5.0:
-            if score < 1.0:
-                score += 2.0
-            if score > 5.0:
-                score -= 2.5
+        score = self.__eval(vec)
 
         # キャッシュ
         if len(self.score_cache) >= 10:
@@ -48,6 +41,19 @@ class EvalEngine(engine.Engine):
             self.score_cache.append({'text': text, 'score': score})
 
         return score
+
+    def __eval(self, vec):
+        pred = self.__model.predict(np.array([vec]))[0]
+        result = abs((pred[0] - 0.5638) / 0.02292)
+        result = result * 4.0 + 1.0
+
+        while result < 1.0 or result > 5.0:
+            if result < 1.0:
+                result += 2.0
+            if result > 5.0:
+                result -= 2.5
+
+        return result
 
     def train(self, data, weight_path='ckpt/cnn.h5'):
         # data: [text:str, score:float]

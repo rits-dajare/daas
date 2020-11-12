@@ -41,11 +41,11 @@ class TestEngine(unittest.TestCase):
         for text in texts:
             self.assertEqual(
                 text[0],
-                engine.judge_engine.is_dajare(text[1], False)
+                engine.judge_engine.execute(text[1], False)
             )
 
     def test_eval(self):
-        score = engine.eval_engine.eval("布団が吹っ飛んだ")
+        score = engine.eval_engine.execute("布団が吹っ飛んだ")
         self.assertTrue(score >= 1.0 and score <= 5.0)
 
     @unittest.skipIf(not engine.katakanizer.token_valid, 'TESTSKIP')
