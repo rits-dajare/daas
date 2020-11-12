@@ -28,13 +28,13 @@ class TextService:
 
         return result
 
-    def count_char_matches(self, s1, s2):
-        if len(s1) != len(s2):
+    def count_char_matches(self, ch1, ch2):
+        if len(ch1) != len(ch2):
             return 0
 
         result = 0
-        for i in range(len(s1)):
-            if s1[i] == s2[i]:
+        for i in range(len(ch1)):
+            if ch1[i] == ch2[i]:
                 result += 1
 
         return result

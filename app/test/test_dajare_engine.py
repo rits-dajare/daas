@@ -5,7 +5,7 @@ import engine
 
 class TestDajareEngine(unittest.TestCase):
     def test_judge_dajare(self):
-        texts = [
+        cases = [
             [True, '布団が吹っ飛んだ'],
             [True, '芸無なゲーム'],
             [True, 'ダジャレを言うのは誰じゃ'],
@@ -13,6 +13,7 @@ class TestDajareEngine(unittest.TestCase):
             [True, 'ニューヨークで入浴'],
             [True, 'アヒージョはアチーよ'],
             [True, '臭いサイ'],
+            [True, 'サイゼで見た彗星'],
             [True, 'この卵エッグ'],
             [True, 'かきくカケク'],
             [True, 'かきあカキァ'],
@@ -38,10 +39,10 @@ class TestDajareEngine(unittest.TestCase):
             [False, 'あいうえあいうえ-あ'],
             [False, 'あいうえおあいうえお-あ'],
         ]
-        for text in texts:
+        for case in cases:
             self.assertEqual(
-                text[0],
-                engine.judge_engine.execute(text[1], False)
+                case[0],
+                engine.judge_engine.execute(case[1], False)
             )
 
     def test_eval(self):
