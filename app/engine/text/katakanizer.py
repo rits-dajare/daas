@@ -15,10 +15,8 @@ class Katakanizer(TextEngine):
 
     @lru_cache(maxsize=255)
     def katakanize(self, text, use_api=True):
-        result = text
-
         # カタカナ化するパターンを元に変換
-        result = self.__force_katakanize(result)
+        result = self.__force_katakanize(text)
 
         # カタカナ化
         if use_api and self.token_valid:
