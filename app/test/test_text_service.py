@@ -27,3 +27,6 @@ class TestAPI(unittest.TestCase):
     def test_n_gram(self):
         self.assertEqual(['こんに', 'んにち', 'にちは'],
                          self.text_service.n_gram('こんにちは', 3))
+
+    def test_nomalize(self):
+        self.assertEqual('カキクケコ', self.text_service.normalize('ガギグゲゴ'))

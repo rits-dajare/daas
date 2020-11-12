@@ -36,3 +36,17 @@ class TextService:
 
     def n_gram(self, text, n=3):
         return [text[idx:idx + n] for idx in range(len(text) - n + 1)]
+
+    def normalize(self, text):
+        patterns = [
+            'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
+            'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
+        ]
+
+        for i in range(len(patterns[0])):
+            text = text.replace(
+                patterns[0][i],
+                patterns[1][i]
+            )
+
+        return text
