@@ -1,24 +1,24 @@
 import re
 import csv
-import json
+from functools import lru_cache
 import jaconv
 from janome.tokenizer import Tokenizer
-from functools import lru_cache
-from . import alphabet
-from .text_engine import TextEngine
+from .alphabet import convert_word_to_alphabet
+from ..engine import Engine
 
 
-class Katakanizer(TextEngine):
+class Katakanizer(Engine):
     def _sub_init(self):
+        from .docomo_service import DocomoService
+        self.__docomo_service = DocomoService()
+
         self.katakanize_patterns = self.__load_patterns()
         self.tokenizer = Tokenizer()
 
     @lru_cache(maxsize=255)
-    def katakanize(self, text, use_api=True):
-        result = text
-
+    def execute(self, text, use_api=True):
         # カタカナ化するパターンを元に変換
-        result = self.__force_katakanize(result)
+        result = self.__force_katakanize(text)
 
         # カタカナ化
         if use_api and self.token_valid:
@@ -31,8 +31,7 @@ class Katakanizer(TextEngine):
         words.extend(re.findall(r'[a-z]+', text))
         for w in words:
             result = result.replace(w, '')
-            result = result.replace(
-                alphabet.convert_word_to_alphabet(w.lower()), '')
+            result = result.replace(convert_word_to_alphabet(w.lower()), '')
 
         return result
 
@@ -47,18 +46,7 @@ class Katakanizer(TextEngine):
         return result
 
     def __conv_with_api(self, text):
-        body = self._call_api(
-            'https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysis/v1/hiragana',
-            {'Content-Type': 'application/json'},
-            json.dumps({'sentence': text, 'output_type': 'katakana'}),
-        )
-
-        if body is None:
-            return ''
-        if 'converted' not in body:
-            return ''
-
-        return body['converted'].replace(' ', '')
+        return self.__docomo_service.katakanize(text)
 
     def __conv_without_api(self, text):
         return ''.join(self.morphs(text))
@@ -82,3 +70,7 @@ class Katakanizer(TextEngine):
                 result.append(row)
 
         return result
+
+    @property
+    def token_valid(self):
+        return self.__docomo_service.is_valid

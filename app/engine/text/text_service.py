@@ -1,16 +1,22 @@
 import re
-from .katakanizer import Katakanizer
 
 
 class TextService:
     def __init__(self):
+        from .katakanizer import Katakanizer
         self.__katakanizer = Katakanizer()
 
+        from .sensitive_checker import SensitiveChecker
+        self.__sensitive_checker = SensitiveChecker()
+
     def katakanize(self, text, use_api=True):
-        return self.__katakanizer.katakanize(text, use_api)
+        return self.__katakanizer.execute(text, use_api)
 
     def morphs(self, text):
         return self.__katakanizer.morphs(text)
+
+    def sensitive_check(self, text):
+        return self.__sensitive_checker.execute(text)
 
     def cleaned(self, text):
         # ノイズを除去
@@ -22,13 +28,13 @@ class TextService:
 
         return result
 
-    def count_char_matches(self, s1, s2):
-        if len(s1) != len(s2):
+    def count_char_matches(self, ch1, ch2):
+        if len(ch1) != len(ch2):
             return 0
 
         result = 0
-        for i in range(len(s1)):
-            if s1[i] == s2[i]:
+        for i in range(len(ch1)):
+            if ch1[i] == ch2[i]:
                 result += 1
 
         return result
@@ -61,3 +67,8 @@ class TextService:
             result += [0] * (size - len(result))
 
         return result
+
+    @property
+    def token_valid(self):
+        return self.__katakanizer.token_valid \
+            and self.__sensitive_checker.token_valid

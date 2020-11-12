@@ -1,22 +1,21 @@
-import csv
 import re
-from .text_engine import TextEngine
+import csv
+from functools import lru_cache
 
 
-class SensitiveChecker(TextEngine):
-    def _sub_init(self):
+class SensitiveChecker:
+    def __init__(self):
+        from .docomo_service import DocomoService
+        self.__docomo_service = DocomoService()
+
         self.sensitive_patterns = self.__load_patterns()
 
-    def check(self, text, use_api=True):
+    @lru_cache(maxsize=255)
+    def execute(self, text, use_api=True):
         result = []
 
         if use_api and self.token_valid:
-            body = self._call_api(
-                'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck',
-                {'Content-Type': 'application/x-www-form-urlencoded'},
-                {'text': text},
-            )
-            result.extend(self.__extract_tags_from_res(body))
+            result.extend(self.__docomo_service.sensitive_check(text))
 
         result.extend(self.__force_tagging(text))
         result = list(set(result))
@@ -45,18 +44,6 @@ class SensitiveChecker(TextEngine):
 
         return result
 
-    def __extract_tags_from_res(self, body):
-        result = []
-
-        if body is None:
-            return result
-        if 'quotients' not in body:
-            return result
-
-        for word_tags in body['quotients']:
-            for tag in word_tags['cluster_name'].split('・'):
-                if ':' in tag:
-                    continue
-                result.append(tag)
-
-        return result
+    @property
+    def token_valid(self):
+        return self.__docomo_service.is_valid

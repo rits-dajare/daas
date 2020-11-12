@@ -1,10 +1,14 @@
 import os
+from functools import lru_cache
 import numpy as np
 from .. import engine
 
 
 class EvalEngine(engine.Engine):
     def _sub_init(self):
+        from ..text.text_service import TextService
+        self.__text_service = TextService()
+
         self.score_cache = []
 
         self.__max_length = 100
@@ -22,18 +26,19 @@ class EvalEngine(engine.Engine):
 
         return result
 
+    @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
-        # キャッシュを確認
+        # 曖昧キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
 
         # スコア化
-        katakana = self.text_service.katakanize(text, False)
-        vec = self.text_service.conv_vector(katakana, self.__max_length)
+        katakana = self.__text_service.katakanize(text, False)
+        vec = self.__text_service.conv_vector(katakana, self.__max_length)
         score = self.__eval(vec)
 
-        # キャッシュ
+        # 曖昧キャッシュ
         if len(self.score_cache) >= 10:
             self.score_cache.pop(0)
             self.score_cache[-1] = {'text': text, 'score': score}
@@ -63,8 +68,8 @@ class EvalEngine(engine.Engine):
         y = []
         print('データセットを作成...')
         for row in tqdm.tqdm(data):
-            katakana = self.text_service.katakanize(row[0], False)
-            x.append(self.text_service.conv_vector(
+            katakana = self.__text_service.katakanize(row[0], False)
+            x.append(self.__text_service.conv_vector(
                 katakana, self.__max_length))
             y.append(row[1] / 5.0)
 

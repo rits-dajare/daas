@@ -3,9 +3,9 @@ import unittest
 import engine
 
 
-class TestEngine(unittest.TestCase):
+class TestDajareEngine(unittest.TestCase):
     def test_judge_dajare(self):
-        texts = [
+        cases = [
             [True, '布団が吹っ飛んだ'],
             [True, '芸無なゲーム'],
             [True, 'ダジャレを言うのは誰じゃ'],
@@ -13,6 +13,7 @@ class TestEngine(unittest.TestCase):
             [True, 'ニューヨークで入浴'],
             [True, 'アヒージョはアチーよ'],
             [True, '臭いサイ'],
+            [True, 'サイゼで見た彗星'],
             [True, 'この卵エッグ'],
             [True, 'かきくカケク'],
             [True, 'かきあカキァ'],
@@ -38,35 +39,13 @@ class TestEngine(unittest.TestCase):
             [False, 'あいうえあいうえ-あ'],
             [False, 'あいうえおあいうえお-あ'],
         ]
-        for text in texts:
+        for case in cases:
             self.assertEqual(
-                text[0],
-                engine.judge_engine.execute(text[1], False)
+                case[0],
+                engine.judge_engine.execute(case[1], False)
             )
 
     def test_eval(self):
         score = engine.eval_engine.execute("布団が吹っ飛んだ")
         self.assertTrue(score >= 1.0 and score <= 5.0)
 
-    @unittest.skipIf(not engine.katakanizer.token_valid, 'TESTSKIP')
-    def test_katakanize(self):
-        texts = [
-            ['コンニチハ', 'こんにちは'],
-            ['チョオマエ', 'ちょwお前www'],
-            ['エービーシーディー', 'ABCD'],
-            ['エービーシー', 'ABC'],
-            ['', 'abcd'],
-            ['ハロー', 'hello'],
-        ]
-        for text in texts:
-            self.assertEqual(
-                text[0],
-                engine.katakanizer.katakanize(text[1])
-            )
-
-    @unittest.skipIf(not engine.sensitive_checker.token_valid, 'TESTSKIP')
-    def test_sensitive_tags(self):
-        text = '殺人，麻薬'
-        self.assertEqual(
-            ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
-            engine.sensitive_checker.check(text))
