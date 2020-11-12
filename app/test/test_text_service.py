@@ -30,3 +30,7 @@ class TestAPI(unittest.TestCase):
 
     def test_nomalize(self):
         self.assertEqual('カキクケコ', self.text_service.normalize('ガギグゲゴ'))
+
+    def test_convert_vector(self):
+        self.assertEqual([12371, 12435, 12395, 12385, 12399],
+                         self.text_service.conv_vector('こんにちは'))

@@ -1,5 +1,4 @@
 import re
-from janome.tokenizer import Tokenizer
 from .katakanizer import Katakanizer
 
 
@@ -50,3 +49,6 @@ class TextService:
             )
 
         return text
+
+    def conv_vector(self, text):
+        return list(map(ord, text))
