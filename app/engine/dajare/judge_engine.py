@@ -1,7 +1,7 @@
 import re
 import collections
 import pyboin
-from . import engine
+from .. import engine
 
 
 class JudgeEngine(engine.Engine):

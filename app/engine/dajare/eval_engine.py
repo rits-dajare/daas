@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from . import engine
+from .. import engine
 
 
 class EvalEngine(engine.Engine):
@@ -11,7 +11,7 @@ class EvalEngine(engine.Engine):
         self.__model = self.nnet()
 
     def nnet(self, weight_path='ckpt/cnn.h5'):
-        from .nnet import cnn
+        from ..nnet import cnn
 
         result = cnn.nnet(max_length=self.__max_length)
         result = cnn.compile(result)
