@@ -1,5 +1,6 @@
 import re
 import csv
+from functools import lru_cache
 
 
 class SensitiveChecker:
@@ -9,6 +10,7 @@ class SensitiveChecker:
 
         self.sensitive_patterns = self.__load_patterns()
 
+    @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
         result = []
 

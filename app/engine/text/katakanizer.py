@@ -1,5 +1,6 @@
 import re
 import csv
+from functools import lru_cache
 import jaconv
 from janome.tokenizer import Tokenizer
 from .alphabet import convert_word_to_alphabet
@@ -14,6 +15,7 @@ class Katakanizer(Engine):
         self.katakanize_patterns = self.__load_patterns()
         self.tokenizer = Tokenizer()
 
+    @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
         # カタカナ化するパターンを元に変換
         result = self.__force_katakanize(text)

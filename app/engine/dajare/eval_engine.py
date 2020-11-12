@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 import numpy as np
 from .. import engine
 
@@ -25,8 +26,9 @@ class EvalEngine(engine.Engine):
 
         return result
 
+    @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
-        # キャッシュを確認
+        # 曖昧キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
@@ -36,7 +38,7 @@ class EvalEngine(engine.Engine):
         vec = self.__text_service.conv_vector(katakana, self.__max_length)
         score = self.__eval(vec)
 
-        # キャッシュ
+        # 曖昧キャッシュ
         if len(self.score_cache) >= 10:
             self.score_cache.pop(0)
             self.score_cache[-1] = {'text': text, 'score': score}

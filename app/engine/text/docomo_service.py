@@ -1,7 +1,6 @@
 import os
 import json
 import requests
-from functools import lru_cache
 
 
 class DocomoService:
@@ -9,7 +8,6 @@ class DocomoService:
         self.__is_valid = True
         self.__tokens = self.__read_tokens()
 
-    @lru_cache(maxsize=255)
     def katakanize(self, text):
         body = self.__call_api(
             'https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysis/v1/hiragana',
@@ -24,7 +22,6 @@ class DocomoService:
 
         return body['converted'].replace(' ', '')
 
-    @lru_cache(maxsize=255)
     def sensitive_check(self, text):
         body = self.__call_api(
             'https://api.apigw.smt.docomo.ne.jp/truetext/v1/sensitivecheck',
