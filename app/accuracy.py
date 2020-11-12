@@ -30,7 +30,7 @@ if enable_judge:
     for row in tqdm.tqdm(data):
         try:
             if row['is_joke'] == \
-                    engine.judge_engine.is_dajare(row['joke'], False):
+                    engine.judge_engine.execute(row['joke'], False):
                 n_correct += 1
             else:
                 pass
@@ -46,7 +46,7 @@ if enable_eval:
 
     a = []
     for row in tqdm.tqdm(data):
-        score = engine.eval_engine.eval(row['joke'], False)
+        score = engine.eval_engine.execute(row['joke'], False)
         a.append(score)
         score = int(round(score))
         score_map[score - 1] += 1
