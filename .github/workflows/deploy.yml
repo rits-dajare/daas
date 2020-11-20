@@ -1,4 +1,4 @@
-name: deploy
+name: test
 
 on:
   push:
@@ -12,5 +12,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: deploy
-      runs: |
+      run: |
         curl -X POST 'http://abelab.dev:4001/dajare-engine'
