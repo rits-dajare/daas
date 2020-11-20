@@ -2,6 +2,7 @@
 
 ![test](https://github.com/rits-dajare/DaaS/workflows/test/badge.svg)
 ![code check](https://github.com/rits-dajare/DaaS/workflows/code%20check/badge.svg)
+![deploy](https://github.com/rits-dajare/DaaS/workflows/deploy/badge.svg)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![Twitter](https://img.shields.io/badge/Twitter-%40rits_dajare-blue?style=flat-square&logo=twitter)](https://twitter.com/rits_dajare)
 
