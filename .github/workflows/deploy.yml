@@ -1,0 +1,16 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: deploy
+      runs: |
+        curl -X POST 'http://abelab.dev:4001/dajare-engine'
