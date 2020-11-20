@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import requests
 
@@ -35,11 +36,14 @@ class DocomoService:
         if 'quotients' not in body:
             return result
 
-        for word_tags in body['quotients']:
-            for tag in word_tags['cluster_name'].split('・'):
-                if ':' in tag:
-                    continue
-                result.append(tag)
+        quotients = body['quotients']
+        if not isinstance(quotients, list):
+            quotients = [quotients]
+
+        quot_names = map(lambda quot: quot['cluster_name'], quotients)
+        for name in quot_names:
+            # name: '項目:項目' or '項目・項目'
+            result.extend(re.split(r'[:・]', name))
         result = list(set(result))
         result.sort()
 
