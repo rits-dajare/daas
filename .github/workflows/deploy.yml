@@ -16,4 +16,3 @@ jobs:
         TOKEN: ${{secrets.TOKEN}}
       run: |
         curl -X POST -H 'Content-Type: application/json' 'http://abelab.dev:4001/' -d '{"app": "DaaS", "token": "'"$TOKEN"'"}'
-        curl -X POST 'http://abelab.dev:4001/dajare-engine'
