@@ -16,6 +16,8 @@ class JudgeEngine(engine.Engine):
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
+        text = self.__text_service.cleaned(text)
+
         # ダジャレとみなす
         if self.__force_pass(text):
             return True
@@ -25,6 +27,8 @@ class JudgeEngine(engine.Engine):
 
         katakana = self.__text_service.katakanize(text, use_api)
         katakana = self.__text_service.normalize(katakana)
+        if text == 'あいうあいう-ん':
+            print(katakana)
         morphs = self.__text_service.morphs(text)
         morphs = [self.__text_service.normalize(m) for m in morphs]
 
@@ -84,8 +88,6 @@ class JudgeEngine(engine.Engine):
         return False
 
     def __force_reject(self, text):
-        text = self.__text_service.cleaned(text)
-
         methods = [
             # 強制的に弾くパターン
             self.__reject_force_patterns,

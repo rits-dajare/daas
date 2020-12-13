@@ -28,6 +28,8 @@ class EvalEngine(engine.Engine):
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
+        text = self.__text_service.cleaned(text)
+
         # 曖昧キャッシュを確認
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
