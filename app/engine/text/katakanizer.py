@@ -61,7 +61,7 @@ class Katakanizer(Engine):
 
     def __load_patterns(self):
         result = []
-        with open('config/katakanize_patterns.csv') as f:
+        with open('conf/katakanize_patterns.csv') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:

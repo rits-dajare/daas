@@ -34,7 +34,7 @@ class SensitiveChecker:
 
     def __load_patterns(self):
         result = []
-        with open('config/sensitive_patterns.csv') as f:
+        with open('conf/sensitive_patterns.csv') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:

@@ -10,9 +10,9 @@ class JudgeEngine(engine.Engine):
         from ..text.text_service import TextService
         self.__text_service = TextService()
 
-        self.pass_patterns = self.__load_patterns('config/pass_patterns.txt')
+        self.pass_patterns = self.__load_patterns('conf/pass_patterns.txt')
         self.reject_patterns = self.__load_patterns(
-            'config/reject_patterns.txt')
+            'conf/reject_patterns.txt')
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
