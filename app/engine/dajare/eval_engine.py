@@ -1,7 +1,7 @@
-import os
 from functools import lru_cache
 import numpy as np
 from .. import engine
+from .nnet.cnn import CNN
 
 
 class EvalEngine(engine.Engine):
@@ -12,19 +12,7 @@ class EvalEngine(engine.Engine):
         self.score_cache = []
 
         self.__max_length = 100
-        self.__model = self.nnet()
-
-    def nnet(self, weight_path='ckpt/cnn.h5'):
-        from ..nnet import cnn
-
-        result = cnn.nnet(max_length=self.__max_length)
-        result = cnn.compile(result)
-        if os.path.exists(weight_path):
-            result.load_weights(weight_path)
-        else:
-            raise Exception('学習済みモデル%sが存在しません' % weight_path)
-
-        return result
+        self.__nnet = CNN()
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
@@ -50,7 +38,7 @@ class EvalEngine(engine.Engine):
         return score
 
     def __eval(self, vec):
-        pred = self.__model.predict(np.array([vec]))[0]
+        pred = self.nnet.predict(np.array([vec]))
         result = abs((pred[0] - 0.5638) / 0.02292)
         result = result * 4.0 + 1.0
 
@@ -62,7 +50,7 @@ class EvalEngine(engine.Engine):
 
         return result
 
-    def train(self, data, weight_path='ckpt/cnn.h5'):
+    def train(self, data):
         # data: [text:str, score:float]
         import tqdm
 
@@ -75,12 +63,11 @@ class EvalEngine(engine.Engine):
                 katakana, self.__max_length))
             y.append(row[1] / 5.0)
 
-        self.__model.fit(
+        self.nnet.train(
             np.array(x),
             np.array(y),
-            batch_size=64,
-            epochs=20,
-            validation_split=0.1,
         )
 
-        self.__model.save_weights(weight_path)
+    @property
+    def nnet(self):
+        return self.__nnet
