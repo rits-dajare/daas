@@ -9,10 +9,10 @@ def create_app() -> Flask:
         res.headers['Access-Control-Allow-Origin'] = '*'
         return res
 
-    import controller
+    import webapi
 
-    app.register_blueprint(controller.judge_api, url_prefix='/judge/')
-    app.register_blueprint(controller.eval_api, url_prefix='/eval/')
-    app.register_blueprint(controller.reading_api, url_prefix='/reading/')
+    app.register_blueprint(webapi.judge_api, url_prefix='/judge/')
+    app.register_blueprint(webapi.eval_api, url_prefix='/eval/')
+    app.register_blueprint(webapi.reading_api, url_prefix='/reading/')
 
     return app
