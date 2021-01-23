@@ -1,12 +1,12 @@
 from functools import lru_cache
 import numpy as np
-from .. import engine
+from .engine import Engine
 from .nnet.cnn import CNN
 
 
-class EvalEngine(engine.Engine):
+class EvalEngine(Engine):
     def _sub_init(self):
-        from ..text.text_service import TextService
+        from .text.text_service import TextService
         self.__text_service = TextService()
 
         self.score_cache = []

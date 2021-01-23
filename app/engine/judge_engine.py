@@ -2,12 +2,12 @@ import re
 from functools import lru_cache
 import pyboin
 import collections
-from .. import engine
+from .engine import Engine
 
 
-class JudgeEngine(engine.Engine):
+class JudgeEngine(Engine):
     def _sub_init(self):
-        from ..text.text_service import TextService
+        from .text.text_service import TextService
         self.__text_service = TextService()
 
         self.pass_patterns = self.__load_patterns('conf/pass_patterns.txt')
