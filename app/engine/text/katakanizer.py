@@ -4,11 +4,10 @@ from functools import lru_cache
 import jaconv
 from janome.tokenizer import Tokenizer
 from .alphabet import convert_word_to_alphabet
-from ..engine import Engine
 
 
-class Katakanizer(Engine):
-    def _sub_init(self):
+class Katakanizer:
+    def __init__(self):
         from .docomo_service import DocomoService
         self.__docomo_service = DocomoService()
 

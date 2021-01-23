@@ -13,7 +13,7 @@ class ReadingAPI(API):
             'reading': None,
         }
 
-        result['reading'] = engine.text_service.katakanize(args['dajare'])
+        result['reading'] = engine.reading_engine.execute(args['dajare'])
 
         return result
 

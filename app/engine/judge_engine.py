@@ -7,16 +7,13 @@ from .engine import Engine
 
 class JudgeEngine(Engine):
     def _sub_init(self):
-        from .text.text_service import TextService
-        self.__text_service = TextService()
-
         self.pass_patterns = self.__load_patterns('conf/pass_patterns.txt')
         self.reject_patterns = self.__load_patterns(
             'conf/reject_patterns.txt')
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
-        text = self.__text_service.cleaned(text)
+        text = self.text_service.cleaned(text)
 
         # ダジャレとみなす
         if self.__force_pass(text):
@@ -25,12 +22,12 @@ class JudgeEngine(Engine):
         if self.__force_reject(text):
             return False
 
-        katakana = self.__text_service.katakanize(text, use_api)
-        katakana = self.__text_service.normalize(katakana)
+        katakana = self.text_service.katakanize(text, use_api)
+        katakana = self.text_service.normalize(katakana)
         if text == 'あいうあいう-ん':
             print(katakana)
-        morphs = self.__text_service.morphs(text)
-        morphs = [self.__text_service.normalize(m) for m in morphs]
+        morphs = self.text_service.morphs(text)
+        morphs = [self.text_service.normalize(m) for m in morphs]
 
         return self.__rec_judge(katakana, morphs, len(katakana) >= 20)
 
@@ -123,7 +120,7 @@ class JudgeEngine(Engine):
 
     def __text_to_char_pair(self, katakana, n=3):
         result = []
-        n_gram = self.__text_service.n_gram(katakana, n)
+        n_gram = self.text_service.n_gram(katakana, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
                 result.append([ch1, ch2])
@@ -149,7 +146,7 @@ class JudgeEngine(Engine):
         ]
 
         for ptrn in conv_petterns:
-            for ch in self.__text_service.n_gram(katakana, 2):
+            for ch in self.text_service.n_gram(katakana, 2):
                 if pyboin.text2boin(ch[0]) + ch[1] == ptrn[0]:
                     katakana = katakana.replace(ch, ptrn[1](ch))
                     morphs = [mrph.replace(ch, ptrn[1](ch)) for mrph in morphs]
@@ -185,7 +182,7 @@ class JudgeEngine(Engine):
     def __rule_full_match(self, katakana, morphs, is_tight=False):
         ch_pair = self.__text_to_char_pair(katakana)
         for ch1, ch2 in ch_pair:
-            if self.__text_service.count_char_matches(ch1, ch2) == 3:
+            if self.text_service.count_char_matches(ch1, ch2) == 3:
                 return True
         return False
 
@@ -206,7 +203,7 @@ class JudgeEngine(Engine):
         ch_pair = self.__text_to_char_pair(katakana)
         ch_pair.extend(self.__text_to_char_pair(katakana, 4))
         for ch1, ch2 in ch_pair:
-            if self.__text_service.count_char_matches(ch1, ch2) < 2:
+            if self.text_service.count_char_matches(ch1, ch2) < 2:
                 continue
             if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                 return True
@@ -219,7 +216,7 @@ class JudgeEngine(Engine):
         ch_pair = self.__text_to_char_pair(katakana)
         ch_pair.extend(self.__text_to_char_pair(katakana, 4))
         for ch1, ch2 in ch_pair:
-            if self.__text_service.count_char_matches(ch1, ch2) < 2:
+            if self.text_service.count_char_matches(ch1, ch2) < 2:
                 continue
             if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
                     sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):

@@ -1,5 +1,6 @@
 class Engine():
-    def __init__(self):
+    def __init__(self, text_service):
+        self.__text_service = text_service
         self._sub_init()
 
     def _sub_init(self):
@@ -7,3 +8,7 @@ class Engine():
 
     def execute(self):
         raise Exception('サブクラスの責務')
+
+    @property
+    def text_service(self):
+        return self.__text_service

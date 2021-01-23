@@ -3,7 +3,7 @@ import unittest
 import engine
 
 
-class TestDajareEngine(unittest.TestCase):
+class TestEngine(unittest.TestCase):
     def test_judge_dajare(self):
         cases = [
             [True, '布団が吹っ飛んだ'],
@@ -48,3 +48,9 @@ class TestDajareEngine(unittest.TestCase):
     def test_eval(self):
         score = engine.eval_engine.execute("布団が吹っ飛んだ")
         self.assertTrue(score >= 1.0 and score <= 5.0)
+
+    def test_reading(self):
+        self.assertEqual(
+            "コンニチハ",
+            engine.reading_engine.execute("こんにちは")
+        )

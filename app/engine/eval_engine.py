@@ -6,9 +6,6 @@ from .nnet.cnn import CNN
 
 class EvalEngine(Engine):
     def _sub_init(self):
-        from .text.text_service import TextService
-        self.__text_service = TextService()
-
         self.score_cache = []
 
         self.__max_length = 100
@@ -16,7 +13,7 @@ class EvalEngine(Engine):
 
     @lru_cache(maxsize=255)
     def execute(self, text, use_api=True):
-        text = self.__text_service.cleaned(text)
+        text = self.text_service.cleaned(text)
 
         # 曖昧キャッシュを確認
         for cache in self.score_cache:
@@ -24,8 +21,8 @@ class EvalEngine(Engine):
                 return cache['score']
 
         # スコア化
-        katakana = self.__text_service.katakanize(text, False)
-        vec = self.__text_service.conv_vector(katakana, self.__max_length)
+        katakana = self.text_service.katakanize(text, False)
+        vec = self.text_service.conv_vector(katakana, self.__max_length)
         score = self.__eval(vec)
 
         # 曖昧キャッシュ
@@ -58,8 +55,8 @@ class EvalEngine(Engine):
         y = []
         print('データセットを作成...')
         for row in tqdm.tqdm(data):
-            katakana = self.__text_service.katakanize(row[0], False)
-            x.append(self.__text_service.conv_vector(
+            katakana = self.text_service.katakanize(row[0], False)
+            x.append(self.text_service.conv_vector(
                 katakana, self.__max_length))
             y.append(row[1] / 5.0)
 
