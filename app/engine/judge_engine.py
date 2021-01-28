@@ -24,8 +24,6 @@ class JudgeEngine(Engine):
 
         katakana = self.text_service.katakanize(text, use_api)
         katakana = self.text_service.normalize(katakana)
-        if text == 'あいうあいう-ん':
-            print(katakana)
         morphs = self.text_service.morphs(text)
         morphs = [self.text_service.normalize(m) for m in morphs]
 
