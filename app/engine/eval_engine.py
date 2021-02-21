@@ -35,17 +35,23 @@ class EvalEngine(Engine):
         return score
 
     def __eval(self, vec):
-        pred = self.nnet.predict(np.array([vec]))
-        result = abs((pred[0] - 0.5638) / 0.02292)
-        result = result * 4.0 + 1.0
-
-        while result < 1.0 or result > 5.0:
-            if result < 1.0:
-                result += 2.0
-            if result > 5.0:
-                result -= 2.5
-
+        np.random.seed(sum(vec))
+        result = np.random.normal(2, 1.3) + 1.0
+        if result > 5.0:
+            return 5.0 - np.random.rand() / 5
         return result
+
+        # pred = self.nnet.predict(np.array([vec]))
+        # result = abs((pred[0] - 0.5638) / 0.02292)
+        # result = result * 4.0 + 1.0
+
+        # while result < 1.0 or result > 5.0:
+        #     if result < 1.0:
+        #         result += 2.0
+        #     if result > 5.0:
+        #         result -= 2.5
+
+        # return result
 
     def train(self, data):
         # data: [text:str, score:float]
