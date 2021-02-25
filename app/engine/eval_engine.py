@@ -39,6 +39,8 @@ class EvalEngine(Engine):
         result = np.random.normal(2, 1.3) + 1.0
         if result > 5.0:
             return 5.0 - np.random.rand() / 5
+        if result < 1.0:
+            return 1.0 + np.random.rand() / 5
         return result
 
         # pred = self.nnet.predict(np.array([vec]))
