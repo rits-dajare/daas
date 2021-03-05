@@ -15,4 +15,4 @@ jobs:
       env:
         TOKEN: ${{secrets.TOKEN}}
       run: |
-        curl -X POST -H 'Content-Type: application/json' 'http://abelab.dev:4001/' -d '{"app": "DaaS", "token": "'"$TOKEN"'"}'
+        curl -X POST -H 'Content-Type: application/json' 'https://deploy.abelab.dev' -d '{"app": "DaaS", "token": "'"$TOKEN"'"}'
