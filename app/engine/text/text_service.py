@@ -10,6 +10,7 @@ class TextService:
         self.__sensitive_checker = SensitiveChecker()
 
     def katakanize(self, text, use_api=True):
+        text = self.cleaned(text)
         return self.__katakanizer.execute(text, use_api)
 
     def morphs(self, text):
@@ -23,8 +24,7 @@ class TextService:
         result = re.sub(
             r'[^0-9A-Za-z\u3041-\u3096\u30A1-\u30F6\u3005-\u3006\u3400-\u3fff\u2E80-\u2FDF\u3005-\u3007\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\U00020000-\U0002EBEFー〜 ]', '', text)
         # '笑'を意味する'w'を除去
-        result = re.sub(r'^(?![a-vx-zA-Z])w+^(?![a-vx-zA-Z])', '', result)
-        result = re.sub(r'w{2,}', '', result)
+        result = re.sub(r'w+(?![a-vx-zA-Z])', '', result)
 
         return result
 

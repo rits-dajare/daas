@@ -43,9 +43,7 @@ class TestAPI(unittest.TestCase):
             ['コンニチハ', 'こんにちは'],
             ['チョオマエ', 'ちょwお前www'],
             ['エービーシーディー', 'ABCD'],
-            ['エービーシー', 'ABC'],
             ['', 'abcd'],
-            ['ハロー', 'hello'],
         ]
         for text in texts:
             self.assertEqual(

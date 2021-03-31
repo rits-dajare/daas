@@ -20,17 +20,19 @@ class Katakanizer:
         result = self.__force_katakanize(text)
 
         # カタカナ化
-        if use_api and self.token_valid:
-            result = self.__conv_with_api(result)
-        else:
-            result = self.__conv_without_api(result)
+        use_api = use_api and self.token_valid
+        katakana = ''
+        if use_api:
+            katakana = self.__conv_with_api(result)
+        if not use_api or katakana == '':
+            katakana = self.__conv_without_api(result)
+        result = katakana
 
-        # 読みの分からない英単語を除去
-        words = re.findall(r'[a-zA-Z][a-z]{3,}', text)
-        words.extend(re.findall(r'[a-z]+', text))
+        # 読みの分からない英単語を変換
+        result = re.sub(r'[a-zA-Z][a-z]+', '', result)
+        words = re.findall(r'[a-zA-Z]+', result)
         for w in words:
-            result = result.replace(w, '')
-            result = result.replace(convert_word_to_alphabet(w.lower()), '')
+            result = result.replace(w, convert_word_to_alphabet(w.lower()))
 
         return result
 
