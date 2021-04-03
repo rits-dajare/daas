@@ -23,7 +23,7 @@ autopep8 = "*"
 python_version = "3.8"
 
 [scripts]
-start = "flask run --port=3031 --host=0.0.0.0"
+start = "flask run --port=10001 --host=0.0.0.0"
 test = "python -m unittest discover test"
 format = "autopep8 -ivr ."
 lint = "flake8 --show-source --ignore=E501 ."
