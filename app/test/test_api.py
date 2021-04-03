@@ -1,10 +1,10 @@
 import unittest
-import app
+import webapi
 
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        self.app = app.create_app().test_client()
+        self.app = webapi.create_app().test_client()
 
     def test_judge(self):
         res = self.app.get('judge/', query_string={'dajare': '布団が吹っ飛んだ'})
