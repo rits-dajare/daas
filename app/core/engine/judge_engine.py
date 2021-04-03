@@ -1,35 +1,37 @@
 import re
-from functools import lru_cache
 import pyboin
 import collections
-from .engine import Engine
+from functools import lru_cache
+
+from core import config
+from core import preprocessing
 
 
-class JudgeEngine(Engine):
-    def _sub_init(self):
-        self.pass_patterns = self.__load_patterns('conf/pass_patterns.txt')
-        self.reject_patterns = self.__load_patterns(
-            'conf/reject_patterns.txt')
+class JudgeEngine:
+    def __init__(self):
+        self.pass_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
+        self.reject_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
 
-    @lru_cache(maxsize=255)
-    def execute(self, text, use_api=True):
-        text = self.text_service.cleaned(text)
+    @lru_cache(config.CACHE_SIZE)
+    def exec(self, text: str) -> bool:
+        # preprocessing
+        text = preprocessing.filtering(text)
 
-        # ダジャレとみなす
+        # pre-judge
         if self.__force_pass(text):
             return True
-        # ダジャレとみなさない
         if self.__force_reject(text):
             return False
 
-        katakana = self.text_service.katakanize(text, use_api)
-        katakana = self.text_service.normalize(katakana)
-        morphs = self.text_service.morphs(text)
-        morphs = [self.text_service.normalize(m) for m in morphs]
+        # convert reading & morphs
+        reading = preprocessing.reading(text)
+        reading: str = preprocessing.normalize(reading)
+        morphs: list = preprocessing.convert_morphs(text)
+        morphs = [preprocessing.normalize(morph) for morph in morphs]
 
-        return self.__rec_judge(katakana, morphs, len(katakana) >= 20)
+        return self.__rec_judge(reading, morphs, len(reading) >= config.TIGHT_LENGTH)
 
-    def __judge(self, katakana, morphs, is_tight=False):
+    def __judge(self, reading, morphs, is_tight=False):
         methods = [
             # 2文字以上の形態素が一致
             self.__rule_morphs_overlap,
@@ -44,13 +46,13 @@ class JudgeEngine(Engine):
         ]
 
         for method in methods:
-            if method(katakana, morphs, is_tight):
+            if method(reading, morphs, is_tight):
                 return True
 
         return False
 
-    def __rec_judge(self, katakana, morphs, is_tight=False):
-        if self.__judge(katakana, morphs, is_tight):
+    def __rec_judge(self, reading, morphs, is_tight=False):
+        if self.__judge(reading, morphs, is_tight):
             return True
         if is_tight:
             return False
@@ -68,9 +70,9 @@ class JudgeEngine(Engine):
         ]
 
         for method in methods:
-            conv_katakana, conv_morphs = method(katakana, morphs)
-            if conv_katakana != katakana:
-                if self.__rec_judge(conv_katakana, conv_morphs, is_tight):
+            conv_reading, conv_morphs = method(reading, morphs)
+            if conv_reading != reading:
+                if self.__rec_judge(conv_reading, conv_morphs, is_tight):
                     return True
 
         return False
@@ -116,15 +118,15 @@ class JudgeEngine(Engine):
 
         return result
 
-    def __text_to_char_pair(self, katakana, n=3):
+    def __text_to_char_pair(self, reading, n=3):
         result = []
-        n_gram = self.text_service.n_gram(katakana, n)
+        n_gram = preprocessing.n_gram(reading, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
                 result.append([ch1, ch2])
         return result
 
-    def __conv_with_pattern(self, katakana, morphs):
+    def __conv_with_pattern(self, reading, morphs):
         conv_patterns = [
             ['ー', ''],
             ['ッ', ''],
@@ -132,92 +134,92 @@ class JudgeEngine(Engine):
             ['イウ', 'ユー'],
         ]
         for ptrn in conv_patterns:
-            if ptrn[0] in katakana:
-                katakana = katakana.replace(ptrn[0], ptrn[1])
+            if ptrn[0] in reading:
+                reading = reading.replace(ptrn[0], ptrn[1])
                 morphs = [mrph.replace(ptrn[0], ptrn[1]) for mrph in morphs]
-        return katakana, morphs
+        return reading, morphs
 
-    def __conv_vowel_to_pron(self, katakana, morphs):
+    def __conv_vowel_to_pron(self, reading, morphs):
         conv_petterns = [
             ['オウ', lambda ch: ch[0] + 'ー'],
             ['エイ', lambda ch: ch[0] + 'ー'],
         ]
 
         for ptrn in conv_petterns:
-            for ch in self.text_service.n_gram(katakana, 2):
+            for ch in preprocessing.n_gram(reading, 2):
                 if pyboin.text2boin(ch[0]) + ch[1] == ptrn[0]:
-                    katakana = katakana.replace(ch, ptrn[1](ch))
+                    reading = reading.replace(ch, ptrn[1](ch))
                     morphs = [mrph.replace(ch, ptrn[1](ch)) for mrph in morphs]
-        return katakana, morphs
+        return reading, morphs
 
-    def __conv_looped_vowel_to_hyphen(self, katakana, morphs):
-        katakana = katakana
-        for i in range(len(katakana) - 1):
-            if katakana[i + 1] not in 'アイウエオ':
+    def __conv_looped_vowel_to_hyphen(self, reading, morphs):
+        reading = reading
+        for i in range(len(reading) - 1):
+            if reading[i + 1] not in 'アイウエオ':
                 continue
-            if pyboin.text2boin(katakana[i]) == \
-                    pyboin.text2boin(katakana[i + 1]):
-                katakana = katakana[:i + 1] + 'ー' + katakana[i + 2:]
-        katakana = re.sub(r'ー+', 'ー', katakana)
-        return katakana, morphs
+            if pyboin.text2boin(reading[i]) == \
+                    pyboin.text2boin(reading[i + 1]):
+                reading = reading[:i + 1] + 'ー' + reading[i + 2:]
+        reading = re.sub(r'ー+', 'ー', reading)
+        return reading, morphs
 
-    def __conv_prev_of_lower_ch_to_vowel(self, katakana, morphs):
-        for ch in re.findall(r'.[ァィゥェォャュョヮ]', katakana):
-            katakana = katakana.replace(
+    def __conv_prev_of_lower_ch_to_vowel(self, reading, morphs):
+        for ch in re.findall(r'.[ァィゥェォャュョヮ]', reading):
+            reading = reading.replace(
                 ch,
-                pyboin.romanize(ch[0], pyboin.text2boin(ch[1]))
+                pyboin.convert_vowel(ch[0], pyboin.text2boin(ch[1]))
             )
-        return katakana, morphs
+        return reading, morphs
 
-    def __rule_morphs_overlap(self, katakana, morphs, is_tight=False):
+    def __rule_morphs_overlap(self, reading, morphs, is_tight=False):
         for mrp in morphs:
             if len(mrp) < 2:
                 continue
-            if katakana.count(mrp) >= 2:
+            if reading.count(mrp) >= 2:
                 return True
         return False
 
-    def __rule_full_match(self, katakana, morphs, is_tight=False):
-        ch_pair = self.__text_to_char_pair(katakana)
+    def __rule_full_match(self, reading, morphs, is_tight=False):
+        ch_pair = self.__text_to_char_pair(reading)
         for ch1, ch2 in ch_pair:
-            if self.text_service.count_char_matches(ch1, ch2) == 3:
+            if self.__count_char_matches(ch1, ch2) == 3:
                 return True
         return False
 
-    def __rule_match_no_order(self, katakana, morphs, is_tight=False):
+    def __rule_match_no_order(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
-        ch_pair = self.__text_to_char_pair(katakana)
+        ch_pair = self.__text_to_char_pair(reading)
         for ch1, ch2 in ch_pair:
             if sorted(ch1) == sorted(ch2):
                 return True
         return False
 
-    def __rule_vowel_match(self, katakana, morphs, is_tight=False):
+    def __rule_vowel_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
-        ch_pair = self.__text_to_char_pair(katakana)
-        ch_pair.extend(self.__text_to_char_pair(katakana, 4))
+        ch_pair = self.__text_to_char_pair(reading)
+        ch_pair.extend(self.__text_to_char_pair(reading, 4))
         for ch1, ch2 in ch_pair:
-            if self.text_service.count_char_matches(ch1, ch2) < 2:
+            if self.__count_char_matches(ch1, ch2) < 2:
                 continue
             if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                 return True
         return False
 
-    def __rule_consonant_match(self, katakana, morphs, is_tight=False):
+    def __rule_consonant_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
-        ch_pair = self.__text_to_char_pair(katakana)
-        ch_pair.extend(self.__text_to_char_pair(katakana, 4))
+        ch_pair = self.__text_to_char_pair(reading)
+        ch_pair.extend(self.__text_to_char_pair(reading, 4))
         for ch1, ch2 in ch_pair:
-            if self.text_service.count_char_matches(ch1, ch2) < 2:
+            if self.__count_char_matches(ch1, ch2) < 2:
                 continue
-            if sorted([pyboin.romanize(ch, 'ア') for ch in ch1]) == \
-                    sorted([pyboin.romanize(ch, 'ア') for ch in ch2]):
+            if sorted([pyboin.convert_vowel(ch, 'ア') for ch in ch1]) == \
+                    sorted([pyboin.convert_vowel(ch, 'ア') for ch in ch2]):
                 return True
         return False
 
@@ -261,3 +263,14 @@ class JudgeEngine(Engine):
         for rule in ch_len_rules:
             if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
                 return True
+
+    def __count_char_matches(self, ch1, ch2):
+        if len(ch1) != len(ch2):
+            return 0
+
+        result = 0
+        for i in range(len(ch1)):
+            if ch1[i] == ch2[i]:
+                result += 1
+
+        return result

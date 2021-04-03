@@ -30,7 +30,6 @@ class TestAPI(unittest.TestCase):
             ['布団が吹っ飛んだ', '布団が吹っ飛んだ'],
         ]
         for case in test_cases:
-            print(case[0])
             self.assertEqual(case[0], preprocessing.filtering(case[1]))
 
     def test_n_gram(self):
