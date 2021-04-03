@@ -1,7 +1,33 @@
 import re
 import emoji
+import jaconv
+from janome.tokenizer import Tokenizer
 
 from core import config
+
+
+def reading(text: str) -> str:
+    result: str = ''.join(convert_morphs(text))
+
+    # words that cannot be converted
+    result = re.sub(r'[a-zA-Z][a-z]+', '', result)
+    for word in re.findall(r'[a-zA-Z]+', result):
+        pass
+
+    return result
+
+
+def convert_morphs(text: str) -> str:
+    result: list = []
+
+    tokenizer = Tokenizer()
+    for token in tokenizer.tokenize(text):
+        if token.reading == '*':
+            result.append(jaconv.hira2kata(token.surface))
+        else:
+            result.append(token.reading)
+
+    return result
 
 
 def filtering(text: str) -> str:

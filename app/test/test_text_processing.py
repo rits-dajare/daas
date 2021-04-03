@@ -15,6 +15,9 @@ class TestAPI(unittest.TestCase):
         self.assertEqual('コンニチハ', preprocessing.reading('こんにちは'))
         self.assertEqual('フトンガフットンダ', preprocessing.reading('布団が吹っ飛んだ'))
 
+    def test_convert_morphs(self):
+        self.assertEqual(['キョウ', 'ノ', 'テンキ'], preprocessing.convert_morphs('今日の天気'))
+
     def test_filtering(self):
         test_cases: list = [
             ['', '!@#$%^^&*()，。/-_=+;:'],
