@@ -50,10 +50,3 @@ class TestAPI(unittest.TestCase):
                 text[0],
                 engine.text_service.katakanize(text[1])
             )
-
-    @unittest.skipIf(not engine.text_service.token_valid, 'TESTSKIP')
-    def test_sensitive_check_withapi(self):
-        text = '殺人，麻薬'
-        self.assertEqual(
-            ['傷害', '恐喝', '殺人', '脅迫', '薬物', '覚せい剤', '麻薬'],
-            engine.text_service.sensitive_check(text))
