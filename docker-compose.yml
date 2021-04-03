@@ -5,5 +5,5 @@ services:
     volumes:
       - ./app:/var/www/
     ports:
-      - 3031:3031
+      - 50000:50000
 
