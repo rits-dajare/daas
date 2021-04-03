@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-restful = "*"
+numpy = "*"
 Janome = "*"
 jaconv = "*"
 tqdm = "*"
