@@ -14,6 +14,8 @@ class TestAPI(unittest.TestCase):
     def test_reading(self):
         self.assertEqual('コンニチハ', preprocessing.reading('こんにちは'))
         self.assertEqual('フトンガフットンダ', preprocessing.reading('布団が吹っ飛んだ'))
+        # with dict
+        self.assertEqual('アルドゥイーノ', preprocessing.reading('Arduino'))
 
     def test_convert_morphs(self):
         self.assertEqual(['キョウ', 'ノ', 'テンキ'], preprocessing.convert_morphs('今日の天気'))

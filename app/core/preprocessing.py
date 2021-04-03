@@ -1,4 +1,5 @@
 import re
+import csv
 import emoji
 import jaconv
 from janome.tokenizer import Tokenizer
@@ -7,7 +8,17 @@ from core import config
 
 
 def reading(text: str) -> str:
-    result: str = ''.join(convert_morphs(text))
+    result: str = text
+
+    # convert with dict
+    with open(config.READING_DICT_FILE_PATH, 'r') as f:
+        reader = csv.reader(f)
+        for pattern in reader:
+            if pattern != []:
+                result = re.sub(*pattern, result)
+
+    # convert with morph analysis
+    result: str = ''.join(convert_morphs(result))
 
     # words that cannot be converted
     result = re.sub(r'[a-zA-Z][a-z]+', '', result)
