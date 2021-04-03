@@ -11,6 +11,10 @@ class TestAPI(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_reading(self):
+        self.assertEqual('コンニチハ', preprocessing.reading('こんにちは'))
+        self.assertEqual('フトンガフットンダ', preprocessing.reading('布団が吹っ飛んだ'))
+
     def test_filtering(self):
         test_cases: list = [
             ['', '!@#$%^^&*()，。/-_=+;:'],
