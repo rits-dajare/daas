@@ -36,17 +36,3 @@ class TestAPI(unittest.TestCase):
     def test_convert_vector(self):
         self.assertEqual([12371, 12435, 12395, 12385, 12399],
                          engine.text_service.conv_vector('こんにちは'))
-
-    @unittest.skipIf(not engine.text_service.token_valid, 'TESTSKIP')
-    def test_katakanize_withapi(self):
-        texts = [
-            ['コンニチハ', 'こんにちは'],
-            ['チョオマエ', 'ちょwお前www'],
-            ['エービーシーディー', 'ABCD'],
-            ['', 'abcd'],
-        ]
-        for text in texts:
-            self.assertEqual(
-                text[0],
-                engine.text_service.katakanize(text[1])
-            )

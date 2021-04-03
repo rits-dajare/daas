@@ -16,6 +16,9 @@ class TestAPI(unittest.TestCase):
         self.assertEqual('フトンガフットンダ', preprocessing.reading('布団が吹っ飛んだ'))
         # with dict
         self.assertEqual('アルドゥイーノ', preprocessing.reading('Arduino'))
+        # alphabet
+        self.assertEqual('エービーシーディー', preprocessing.reading('ABCD'))
+        self.assertEqual('', preprocessing.reading('abcd'))
 
     def test_convert_morphs(self):
         self.assertEqual(['キョウ', 'ノ', 'テンキ'], preprocessing.convert_morphs('今日の天気'))
@@ -27,6 +30,7 @@ class TestAPI(unittest.TestCase):
             ['布団が吹っ飛んだ', '布団が吹っ飛んだ'],
         ]
         for case in test_cases:
+            print(case[0])
             self.assertEqual(case[0], preprocessing.filtering(case[1]))
 
     def test_n_gram(self):

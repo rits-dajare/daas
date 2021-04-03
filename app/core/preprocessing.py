@@ -1,10 +1,15 @@
 import re
 import csv
 import emoji
+import pyboin
 import jaconv
 from janome.tokenizer import Tokenizer
 
 from core import config
+
+
+# morph analyzer
+tokenizer = Tokenizer()
 
 
 def reading(text: str) -> str:
@@ -23,7 +28,10 @@ def reading(text: str) -> str:
     # words that cannot be converted
     result = re.sub(r'[a-zA-Z][a-z]+', '', result)
     for word in re.findall(r'[a-zA-Z]+', result):
-        pass
+        result = result.replace(
+            word,
+            pyboin.alphabet_to_reading(word)
+        )
 
     return result
 
@@ -31,7 +39,6 @@ def reading(text: str) -> str:
 def convert_morphs(text: str) -> str:
     result: list = []
 
-    tokenizer = Tokenizer()
     for token in tokenizer.tokenize(text):
         if token.reading == '*':
             result.append(jaconv.hira2kata(token.surface))
@@ -47,7 +54,7 @@ def filtering(text: str) -> str:
     result = re.sub(r'[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]', '', result)
     result = re.sub(r'[！-／：-＠［-｀｛-～、-〜”’・]', '', result)
     # remove emoji
-    result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI)
+    result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
     # remove '笑'
     result = re.sub(r'w+(?![a-vx-zA-Z])', '', result)
 
