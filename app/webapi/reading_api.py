@@ -1,7 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api
 from .api import API
-import engine
+
+from core import engine
 
 
 class ReadingAPI(API):
@@ -13,7 +14,7 @@ class ReadingAPI(API):
             'reading': None,
         }
 
-        result['reading'] = engine.reading_engine.execute(args['dajare'])
+        result['reading'] = engine.reading_engine.exec(args['dajare'])
 
         return result
 

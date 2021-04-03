@@ -1,7 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api
 from .api import API
-import engine
+
+from core import engine
 
 
 class JudgeAPI(API):
@@ -11,14 +12,9 @@ class JudgeAPI(API):
     def _processing(self, args):
         result = {
             'is_dajare': None,
-            'include_sensitive': None,
-            'sensitive_tags': None,
         }
 
-        result['is_dajare'] = engine.judge_engine.execute(args['dajare'])
-        result['sensitive_tags'] = engine.text_service.sensitive_check(
-            args['dajare'])
-        result['include_sensitive'] = result['sensitive_tags'] != []
+        result['is_dajare'] = engine.judge_engine.exec(args['dajare'])
 
         return result
 

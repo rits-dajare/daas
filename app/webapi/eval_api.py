@@ -1,7 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api
 from .api import API
-import engine
+
+from core import engine
 
 
 class EvalAPI(API):
@@ -13,7 +14,7 @@ class EvalAPI(API):
             'score': None,
         }
 
-        result['score'] = engine.eval_engine.execute(args['dajare'])
+        result['score'] = engine.eval_engine.exec(args['dajare'])
 
         return result
 

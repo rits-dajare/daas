@@ -4,7 +4,6 @@ CONFIG_FILE_ROOT_PATH: str = './config'
 READING_DICT_FILE_PATH: str = CONFIG_FILE_ROOT_PATH + '/reading_dict.csv'
 JUDGE_PASS_DICT_PATH: str = CONFIG_FILE_ROOT_PATH + '/judge_pass_dict.txt'
 JUDGE_REJECT_DICT_PATH: str = CONFIG_FILE_ROOT_PATH + '/judge_reject_dict.txt'
-SENSITIVE_DICT_PATH: str = CONFIG_FILE_ROOT_PATH + '/sensitive_dict.csv'
 
 # text config
 TEXT_MAX_LENGTH: int = 30
