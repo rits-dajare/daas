@@ -36,21 +36,11 @@ $ pipenv install
 
 ## Usage
 
-### Set token
-
-```sh
-$ echo "tokens(space delimited)" > app/.env
-```
-
 ### Run
 
 ```sh
-$ docker-compose up -d --build
+$ pipenv run start
 ```
-
-## References
-
-<div><a href="https://dajare.jp/" target="_blank"><img src="https://dajare.jp/library/image/Banner/Advertisement/Dajare180x28.png" alt="ダジャレ（だじゃれ）ステーション" border="0" vspace="8" onmouseover="this.src=this.src.replace('png','gif');" onmouseout="this.src=this.src.replace('gif','png');" /></a></div>
 
 ## Wiki
 
