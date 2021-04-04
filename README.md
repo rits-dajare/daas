@@ -42,6 +42,12 @@ $ pipenv install
 $ pipenv run start
 ```
 
+If you want to know the details of how to use this, run the following command.
+
+```sh
+$ pipenv run help
+```
+
 ## Wiki
 
 Please look at the [documents](https://github.com/rits-dajare/DaaS/wiki).
