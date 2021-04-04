@@ -1,9 +1,0 @@
-version: '3'
-services:
-  uwsgi:
-    build: ./app
-    volumes:
-      - ./app:/var/www/
-    ports:
-      - 50000:50000
-
