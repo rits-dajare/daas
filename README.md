@@ -28,7 +28,6 @@ Automatically determines whether a posted sentence is pun, and if true, gives a 
 $ git clone <this repo>
 $ cd <this repo>
 
-$ cd app
 $ pip install -U pip
 $ pip install pipenv
 $ pipenv install
