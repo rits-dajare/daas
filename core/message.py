@@ -11,7 +11,7 @@ def LOAD_FILE_MSG(file_name: str) -> str:
 
 
 def ACCURACY_MSG(accuracy: float) -> str:
-    result: str = f'Accuracy {FontColors.YELLOW}{accuracy * 100:.3g}{FontColors.RESET}'
+    result: str = f'Accuracy {FontColors.YELLOW}{accuracy * 100:3.1f}%{FontColors.RESET}'
     return result
 
 
