@@ -23,6 +23,6 @@ python_version = "3.8"
 [scripts]
 start = "python main.py --start"
 help = "python main.py --help"
-test = "python -m unittest discover test"
+test = "python -m unittest discover tests"
 format = "autopep8 -ivr ."
 lint = "flake8 --show-source ."
