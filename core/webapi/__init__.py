@@ -1,9 +1,9 @@
 import os
 from flask import Flask
 
-from webapi import judge_api
-from webapi import eval_api
-from webapi import reading_api
+from . import judge_api
+from . import eval_api
+from . import reading_api
 
 
 def create_app(test_config=None) -> Flask:

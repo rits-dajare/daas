@@ -7,11 +7,11 @@ import argparse
 
 from core import config
 from core import message
-from webapi import create_app
+from core import webapi
 
 
 def start_mode():
-    app = create_app()
+    app = webapi.create_app()
     app.run(debug=config.API_DEBUG, host=config.API_HOST, port=config.API_PORT)
 
 
@@ -30,7 +30,7 @@ def accuracy_mode():
     data = random.sample(data, n_samples)
 
     # set api
-    app = create_app().test_client()
+    app = webapi.create_app().test_client()
 
     # measure accuracy
     n_correct: int = 0
