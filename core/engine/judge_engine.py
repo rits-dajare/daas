@@ -1,3 +1,4 @@
+import sys
 import re
 import pyboin
 import collections
@@ -11,6 +12,9 @@ class JudgeEngine:
     def __init__(self):
         self.pass_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
         self.reject_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
+
+        # applied method name
+        self.applied_rule: str = ''
 
     @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> bool:
@@ -47,6 +51,7 @@ class JudgeEngine:
 
         for method in methods:
             if method(reading, morphs, is_tight):
+                self.applied_rule = method.__name__
                 return True
 
         return False
@@ -80,6 +85,7 @@ class JudgeEngine:
     def __force_pass(self, text):
         for pattern in self.pass_patterns:
             if re.search(pattern, text) is not None:
+                self.applied_rule = sys._getframe().f_code.co_name
                 return True
 
         return False
@@ -108,6 +114,7 @@ class JudgeEngine:
 
         for method in methods:
             if method(text):
+                self.applied_rule = method.__name__
                 return True
 
         return False

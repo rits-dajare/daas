@@ -45,6 +45,7 @@ class TestEngine(unittest.TestCase):
                 case[0],
                 engine.judge_engine.exec(case[1])
             )
+            print(engine.judge_engine.applied_rule)
 
     def test_eval(self):
         score = engine.eval_engine.exec('布団が吹っ飛んだ')
