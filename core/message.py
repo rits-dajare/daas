@@ -20,6 +20,6 @@ def MEASURE_ACCURACY_MSG(n_samples: int) -> str:
     return result
 
 
-def N_SAMPLES_INPUT_GUIDE(max_samples: int) -> str:
-    result: str = f'How many samples? {FontColors.GREEN}(1-{max_samples}){FontColors.RESET} : '
+def N_SAMPLES_INPUT_GUIDE(default_samples: int, max_samples: int) -> str:
+    result: str = f'How many samples? {FontColors.GREEN}{default_samples} (1-{max_samples}){FontColors.RESET} : '
     return result

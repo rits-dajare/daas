@@ -25,7 +25,8 @@ def accuracy_mode():
             data.extend(json.load(f))
 
     # specify the number of samples to use
-    input_str = input(message.N_SAMPLES_INPUT_GUIDE(len(data))) or str(len(data))
+    default_samples: int = len(data)
+    input_str = input(message.N_SAMPLES_INPUT_GUIDE(default_samples, len(data))) or default_samples
     n_samples: int = int(input_str)
     data = random.sample(data, n_samples)
 
