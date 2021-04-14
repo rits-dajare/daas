@@ -14,10 +14,12 @@ class JudgeEngine:
         self.reject_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
 
         # applied method name
-        self.applied_rule: str = ''
+        self.applied_rule: str
 
     @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> bool:
+        self.applied_rule = ''
+
         # preprocessing
         text = preprocessing.filtering(text)
 

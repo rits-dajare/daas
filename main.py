@@ -37,14 +37,16 @@ def accuracy_mode():
     error_samples: list = []
     print(message.MEASURE_ACCURACY_MSG(n_samples))
     for sample in tqdm.tqdm(data):
-        res = app.get('judge/', query_string={'dajare': sample['dajare']})
-        if res.json['is_dajare'] != sample['is_dajare']:
+        res_json = app.get('judge/', query_string={'dajare': sample['dajare']}).json
+        if res_json['is_dajare'] != sample['is_dajare']:
+            sample['judge_result'] = res_json['is_dajare']
+            sample['rule'] = res_json['applied_rule']
             error_samples.append(sample)
     print(message.ACCURACY_MSG((n_samples - len(error_samples)) / n_samples))
 
     # dump error samples
     with open(config.DATA_ERROR_FILE_PATH, 'w') as f:
-        f.write(json.dumps(error_samples, ensure_ascii=False))
+        f.write(json.dumps(error_samples, ensure_ascii=False, indent=2))
 
 
 if __name__ == '__main__':

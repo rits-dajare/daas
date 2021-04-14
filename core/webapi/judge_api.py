@@ -12,9 +12,11 @@ class JudgeAPI(API):
     def _processing(self, args):
         result = {
             'is_dajare': None,
+            'applied_rule': None,
         }
 
         result['is_dajare'] = engine.judge_engine.exec(args['dajare'])
+        result['applied_rule'] = engine.judge_engine.applied_rule
 
         return result
 
