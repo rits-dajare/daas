@@ -34,13 +34,17 @@ def accuracy_mode():
     app = webapi.create_app().test_client()
 
     # measure accuracy
-    n_correct: int = 0
+    error_samples: list = []
     print(message.MEASURE_ACCURACY_MSG(n_samples))
     for sample in tqdm.tqdm(data):
         res = app.get('judge/', query_string={'dajare': sample['dajare']})
-        if res.json['is_dajare'] == sample['is_dajare']:
-            n_correct += 1
-    print(message.ACCURACY_MSG(n_correct / n_samples))
+        if res.json['is_dajare'] != sample['is_dajare']:
+            error_samples.append(sample)
+    print(message.ACCURACY_MSG((n_samples - len(error_samples)) / n_samples))
+
+    # dump error samples
+    with open(config.DATA_ERROR_FILE_PATH, 'w') as f:
+        f.write(json.dumps(error_samples, ensure_ascii=False))
 
 
 if __name__ == '__main__':
