@@ -1,6 +1,7 @@
 import unittest
 
 from core import engine
+from core import message
 
 
 class TestEngine(unittest.TestCase):
@@ -41,11 +42,14 @@ class TestEngine(unittest.TestCase):
             [False, 'フトンガフットンダ'],
         ]
         for case in cases:
-            self.assertEqual(
-                case[0],
-                engine.judge_engine.exec(case[1])
-            )
-            print(engine.judge_engine.applied_rule)
+            try:
+                self.assertEqual(
+                    case[0],
+                    engine.judge_engine.exec(case[1])
+                )
+            except AssertionError as error:
+                print(message.APPLIED_RULE(case[1], engine.judge_engine.applied_rule))
+                raise error
 
     def test_eval(self):
         score = engine.eval_engine.exec('布団が吹っ飛んだ')
