@@ -90,6 +90,8 @@ class JudgeEngine:
             self.__reject_force_patterns,
             # 30文字以上
             self.__reject_length,
+            # カタカナのみ
+            self.__reject_only_katakana,
             # 同じ文字が6回以上使われている
             self.__reject_ch_many_times_used,
             # 半角文字のみ
@@ -227,6 +229,9 @@ class JudgeEngine:
         for ptrn in self.reject_patterns:
             if re.search(ptrn, text) is not None:
                 return True
+
+    def __reject_only_katakana(self, text):
+        return re.fullmatch(r'[ァ-ヴー]+', text)
 
     def __reject_length(self, text):
         return len(text) >= 30

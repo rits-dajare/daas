@@ -38,6 +38,7 @@ class TestEngine(unittest.TestCase):
             [False, 'テストあいうテストかきく'],
             [False, 'あいうえあいうえ-あ'],
             [False, 'あいうえおあいうえお-あ'],
+            [False, 'フトンガフットンダ'],
         ]
         for case in cases:
             self.assertEqual(
