@@ -136,7 +136,7 @@ class JudgeEngine:
         n_gram = preprocessing.n_gram(reading, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
-                if abs(reading.index(ch1) - reading.index(ch2)) > 1:
+                if abs(reading.index(ch1) - reading.index(ch2)) > 3:
                     result.append([ch1, ch2])
         return result
 
