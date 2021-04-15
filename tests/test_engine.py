@@ -15,6 +15,7 @@ class TestEngine(unittest.TestCase):
             [True, 'アヒージョはアチーよ'],
             [True, '臭いサイ'],
             [True, 'サイゼで見た彗星'],
+            [True, '南下するけど何か？'],
             [True, 'この卵エッグ'],
             [True, 'かきくカケク'],
             [True, 'かきあカキァ'],

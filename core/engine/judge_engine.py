@@ -32,7 +32,7 @@ class JudgeEngine:
         # convert reading & morphs
         reading = preprocessing.reading(text)
         reading: str = preprocessing.normalize(reading)
-        morphs: list = preprocessing.convert_morphs(text)
+        morphs: list = preprocessing.convert_morphs(text, True)
         morphs = [preprocessing.normalize(morph) for morph in morphs]
 
         return self.__rec_judge(reading, morphs, len(reading) >= config.TIGHT_LENGTH)
@@ -43,12 +43,14 @@ class JudgeEngine:
             self.__rule_morphs_overlap,
             # 3文字完全一致
             self.__rule_full_match,
-            # 3文字順不同一致
-            self.__rule_match_no_order,
-            # 2文字完全一致 & 母音完全一致
+            # 母音完全一致
             self.__rule_vowel_match,
-            # 2文字完全一致 & 子音完全一致
+            # 子音完全一致
             self.__rule_consonant_match,
+            # 文字が入れ替わっている
+            self.__rule_swap_match,
+            # 'ン'は全ての文字にマッチする
+            self.__rule_magic_nn,
         ]
 
         for method in methods:
@@ -134,7 +136,8 @@ class JudgeEngine:
         n_gram = preprocessing.n_gram(reading, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
-                result.append([ch1, ch2])
+                if abs(reading.index(ch1) - reading.index(ch2)) > 1:
+                    result.append([ch1, ch2])
         return result
 
     def __conv_with_pattern(self, reading, morphs):
@@ -194,27 +197,19 @@ class JudgeEngine:
         ch_pair = self.__text_to_char_pair(reading)
         for ch1, ch2 in ch_pair:
             if self.__count_char_matches(ch1, ch2) == 3:
-                return True
-        return False
-
-    def __rule_match_no_order(self, reading, morphs, is_tight=False):
-        if is_tight:
-            return False
-
-        ch_pair = self.__text_to_char_pair(reading)
-        for ch1, ch2 in ch_pair:
-            if sorted(ch1) == sorted(ch2):
-                return True
+                for morph in morphs:
+                    if self.__count_char_matches(ch1, morph, True) > 2:
+                        return True
         return False
 
     def __rule_vowel_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
-        ch_pair = self.__text_to_char_pair(reading)
-        ch_pair.extend(self.__text_to_char_pair(reading, 4))
-        for ch1, ch2 in ch_pair:
+        for ch1, ch2 in self.__text_to_char_pair(reading, 3):
             if self.__count_char_matches(ch1, ch2) < 2:
+                continue
+            if self.__count_char_matches(ch1, ch2, True) < 2:
                 continue
             if sorted(pyboin.text2boin(ch1)) == sorted(pyboin.text2boin(ch2)):
                 return True
@@ -224,14 +219,34 @@ class JudgeEngine:
         if is_tight:
             return False
 
-        ch_pair = self.__text_to_char_pair(reading)
-        ch_pair.extend(self.__text_to_char_pair(reading, 4))
-        for ch1, ch2 in ch_pair:
+        for ch1, ch2 in self.__text_to_char_pair(reading, 3):
             if self.__count_char_matches(ch1, ch2) < 2:
+                continue
+            if self.__count_char_matches(ch1, ch2, True) < 2:
                 continue
             if sorted([pyboin.convert_vowel(ch, 'ア') for ch in ch1]) == \
                     sorted([pyboin.convert_vowel(ch, 'ア') for ch in ch2]):
                 return True
+        return False
+
+    def __rule_swap_match(self, reading, morphs, is_tight=False):
+        if is_tight:
+            return False
+
+        for ch1, ch2 in self.__text_to_char_pair(reading, 3):
+            if self.__count_char_matches(ch1, ch2, no_order=True) == 3:
+                return True
+
+        return False
+
+    def __rule_magic_nn(self, reading, morphs, is_tight=False):
+        if is_tight:
+            return False
+
+        for ch1, ch2 in self.__text_to_char_pair(reading, 3):
+            if self.__count_char_matches(ch1, ch2, magic_nn=True) == 3:
+                return True
+
         return False
 
     def __reject_force_patterns(self, text):
@@ -278,13 +293,20 @@ class JudgeEngine:
             if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
                 return True
 
-    def __count_char_matches(self, ch1, ch2):
+    def __count_char_matches(self, ch1: str, ch2: str, no_order: bool = False, magic_nn: bool = False):
         if len(ch1) != len(ch2):
             return 0
 
         result = 0
         for i in range(len(ch1)):
-            if ch1[i] == ch2[i]:
-                result += 1
+            if no_order:
+                if ch1[i] in ch2:
+                    ch2.replace(ch1[1], '', 1)
+                    result += 1
+            else:
+                if ch1[i] == ch2[i]:
+                    result += 1
+                elif magic_nn and (ch1[i] == 'ン' or ch2[i] == 'ン'):
+                    result += 1
 
         return result
