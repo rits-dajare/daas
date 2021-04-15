@@ -307,6 +307,7 @@ class JudgeEngine:
                 if ch1[i] == ch2[i]:
                     result += 1
                 elif magic_nn and (ch1[i] == 'ン' or ch2[i] == 'ン'):
+                    magic_nn = False
                     result += 1
 
         return result
