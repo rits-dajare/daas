@@ -36,14 +36,19 @@ def reading(text: str) -> str:
     return result
 
 
-def convert_morphs(text: str) -> str:
+def convert_morphs(text: str, filtering: bool = False) -> str:
     result: list = []
+    filter_parts: list = ['助詞', '助動詞']
 
     for token in tokenizer.tokenize(text):
-        if token.reading == '*':
-            result.append(jaconv.hira2kata(token.surface))
+        for part in filter_parts:
+            if filtering and part in token.part_of_speech:
+                break
         else:
-            result.append(token.reading)
+            if token.reading == '*':
+                result.append(jaconv.hira2kata(token.surface))
+            else:
+                result.append(token.reading)
 
     return result
 
@@ -57,6 +62,8 @@ def filtering(text: str) -> str:
     result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
     # remove '笑'
     result = re.sub(r'w+(?![a-vx-zA-Z])', '', result)
+    # remove number
+    result = re.sub(r'\d', '', result)
 
     return result
 
