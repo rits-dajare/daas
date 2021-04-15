@@ -193,6 +193,9 @@ class JudgeEngine:
         return reading, morphs
 
     def __rule_morphs_overlap(self, reading, morphs, is_tight=False):
+        if is_tight:
+            return False
+
         for mrp in morphs:
             if len(mrp) < 2:
                 continue
@@ -241,8 +244,6 @@ class JudgeEngine:
             return False
 
         for ch1, ch2 in self.__text_to_char_pair(reading, 3):
-            if ch1 not in self.ori_reading:
-                continue
             if self.__count_char_matches(ch1, ch2) == 0:
                 continue
             if self.__count_char_matches(ch1, ch2, no_order=True) == 3:
