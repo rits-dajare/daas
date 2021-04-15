@@ -13,6 +13,9 @@ class JudgeEngine:
         self.pass_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
         self.reject_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
 
+        # no normalized reading
+        self.ori_reading: str
+
         # applied method name
         self.applied_rule: str
 
@@ -22,18 +25,18 @@ class JudgeEngine:
 
         # preprocessing
         text = preprocessing.filtering(text)
+        # convert reading & morphs
+        reading = preprocessing.reading(text)
+        self.ori_reading = reading
+        reading: str = preprocessing.normalize(reading)
+        morphs: list = preprocessing.convert_morphs(text, True)
+        morphs = [preprocessing.normalize(morph) for morph in morphs]
 
-        # pre-judge
+        # force judge
         if self.__force_pass(text):
             return True
         if self.__force_reject(text):
             return False
-
-        # convert reading & morphs
-        reading = preprocessing.reading(text)
-        reading: str = preprocessing.normalize(reading)
-        morphs: list = preprocessing.convert_morphs(text, True)
-        morphs = [preprocessing.normalize(morph) for morph in morphs]
 
         return self.__rec_judge(reading, morphs, len(reading) >= config.TIGHT_LENGTH)
 
@@ -136,8 +139,12 @@ class JudgeEngine:
         n_gram = preprocessing.n_gram(reading, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
-                if abs(reading.index(ch1) - reading.index(ch2)) > 3:
+                ch_index = [i for i, ch in enumerate(n_gram) if ch == ch1]
+                if ch1 != ch2:
                     result.append([ch1, ch2])
+                else:
+                    if abs(ch_index[0] - ch_index[-1]) > 2:
+                        result.append([ch1, ch2])
         return result
 
     def __conv_with_pattern(self, reading, morphs):
@@ -189,7 +196,7 @@ class JudgeEngine:
         for mrp in morphs:
             if len(mrp) < 2:
                 continue
-            if reading.count(mrp) >= 2:
+            if self.ori_reading.count(mrp) >= 2:
                 return True
         return False
 
@@ -234,6 +241,10 @@ class JudgeEngine:
             return False
 
         for ch1, ch2 in self.__text_to_char_pair(reading, 3):
+            if ch1 not in self.ori_reading:
+                continue
+            if self.__count_char_matches(ch1, ch2) == 0:
+                continue
             if self.__count_char_matches(ch1, ch2, no_order=True) == 3:
                 return True
 
@@ -275,6 +286,9 @@ class JudgeEngine:
         return len(set(chars)) != len(chars)
 
     def __reject_2_ch_match(self, text):
+        if self.__full_text_n_matches(self.ori_reading) >= 4:
+            chars = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z].{3}', text)
+            return len(set(chars)) != len(chars)
         chars = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z]', text)
         return len(set(chars)) != len(chars)
 
@@ -293,6 +307,14 @@ class JudgeEngine:
             if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
                 return True
 
+    def __full_text_n_matches(self, reading: str) -> int:
+        result: int = 0
+        for n in range(len(reading)):
+            for ch1, ch2 in self.__text_to_char_pair(reading, n + 1):
+                if self.__count_char_matches(ch1, ch2) == n + 1:
+                    result = n
+        return result
+
     def __count_char_matches(self, ch1: str, ch2: str, no_order: bool = False, magic_nn: bool = False):
         if len(ch1) != len(ch2):
             return 0
@@ -301,7 +323,7 @@ class JudgeEngine:
         for i in range(len(ch1)):
             if no_order:
                 if ch1[i] in ch2:
-                    ch2.replace(ch1[1], '', 1)
+                    ch2 = ch2.replace(ch1[i], '', 1)
                     result += 1
             else:
                 if ch1[i] == ch2[i]:
