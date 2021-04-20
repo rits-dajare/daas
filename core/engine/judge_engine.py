@@ -19,9 +19,13 @@ class JudgeEngine:
         # applied method name
         self.applied_rule: str
 
+        # text processing index
+        self.text_proc_index: int
+
     @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> bool:
         self.applied_rule = ''
+        self.text_proc_index = 0
 
         # preprocessing
         text = preprocessing.filtering(text)
@@ -68,6 +72,9 @@ class JudgeEngine:
             return True
         if is_tight:
             return False
+
+        # increment loop index
+        self.text_proc_index += 1
 
         methods = [
             # 単純なパターンで置換
@@ -148,6 +155,9 @@ class JudgeEngine:
         return result
 
     def __conv_with_pattern(self, reading, morphs):
+        if self.text_proc_index > 1:
+            return reading, morphs
+
         conv_patterns = [
             ['ー', ''],
             ['ッ', ''],
