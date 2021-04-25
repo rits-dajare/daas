@@ -31,5 +31,6 @@ jobs:
         pipenv install --dev
     - name: Run code check
       run: |
+        pipenv run mypy
         pipenv run lint
 

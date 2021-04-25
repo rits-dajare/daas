@@ -16,6 +16,7 @@ emoji = "*"
 [dev-packages]
 flake8 = "*"
 autopep8 = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.8"
@@ -26,3 +27,4 @@ help = "python main.py --help"
 test = "python -m unittest discover tests"
 format = "autopep8 -ivr ."
 lint = "flake8 --show-source ."
+mypy = "mypy ."
