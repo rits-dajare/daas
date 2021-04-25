@@ -9,9 +9,9 @@ class ReadingEngine:
         self.score_cache: list = []
 
     @lru_cache(config.CACHE_SIZE)
-    def exec(self, text: str) -> float:
+    def exec(self, text: str) -> str:
         # preprocessing
-        text = preprocessing.filtering(text)
-        text = preprocessing.reading(text)
+        result: str = preprocessing.filtering(text)
+        result = preprocessing.reading(result)
 
-        return text
+        return result

@@ -35,7 +35,7 @@ class EvalEngine:
 
         return result
 
-    def eval(self, vector: str) -> float:
+    def eval(self, vector: list) -> float:
         np.random.seed(sum(vector))
         result = np.random.normal(2, 1.3) + 1.0
         if result > 5.0:

@@ -20,10 +20,10 @@ def reading(text: str) -> str:
         reader = csv.reader(f)
         for pattern in reader:
             if pattern != []:
-                result = re.sub(*pattern, result)
+                result = re.sub(pattern[0], pattern[1], result)
 
     # convert with morph analysis
-    result: str = ''.join(convert_morphs(result))
+    result = ''.join(convert_morphs(result))
 
     # words that cannot be converted
     result = re.sub(r'[a-zA-Z][a-z]+', '', result)
@@ -36,7 +36,7 @@ def reading(text: str) -> str:
     return result
 
 
-def convert_morphs(text: str, filtering: bool = False) -> str:
+def convert_morphs(text: str, filtering: bool = False) -> list:
     result: list = []
     filter_parts: list = ['助詞', '助動詞']
 

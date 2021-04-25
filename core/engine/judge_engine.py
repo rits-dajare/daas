@@ -30,9 +30,9 @@ class JudgeEngine:
         # preprocessing
         text = preprocessing.filtering(text)
         # convert reading & morphs
-        reading = preprocessing.reading(text)
+        reading: str = preprocessing.reading(text)
         self.ori_reading = reading
-        reading: str = preprocessing.normalize(reading)
+        reading = preprocessing.normalize(reading)
         morphs: list = preprocessing.convert_morphs(text, True)
         morphs = [preprocessing.normalize(morph) for morph in morphs]
 
