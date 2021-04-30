@@ -12,6 +12,7 @@ jaconv = "*"
 tqdm = "*"
 pyboin = "*"
 emoji = "*"
+python-levenshtein = "*"
 
 [dev-packages]
 flake8 = "*"

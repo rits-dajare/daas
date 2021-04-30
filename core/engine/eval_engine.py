@@ -1,4 +1,5 @@
 import numpy as np
+import Levenshtein
 from functools import lru_cache
 
 from core import config
@@ -19,6 +20,9 @@ class EvalEngine:
         for cache in self.score_cache:
             if cache['text'] in text or text in cache['text']:
                 return cache['score']
+            if Levenshtein.distance(cache['text'], text) <= 2:
+                self.__cache(text, cache['score'])
+                return cache['score']
 
         # score
         reading: str = preprocessing.reading(text)
@@ -26,12 +30,7 @@ class EvalEngine:
         result = self.eval(vector)
 
         # store fuzzy cache
-        cache_data: dict = {'text': text, 'score': result}
-        if len(self.score_cache) >= config.CACHE_SIZE:
-            self.score_cache.pop(0)
-            self.score_cache[-1] = cache_data
-        else:
-            self.score_cache.append(cache_data)
+        self.__cache(text, result)
 
         return result
 
@@ -44,3 +43,11 @@ class EvalEngine:
             return 1.0 + np.random.rand() / 5
 
         return result
+
+    def __cache(self, text: str, score: float) -> None:
+        cache_data: dict = {'text': text, 'score': score}
+        if len(self.score_cache) >= config.CACHE_SIZE:
+            self.score_cache.pop(0)
+            self.score_cache[-1] = cache_data
+        else:
+            self.score_cache.append(cache_data)
