@@ -55,6 +55,10 @@ Please look at the [documents](https://github.com/rits-dajare/DaaS/wiki).
 
 Bug reports and pull requests are welcome on GitHub at [https://github.com/rits-dajare/DaaS](https://github.com/rits-dajare/DaaS).
 
+## Refarence
+
+- [ダジャレステーション](https://dajare.jp/) - used dajare data as teacher in this project.
+
 ## Author
 
 - [Averak](https://github.com/averak)
