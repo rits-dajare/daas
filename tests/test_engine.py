@@ -17,6 +17,7 @@ class TestEngine(unittest.TestCase):
             [True, 'サイゼで見た彗星'],
             [True, '南下するけど何か？'],
             [True, '同棲買い出しに、どう正解出し？'],
+            [True, 'コーンが真横ーン'],
             [True, 'この卵エッグ'],
             [True, 'かきくけあカキエク-ん'],
             [True, 'かきくけあカキケク-ん'],
