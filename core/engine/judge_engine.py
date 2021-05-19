@@ -298,9 +298,9 @@ class JudgeEngine:
 
     def __reject_2_ch_match(self, text):
         if self.__full_text_n_matches(self.ori_reading) >= 4:
-            chars = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z].{3}', text)
+            chars = re.findall(r'[^ぁ-んァ-ンー][^\da-zA-Z].{3}', text)
             return len(set(chars)) != len(chars)
-        chars = re.findall(r'[^ぁ-んァ-ン][^\da-zA-Z]', text)
+        chars = re.findall(r'[^ぁ-んァ-ンー][^\da-zA-Z]', text)
         return len(set(chars)) != len(chars)
 
     def __reject_lapel_pattern(self, text):
