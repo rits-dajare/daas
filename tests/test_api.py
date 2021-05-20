@@ -1,10 +1,11 @@
 import unittest
 import json
 
+from core.api import controller
+
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        from core.api import controller
         self.app = controller.create_app().test_client()
 
     def test_正_ダジャレを判定(self):
