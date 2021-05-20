@@ -4,7 +4,7 @@ from core import message
 from core.service.dajare_service import DajareService
 
 
-class TestEngine(unittest.TestCase):
+class TestDajareService(unittest.TestCase):
     def setUp(self):
         self.dajare_service = DajareService()
 
