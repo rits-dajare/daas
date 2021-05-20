@@ -5,7 +5,7 @@ import collections
 from functools import lru_cache
 
 from core import config
-from core import preprocessing
+from core.util import text_util
 
 
 class JudgeEngine:
@@ -28,13 +28,13 @@ class JudgeEngine:
         self.text_proc_index = 0
 
         # preprocessing
-        text = preprocessing.filtering(text)
+        text = text_util.filtering(text)
         # convert reading & morphs
-        reading: str = preprocessing.reading(text)
+        reading: str = text_util.reading(text)
         self.ori_reading = reading
-        reading = preprocessing.normalize(reading)
-        morphs: list = preprocessing.convert_morphs(text, True)
-        morphs = [preprocessing.normalize(morph) for morph in morphs]
+        reading = text_util.normalize(reading)
+        morphs: list = text_util.convert_morphs(text, True)
+        morphs = [text_util.normalize(morph) for morph in morphs]
 
         # force judge
         if self.__force_reject(text):
@@ -143,7 +143,7 @@ class JudgeEngine:
 
     def __text_to_char_pair(self, reading, n=3):
         result = []
-        n_gram = preprocessing.n_gram(reading, n)
+        n_gram = text_util.n_gram(reading, n)
         for i, ch1 in enumerate(n_gram):
             for ch2 in n_gram[i + 1:]:
                 ch_index = [i for i, ch in enumerate(n_gram) if ch == ch1]
@@ -177,7 +177,7 @@ class JudgeEngine:
         ]
 
         for ptrn in conv_petterns:
-            for ch in preprocessing.n_gram(reading, 2):
+            for ch in text_util.n_gram(reading, 2):
                 if pyboin.text2boin(ch[0]) + ch[1] == ptrn[0]:
                     reading = reading.replace(ch, ptrn[1](ch))
                     morphs = [mrph.replace(ch, ptrn[1](ch)) for mrph in morphs]

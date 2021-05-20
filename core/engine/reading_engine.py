@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from core import config
-from core import preprocessing
+from core.util import text_util
 
 
 class ReadingEngine:
@@ -10,8 +10,8 @@ class ReadingEngine:
 
     @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> str:
-        # preprocessing
-        result: str = preprocessing.filtering(text)
-        result = preprocessing.reading(result)
+        # text_util
+        result: str = text_util.filtering(text)
+        result = text_util.reading(result)
 
         return result
