@@ -1,9 +1,9 @@
 import os
 from flask import Flask
 
-from . import judge_api
-from . import eval_api
-from . import reading_api
+from . import judge_controller
+from . import eval_controller
+from . import reading_controller
 
 
 def create_app(test_config=None) -> Flask:
@@ -25,6 +25,9 @@ def create_app(test_config=None) -> Flask:
     except OSError:
         pass
 
+    # traling slash
+    app.url_map.strict_slashes = False
+
     @app.after_request
     def add_header(res):
         res.headers['Access-Control-Allow-Origin'] = '*'
@@ -32,12 +35,16 @@ def create_app(test_config=None) -> Flask:
 
     @app.route('/')
     def hello():
-        return 'Welcome to Dajare as a Service'
+        return 'Hello, World!'
 
-    app.register_blueprint(judge_api.bp, url_prefix='/judge/')
-    app.register_blueprint(eval_api.bp, url_prefix='/eval/')
-    app.register_blueprint(reading_api.bp, url_prefix='/reading/')
+    app.register_blueprint(judge_controller.bp, url_prefix='/judge')
+    app.register_blueprint(eval_controller.bp, url_prefix='/eval')
+    app.register_blueprint(reading_controller.bp, url_prefix='/reading')
 
+    # make url_for('index') == url_for('blog.index')
+    # in another app, you might define a separate main index here with
+    # app.route, while giving the blog blueprint a url_prefix, but for
+    # the tutorial the blog will be the main index
     app.add_url_rule('/', endpoint='index')
 
     return app
