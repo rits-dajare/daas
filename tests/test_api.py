@@ -3,8 +3,8 @@ import unittest
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        from core import webapi
-        self.app = webapi.create_app().test_client()
+        from core.api import controller
+        self.app = controller.create_app().test_client()
 
     def test_judge(self):
         res = self.app.get('judge/', query_string={'dajare': '布団が吹っ飛んだ'})
