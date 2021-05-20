@@ -1,12 +1,12 @@
 import unittest
 import json
 
-from core.api import controller
+from core.api.controller import create_app
 
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        self.app = controller.create_app().test_client()
+        self.app = create_app().test_client()
 
     def test_正_ダジャレを判定(self):
         res = self.app.get('judge/', query_string={'dajare': '布団が吹っ飛んだ'})

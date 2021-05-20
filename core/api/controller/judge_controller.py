@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 import typing
 
-from core import engine
+from core.service.dajare_service import DajareService
 from core.api.request import judge_request
 from core.api.response import judge_response
+
+dajare_service = DajareService()
 
 bp: Blueprint = Blueprint('judge', __name__)
 
@@ -18,8 +20,9 @@ def judge_dajare() -> typing.Tuple[str, int]:
 
     # judge dajare
     try:
-        result.is_dajare = engine.judge_engine.exec(params.dajare)
-        result.applied_rule = engine.judge_engine.applied_rule
+        dajare = dajare_service.judge_dajare(params.dajare)
+        result.is_dajare = dajare.is_dajare
+        result.applied_rule = dajare.applied_rule
 
         status_code = 200
         result.status = "OK"
