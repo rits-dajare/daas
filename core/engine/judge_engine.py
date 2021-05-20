@@ -11,7 +11,7 @@ from core import preprocessing
 class JudgeEngine:
     def __init__(self):
         self.pass_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
-        self.reject_patterns = self.__load_patterns(config.JUDGE_PASS_DICT_PATH)
+        self.reject_patterns = self.__load_patterns(config.JUDGE_REJECT_DICT_PATH)
 
         # no normalized reading
         self.ori_reading: str
@@ -37,10 +37,10 @@ class JudgeEngine:
         morphs = [preprocessing.normalize(morph) for morph in morphs]
 
         # force judge
-        if self.__force_pass(text):
-            return True
         if self.__force_reject(text):
             return False
+        if self.__force_pass(text):
+            return True
 
         return self.__rec_judge(reading, morphs, len(reading) >= config.TIGHT_LENGTH)
 
@@ -106,10 +106,10 @@ class JudgeEngine:
 
     def __force_reject(self, text):
         methods = [
-            # 強制的に弾くパターン
-            self.__reject_force_patterns,
             # 30文字以上
             self.__reject_length,
+            # 強制的に弾くパターン
+            self.__reject_force_patterns,
             # カタカナのみ
             self.__reject_only_katakana,
             # 同じ文字が6回以上使われている

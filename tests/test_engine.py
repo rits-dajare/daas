@@ -34,6 +34,7 @@ class TestEngine(unittest.TestCase):
             [False, '布団が吹っ飛んだ布団が吹っ飛んだあいうえおかきくけこさしすせ'],
             [False, '判定テストです'],
             [False, '野球は野球だ'],
+            [False, '麻生「あっそ」'],
             [False, 'AはAだ'],
             [False, 'ああいあい'],
             [False, 'テストあいうテストかきく'],
