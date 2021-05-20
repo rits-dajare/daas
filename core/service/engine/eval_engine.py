@@ -3,7 +3,7 @@ import Levenshtein
 from functools import lru_cache
 
 from core import config
-from core import preprocessing
+from core.util import text_util
 
 
 class EvalEngine:
@@ -13,8 +13,8 @@ class EvalEngine:
     @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> float:
         # preprocessing
-        text = preprocessing.filtering(text)
-        text = preprocessing.reading(text)
+        text = text_util.filtering(text)
+        text = text_util.reading(text)
 
         # check fuzzy cache
         for cache in self.score_cache:
@@ -25,8 +25,8 @@ class EvalEngine:
                 return cache['score']
 
         # score
-        reading: str = preprocessing.reading(text)
-        vector: list = preprocessing.vectorize(reading)
+        reading: str = text_util.reading(text)
+        vector: list = text_util.vectorize(reading)
         result = self.eval(vector)
 
         # store fuzzy cache

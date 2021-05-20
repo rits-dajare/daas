@@ -1,11 +1,14 @@
 import unittest
 
-from core import engine
 from core import message
+from core.service.dajare_service import DajareService
 
 
 class TestEngine(unittest.TestCase):
-    def test_judge_dajare(self):
+    def setUp(self):
+        self.dajare_service = DajareService()
+
+    def test_正_ダジャレを判定(self):
         cases = [
             [True, '布団が吹っ飛んだ'],
             [True, '芸無なゲーム'],
@@ -43,21 +46,23 @@ class TestEngine(unittest.TestCase):
             [False, 'フトンガフットンダ'],
         ]
         for case in cases:
+            dajare = self.dajare_service.judge_dajare(case[1])
             try:
                 self.assertEqual(
                     case[0],
-                    engine.judge_engine.exec(case[1])
+                    dajare.is_dajare
                 )
             except AssertionError as error:
-                print(message.APPLIED_RULE(case[1], engine.judge_engine.applied_rule))
+                print(message.APPLIED_RULE(case[1], dajare.applied_rule))
                 raise error
 
-    def test_eval(self):
-        score = engine.eval_engine.exec('布団が吹っ飛んだ')
-        self.assertTrue(score >= 1.0 and score <= 5.0)
+    def test_正_ダジャレを評価(self):
+        dajare = self.dajare_service.eval_dajare('布団が吹っ飛んだ')
+        self.assertTrue(dajare.score >= 1.0 and dajare.score <= 5.0)
 
-    def test_reading(self):
+    def test_正_ダジャレを読みに変換(self):
+        dajare = self.dajare_service.convert_reading('こんにちは')
         self.assertEqual(
             'コンニチハ',
-            engine.reading_engine.exec('こんにちは')
+            dajare.reading
         )

@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 import typing
 
-from core import engine
+from core.service.dajare_service import DajareService
 from core.api.request import eval_request
 from core.api.response import eval_response
+
+dajare_service = DajareService()
 
 bp: Blueprint = Blueprint('eval', __name__)
 
@@ -18,7 +20,8 @@ def eval_dajare() -> typing.Tuple[str, int]:
 
     # eval dajare
     try:
-        result.score = engine.eval_engine.exec(params.dajare)
+        dajare = dajare_service.eval_dajare(params.dajare)
+        result.score = dajare.score
 
         status_code = 200
         result.status = "OK"

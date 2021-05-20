@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 import typing
 
-from core import engine
+from core.service.dajare_service import DajareService
 from core.api.request import reading_request
 from core.api.response import reading_response
+
+dajare_service = DajareService()
 
 bp: Blueprint = Blueprint('reading', __name__)
 
@@ -16,9 +18,10 @@ def reading_dajare() -> typing.Tuple[str, int]:
     # query params
     params = reading_request.ReadingRequest(request.args)
 
-    # reading dajare
+    # convert reading
     try:
-        result.reading = engine.reading_engine.exec(params.dajare)
+        dajare = dajare_service.convert_reading(params.dajare)
+        result.reading = dajare.reading
 
         status_code = 200
         result.status = "OK"
