@@ -35,7 +35,6 @@ class DajareModel:
             raise TypeError('invalid type')
         if not (score >= 1.0 and score <= 5.0):
             raise ValueError('score must be 1~5')
-
         self.__score = score
 
     @property

@@ -2,7 +2,6 @@ import sys
 import re
 import pyboin
 import collections
-from functools import lru_cache
 
 from core import config
 from core.util import text_util
@@ -22,7 +21,6 @@ class JudgeEngine:
         # text processing index
         self.text_proc_index: int
 
-    @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> bool:
         self.applied_rule = ''
         self.text_proc_index = 0

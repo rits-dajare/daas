@@ -1,6 +1,5 @@
 import numpy as np
 import Levenshtein
-from functools import lru_cache
 
 from core import config
 from core.util import text_util
@@ -10,7 +9,6 @@ class EvalEngine:
     def __init__(self):
         self.score_cache: list = []
 
-    @lru_cache(config.CACHE_SIZE)
     def exec(self, text: str) -> float:
         # preprocessing
         text = text_util.filtering(text)
