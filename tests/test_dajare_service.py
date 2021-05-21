@@ -9,51 +9,63 @@ class TestDajareService(unittest.TestCase):
         self.dajare_service = DajareService()
 
     def test_正_ダジャレを判定(self):
-        cases = [
-            [True, '布団が吹っ飛んだ'],
-            [True, '芸無なゲーム'],
-            [True, 'ダジャレを言うのは誰じゃ'],
-            [True, '紅茶が凍っちゃった'],
-            [True, 'ニューヨークで入浴'],
-            [True, 'アヒージョはアチーよ'],
+        test_cases = [
+            # __force_pass
+            [True, 'この卵エッグ'],
+            [True, '車かぁ'],
+            # __pass_full_match
+            [True, 'トイレに行っといれ'],
+            # __pass_morphs_overlap
             [True, '臭いサイ'],
+            # __pass_vowel_match
+            [True, 'アヒージョはアチーよ'],
+            # __pass_consonant_match
             [True, 'サイゼで見た彗星'],
+            # __pass_swap_match
+            [True, 'ダジャレを言うのは誰じゃ'],
+            # __pass_magic_nn
             [True, '南下するけど何か？'],
+            # __conv_with_pattern
+            [True, '布団が吹っ飛んだ'],
+            # __conv_vowel_to_pron
+            [True, '紅茶が凍っちゃった'],
+            # __conv_looped_vowel_to_hyphen
+            [True, '芸無なゲーム'],
+            [True, '打倒だと〜'],
+            [True, 'ニューヨークで入浴'],
+            # __conv_prev_of_lower_ch_to_vowel
+            [True, 'ローソンのローション'],
+            # __reject_length
+            [False, '布団が吹っ飛んだこの焼き肉は焼きにくいダジャレを言うのは誰じゃ'],
+            # __reject_force_patterns
+            [False, '麻生「あっそ」'],
+            # __reject_only_katakana
+            [False, 'フトンガフットンダ'],
+            [False, 'レイヤーオブザイヤー'],
+            # __reject_ch_many_times_used
+            [False, '布団が吹っ飛んだだだだだだ'],
+            # __reject_only_used_alphanumeric
+            [False, 'ABCDEFGHIJK'],
+            # __reject_block_many_times_used
+            [False, 'トイレに行っトイレ'],
+            # __reject_2_ch_match
+            [False, '野球は野球だ'],
             [True, '同棲買い出しに、どう正解出し？'],
             [True, 'コーンが真横ーン'],
-            [True, '打倒だと〜'],
-            [True, 'この卵エッグ'],
-            [True, 'かきくけあカキエク-ん'],
-            [True, 'かきくけあカキケク-ん'],
-            [True, 'かきくあカキック-んン'],
-            [True, 'かきくあカキンク-んン'],
-            [True, 'かきくあカキーク-んン'],
-            [True, 'かきいあカキー-んン'],
-            [True, 'かこうあカコー-んン'],
-            [True, 'かけいあカケー-んン'],
-            [True, 'しゃんあサンア'],
-            [False, 'あいうあいう-ん'],
-            [False, 'あいあいあいあいあいあい-かきくけこ'],
-            [False, '布団が吹っ飛んだ布団が吹っ飛んだあいうえおかきくけこさしすせ'],
+            # __reject_lapel_pattern
+            [False, 'ダジャレダジャレ'],
+            # others
             [False, '判定テストです'],
-            [False, '野球は野球だ'],
-            [False, '麻生「あっそ」'],
-            [False, 'AはAだ'],
-            [False, 'ああいあい'],
-            [False, 'テストあいうテストかきく'],
-            [False, 'あいうえあいうえ-あ'],
-            [False, 'あいうえおあいうえお-あ'],
-            [False, 'フトンガフットンダ'],
         ]
-        for case in cases:
-            dajare = self.dajare_service.judge_dajare(case[1])
+        for is_dajare, text in test_cases:
+            dajare = self.dajare_service.judge_dajare(text)
             try:
                 self.assertEqual(
-                    case[0],
+                    is_dajare,
                     dajare.is_dajare
                 )
             except AssertionError as error:
-                print(message.APPLIED_RULE(case[1], dajare.applied_rule))
+                print(message.APPLIED_RULE(text, dajare.applied_rule))
                 raise error
 
     def test_正_ダジャレを評価(self):
