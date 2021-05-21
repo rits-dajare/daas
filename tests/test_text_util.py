@@ -15,7 +15,10 @@ class TestTextUtil(unittest.TestCase):
         self.assertEqual('', text_util.reading('abcd'))
 
     def test_正_形態素解析(self):
+        # 通常の形態素解析
         self.assertEqual(['キョウ', 'ノ', 'テンキ'], text_util.convert_morphs('今日の天気'))
+        # 助詞，助動詞フィルタリング
+        self.assertEqual(['キョウ', 'テンキ'], text_util.convert_morphs('今日の天気', True))
 
     def test_正_ノイズフィルタリング(self):
         test_cases: list = [
