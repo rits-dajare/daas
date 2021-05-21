@@ -45,17 +45,17 @@ class JudgeEngine:
     def __judge(self, reading, morphs, is_tight=False):
         methods = [
             # 2文字以上の形態素が一致
-            self.__rule_morphs_overlap,
+            self.__pass_morphs_overlap,
             # 3文字完全一致
-            self.__rule_full_match,
+            self.__pass_full_match,
             # 母音完全一致
-            self.__rule_vowel_match,
+            self.__pass_vowel_match,
             # 子音完全一致
-            self.__rule_consonant_match,
+            self.__pass_consonant_match,
             # 文字が入れ替わっている
-            self.__rule_swap_match,
+            self.__pass_swap_match,
             # 'ン'は全ての文字にマッチする
-            self.__rule_magic_nn,
+            self.__pass_magic_nn,
         ]
 
         for method in methods:
@@ -120,8 +120,6 @@ class JudgeEngine:
             self.__reject_2_ch_match,
             # 折り返し（ABCD|ABCD）パターン
             self.__reject_lapel_pattern,
-            # 文字がx種類以下 && 文字列がy文字以上
-            self.__reject_len_of_sentence_and_ch,
         ]
 
         for method in methods:
@@ -200,7 +198,7 @@ class JudgeEngine:
             )
         return reading, morphs
 
-    def __rule_morphs_overlap(self, reading, morphs, is_tight=False):
+    def __pass_morphs_overlap(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
@@ -211,7 +209,7 @@ class JudgeEngine:
                 return True
         return False
 
-    def __rule_full_match(self, reading, morphs, is_tight=False):
+    def __pass_full_match(self, reading, morphs, is_tight=False):
         ch_pair = self.__text_to_char_pair(reading)
         for ch1, ch2 in ch_pair:
             if self.__count_char_matches(ch1, ch2) == 3:
@@ -220,7 +218,7 @@ class JudgeEngine:
                         return True
         return False
 
-    def __rule_vowel_match(self, reading, morphs, is_tight=False):
+    def __pass_vowel_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
@@ -233,7 +231,7 @@ class JudgeEngine:
                 return True
         return False
 
-    def __rule_consonant_match(self, reading, morphs, is_tight=False):
+    def __pass_consonant_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
@@ -247,7 +245,7 @@ class JudgeEngine:
                 return True
         return False
 
-    def __rule_swap_match(self, reading, morphs, is_tight=False):
+    def __pass_swap_match(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
@@ -259,7 +257,7 @@ class JudgeEngine:
 
         return False
 
-    def __rule_magic_nn(self, reading, morphs, is_tight=False):
+    def __pass_magic_nn(self, reading, morphs, is_tight=False):
         if is_tight:
             return False
 
@@ -304,17 +302,6 @@ class JudgeEngine:
     def __reject_lapel_pattern(self, text):
         pivot = len(text) // 2
         return text[:pivot] == text[pivot + len(text) % 2:]
-
-    def __reject_len_of_sentence_and_ch(self, text):
-        ch_len_rules = [
-            [3, 0],
-            [4, 7],
-            [5, 10],
-        ]
-        chars = [ch for ch in text]
-        for rule in ch_len_rules:
-            if len(set(chars)) <= rule[0] and len(text) >= rule[1]:
-                return True
 
     def __full_text_n_matches(self, reading: str) -> int:
         result: int = 0
