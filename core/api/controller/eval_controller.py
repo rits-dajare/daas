@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask.wrappers import Response
 import typing
 
 from core.service.dajare_service import DajareService
@@ -11,7 +12,7 @@ bp: Blueprint = Blueprint('eval', __name__)
 
 
 @bp.route('/', methods=['GET'])
-def eval_dajare() -> typing.Tuple[str, int]:
+def eval_dajare() -> typing.Tuple[Response, int]:
     status_code: int
     result = eval_response.EvalResponse()
 
