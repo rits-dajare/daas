@@ -61,7 +61,7 @@ def filtering(text: str) -> str:
     # remove emoji
     result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
     # remove '笑'
-    result = re.sub(r'w+(?![a-vx-zA-Z])', '', result)
+    result = re.sub(r'w+(?![a-vx-z])', '', result, flags=re.IGNORECASE)
     # remove number
     result = re.sub(r'\d', '', result)
 
