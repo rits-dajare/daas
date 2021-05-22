@@ -53,7 +53,7 @@ def convert_morphs(text: str, filtering: bool = False) -> list:
     return result
 
 
-def filtering(text: str) -> str:
+def filter_noise(text: str) -> str:
     result: str = text
     # remove symbolic char
     result = re.sub(r'[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]', '', result)

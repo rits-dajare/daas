@@ -27,7 +27,7 @@ class TestTextUtil(unittest.TestCase):
             ['布団が吹っ飛んだ', '布団が吹っ飛んだ'],
         ]
         for case in test_cases:
-            self.assertEqual(case[0], text_util.filtering(case[1]))
+            self.assertEqual(case[0], text_util.filter_noise(case[1]))
 
     def test_正_n_gram(self):
         self.assertEqual(['あい', 'いう', 'うえ', 'えお'], text_util.n_gram('あいうえお', 2))
