@@ -3,6 +3,7 @@ import csv
 import emoji
 import pyboin
 import jaconv
+import mojimoji
 from janome.tokenizer import Tokenizer
 
 from core import config
@@ -53,13 +54,15 @@ def convert_morphs(text: str, filtering: bool = False) -> list:
     return result
 
 
-def remove_noise(text: str) -> str:
+def preprocessing(text: str) -> str:
     result: str = text
+    # 全角 -> 半角
+    result = mojimoji.zen_to_han(result, kana=False)
     # remove '笑'
     result = re.sub(
         r'[a-zａ-ｚ]+',
         lambda m:
-            '' if re.match(r'^[wｗ]+$', m.group(0), re.IGNORECASE) else m.group(0),
+            '' if re.match(r'^[w]+$', m.group(0), re.IGNORECASE) else m.group(0),
         result,
         flags=re.IGNORECASE
     )

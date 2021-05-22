@@ -26,7 +26,7 @@ class JudgeEngine:
         self.text_proc_index = 0
 
         # preprocessing
-        text = text_util.remove_noise(text)
+        text = text_util.preprocessing(text)
         # convert reading & morphs
         reading: str = text_util.reading(text)
         self.ori_reading = reading
