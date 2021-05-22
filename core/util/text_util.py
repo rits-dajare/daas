@@ -60,7 +60,7 @@ def preprocessing(text: str) -> str:
     result = mojimoji.zen_to_han(result, kana=False)
     # remove '笑'
     result = re.sub(
-        r'[a-zａ-ｚ]+',
+        r'[a-z]+',
         lambda m:
             '' if re.match(r'^[w]+$', m.group(0), re.IGNORECASE) else m.group(0),
         result,
