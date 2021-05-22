@@ -55,13 +55,19 @@ def convert_morphs(text: str, filtering: bool = False) -> list:
 
 def filter_noise(text: str) -> str:
     result: str = text
+    # remove '笑'
+    result = re.sub(
+        r'[a-zａ-ｚ]+',
+        lambda m:
+            '' if re.match(r'^[wｗ]+$', m.group(0), re.IGNORECASE) else m.group(0),
+        result,
+        flags=re.IGNORECASE
+    )
     # remove symbolic char
     result = re.sub(r'[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]', '', result)
     result = re.sub(r'[！-／：-＠［-｀｛、。”’・ 　]', '', result)
     # remove emoji
     result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
-    # remove '笑'
-    result = re.sub(r'[wｗ]+(?![a-vx-z])', '', result, flags=re.IGNORECASE)
     # remove number
     result = re.sub(r'\d', '', result)
 
