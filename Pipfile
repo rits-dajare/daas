@@ -13,6 +13,7 @@ tqdm = "*"
 pyboin = "*"
 emoji = "*"
 python-levenshtein = "*"
+mojimoji = "*"
 
 [dev-packages]
 flake8 = "*"
