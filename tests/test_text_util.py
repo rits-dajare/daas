@@ -23,6 +23,8 @@ class TestTextUtil(unittest.TestCase):
     def test_正_ノイズフィルタリング(self):
         self.assertEqual('', text_util.filter_noise('!@#$%^^&*()，。/-_=+;:'))
         self.assertEqual('', text_util.filter_noise('🤗⭕🤓🤔🤘🦁⭐🆗🆖🈲🤐🤗🤖🤑🆙⏩'))
+        self.assertEqual('布団が吹っ飛んだ', text_util.filter_noise('布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ'))
+        self.assertEqual('wwwwaa', text_util.filter_noise('wwwwaa'))
         self.assertEqual('布団が吹っ飛んだ', text_util.filter_noise('布団が吹っ飛んだ'))
 
     def test_正_n_gram(self):
