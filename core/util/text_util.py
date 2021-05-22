@@ -53,7 +53,7 @@ def convert_morphs(text: str, filtering: bool = False) -> list:
     return result
 
 
-def filter_noise(text: str) -> str:
+def remove_noise(text: str) -> str:
     result: str = text
     # remove '笑'
     result = re.sub(

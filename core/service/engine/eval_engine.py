@@ -11,7 +11,7 @@ class EvalEngine:
 
     def exec(self, text: str) -> float:
         # preprocessing
-        text = text_util.filter_noise(text)
+        text = text_util.remove_noise(text)
         text = text_util.reading(text)
 
         # check fuzzy cache

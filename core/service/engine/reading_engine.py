@@ -7,7 +7,7 @@ class ReadingEngine:
 
     def exec(self, text: str) -> str:
         # text_util
-        result: str = text_util.filter_noise(text)
+        result: str = text_util.remove_noise(text)
         result = text_util.reading(result)
 
         return result

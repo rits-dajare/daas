@@ -21,11 +21,11 @@ class TestTextUtil(unittest.TestCase):
         self.assertEqual(['キョウ', 'テンキ'], text_util.convert_morphs('今日の天気', True))
 
     def test_正_ノイズフィルタリング(self):
-        self.assertEqual('', text_util.filter_noise('!@#$%^^&*()，。/-_=+;:'))
-        self.assertEqual('', text_util.filter_noise('🤗⭕🤓🤔🤘🦁⭐🆗🆖🈲🤐🤗🤖🤑🆙⏩'))
-        self.assertEqual('布団が吹っ飛んだ', text_util.filter_noise('布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ'))
-        self.assertEqual('wwwwaa', text_util.filter_noise('wwwwaa'))
-        self.assertEqual('布団が吹っ飛んだ', text_util.filter_noise('布団が吹っ飛んだ'))
+        self.assertEqual('', text_util.remove_noise('!@#$%^^&*()，。/-_=+;:'))
+        self.assertEqual('', text_util.remove_noise('🤗⭕🤓🤔🤘🦁⭐🆗🆖🈲🤐🤗🤖🤑🆙⏩'))
+        self.assertEqual('布団が吹っ飛んだ', text_util.remove_noise('布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ'))
+        self.assertEqual('wwwwaa', text_util.remove_noise('wwwwaa'))
+        self.assertEqual('布団が吹っ飛んだ', text_util.remove_noise('布団が吹っ飛んだ'))
 
     def test_正_n_gram(self):
         self.assertEqual(['あい', 'いう', 'うえ', 'えお'], text_util.n_gram('あいうえお', 2))
