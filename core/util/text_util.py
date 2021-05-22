@@ -62,7 +62,7 @@ def preprocessing(text: str) -> str:
     result = re.sub(
         r'[a-zａ-ｚ]+',
         lambda m:
-            '' if re.match(r'^[w]+$', m.group(0), re.IGNORECASE) else m.group(0),
+            '' if re.match(r'^w+$', m.group(0), re.IGNORECASE) else m.group(0),
         result,
         flags=re.IGNORECASE
     )
