@@ -55,7 +55,7 @@ Bug reports and pull requests are welcome on GitHub at [https://github.com/rits-
 
 ## Refarence
 
-- [Swagger UI](https://api.abelab.dev/daas/docs)
+- [Swagger UI](https://dajare.abelab.dev/docs)
 - [ダジャレステーション](https://dajare.jp/) - used dajare data as teacher in this project.
 
 ## Author
