@@ -1,5 +1,5 @@
-class JudgeRequest:
-    dajare: str
+from pydantic import BaseModel
 
-    def __init__(self, params: dict):
-        self.dajare = params["dajare"]
+
+class JudgeRequest(BaseModel):
+    dajare: str

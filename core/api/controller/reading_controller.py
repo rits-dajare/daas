@@ -1,36 +1,22 @@
-from flask import Blueprint, request, jsonify
-from flask.wrappers import Response
-import typing
+from fastapi import APIRouter, Depends, HTTPException
 
 from core.service.dajare_service import DajareService
-from core.api.request import reading_request
-from core.api.response import reading_response
+from core.api.request.reading_request import ReadingRequest
+from core.api.response.reading_response import ReadingResponse
 
 dajare_service = DajareService()
 
-bp: Blueprint = Blueprint('reading', __name__)
+router = APIRouter()
 
 
-@bp.route('/', methods=['GET'])
-def reading_dajare() -> typing.Tuple[Response, int]:
-    status_code: int
-    result = reading_response.ReadingResponse()
-
-    # query params
-    params = reading_request.ReadingRequest(request.args)
-
+@router.get('', status_code=200, response_model=ReadingResponse)
+async def reading_dajare(request: ReadingRequest = Depends()):
     # convert reading
     try:
-        dajare = dajare_service.convert_reading(params.dajare)
-        result.reading = dajare.reading
+        dajare = dajare_service.convert_reading(request.dajare)
+    except Exception:
+        raise HTTPException(status_code=500)
 
-        status_code = 200
-        result.status = "OK"
-        result.message = "success"
-
-    except Exception as e:
-        status_code = 500
-        result.status = "NG"
-        result.message = str(e)
-
-    return jsonify(result.__dict__), status_code
+    return ReadingResponse(
+        reading=dajare.reading,
+    )

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import uvicorn
 import json
 import glob
 import tqdm
@@ -7,12 +8,13 @@ import argparse
 
 from core import config
 from core import message
+# from core.api.controller import create_app
 from core.api.controller import create_app
 
 
 def start_mode():
     app = create_app()
-    app.run(debug=config.API_DEBUG, host=config.API_HOST, port=config.API_PORT)
+    uvicorn.run(app, host=config.API_HOST, port=config.API_PORT)
 
 
 def accuracy_mode():

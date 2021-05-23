@@ -1,37 +1,23 @@
-from flask import Blueprint, request, jsonify
-from flask.wrappers import Response
-import typing
+from fastapi import APIRouter, Depends, HTTPException
 
 from core.service.dajare_service import DajareService
-from core.api.request import judge_request
-from core.api.response import judge_response
+from core.api.request.judge_request import JudgeRequest
+from core.api.response.judge_response import JudgeResponse
 
 dajare_service = DajareService()
 
-bp: Blueprint = Blueprint('judge', __name__)
+router = APIRouter()
 
 
-@bp.route('/', methods=['GET'])
-def judge_dajare() -> typing.Tuple[Response, int]:
-    status_code: int
-    result = judge_response.JudgeResponse()
-
-    # query params
-    params = judge_request.JudgeRequest(request.args)
-
+@router.get('', status_code=200, response_model=JudgeResponse)
+async def judge_dajare(request: JudgeRequest = Depends()):
     # judge dajare
     try:
-        dajare = dajare_service.judge_dajare(params.dajare)
-        result.is_dajare = dajare.is_dajare
-        result.applied_rule = dajare.applied_rule
+        dajare = dajare_service.judge_dajare(request.dajare)
+    except Exception:
+        raise HTTPException(status_code=500)
 
-        status_code = 200
-        result.status = "OK"
-        result.message = "success"
-
-    except Exception as e:
-        status_code = 500
-        result.status = "NG"
-        result.message = str(e)
-
-    return jsonify(result.__dict__), status_code
+    return JudgeResponse(
+        is_dajare=dajare.is_dajare,
+        applied_rule=dajare.applied_rule,
+    )

@@ -1,5 +1,5 @@
-class ReadingRequest:
-    dajare: str
+from pydantic import BaseModel
 
-    def __init__(self, params: dict):
-        self.dajare = params["dajare"]
+
+class ReadingRequest(BaseModel):
+    dajare: str

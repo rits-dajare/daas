@@ -1,5 +1,6 @@
-class JudgeResponse:
-    status: str
-    message: str
+from pydantic import BaseModel
+
+
+class JudgeResponse(BaseModel):
     is_dajare: bool
-    applied_rule: bool
+    applied_rule: str
