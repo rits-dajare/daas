@@ -1,4 +1,5 @@
-class EvalResponse:
-    status: str
-    message: str
+from pydantic import BaseModel
+
+
+class EvalResponse(BaseModel):
     score: float

@@ -1,36 +1,22 @@
-from flask import Blueprint, request, jsonify
-from flask.wrappers import Response
-import typing
+from fastapi import APIRouter, Depends, HTTPException
 
 from core.service.dajare_service import DajareService
-from core.api.request import eval_request
-from core.api.response import eval_response
+from core.api.request.eval_request import EvalRequest
+from core.api.response.eval_response import EvalResponse
 
 dajare_service = DajareService()
 
-bp: Blueprint = Blueprint('eval', __name__)
+router = APIRouter()
 
 
-@bp.route('/', methods=['GET'])
-def eval_dajare() -> typing.Tuple[Response, int]:
-    status_code: int
-    result = eval_response.EvalResponse()
-
-    # query params
-    params = eval_request.EvalRequest(request.args)
-
+@router.get('', status_code=200, response_model=EvalResponse)
+async def eval_dajare(request: EvalRequest = Depends()):
     # eval dajare
     try:
-        dajare = dajare_service.eval_dajare(params.dajare)
-        result.score = dajare.score
+        dajare = dajare_service.eval_dajare(request.dajare)
+    except Exception:
+        raise HTTPException(status_code=500)
 
-        status_code = 200
-        result.status = "OK"
-        result.message = "success"
-
-    except Exception as e:
-        status_code = 500
-        result.status = "NG"
-        result.message = str(e)
-
-    return jsonify(result.__dict__), status_code
+    return EvalResponse(
+        score=dajare.score,
+    )

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from fastapi.testclient import TestClient
+import uvicorn
 import json
 import glob
 import tqdm
@@ -12,7 +14,7 @@ from core.api.controller import create_app
 
 def start_mode():
     app = create_app()
-    app.run(debug=config.API_DEBUG, host=config.API_HOST, port=config.API_PORT)
+    uvicorn.run(app, host=config.API_HOST, port=config.API_PORT)
 
 
 def accuracy_mode():
@@ -30,15 +32,15 @@ def accuracy_mode():
     n_samples: int = int(input_str)
     data = random.sample(data, n_samples)
 
-    # set api
-    app = create_app().test_client()
+    # launch API
+    app = TestClient(create_app())
 
     # measure accuracy
     error_samples: list = []
     print(message.MEASURE_ACCURACY_MSG(n_samples))
     for sample in tqdm.tqdm(data):
-        judge_res = app.get('judge/', query_string={'dajare': sample['dajare']}).json
-        reading_res = app.get('reading/', query_string={'dajare': sample['dajare']}).json
+        judge_res = app.get('judge', params={'dajare': sample['dajare']}).json()
+        reading_res = app.get('reading', params={'dajare': sample['dajare']}).json()
         if judge_res['is_dajare'] != sample['is_dajare']:
             error_samples.append({
                 'dajare': sample['dajare'],

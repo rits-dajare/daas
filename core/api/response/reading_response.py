@@ -1,4 +1,5 @@
-class ReadingResponse:
-    status: str
-    message: str
+from pydantic import BaseModel
+
+
+class ReadingResponse(BaseModel):
     reading: str

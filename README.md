@@ -49,16 +49,13 @@ If you want to know the details of how to use this, run the following command.
 $ pipenv run help
 ```
 
-## Wiki
-
-Please look at the [documents](https://github.com/rits-dajare/DaaS/wiki).
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at [https://github.com/rits-dajare/DaaS](https://github.com/rits-dajare/DaaS).
 
 ## Refarence
 
+- [Swagger UI](https://api.abelab.dev/daas/docs)
 - [ダジャレステーション](https://dajare.jp/) - used dajare data as teacher in this project.
 
 ## Author

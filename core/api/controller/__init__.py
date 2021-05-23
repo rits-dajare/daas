@@ -1,50 +1,36 @@
-import os
-from flask import Flask
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import judge_controller
 from . import eval_controller
 from . import reading_controller
 
 
-def create_app(test_config=None) -> Flask:
-    app: Flask = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
+def create_app() -> FastAPI:
+    app = FastAPI()
+
+    # middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*'],
     )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+    # routing
+    app.include_router(judge_controller.router, prefix='/judge', tags=['判定API'])
+    app.include_router(eval_controller.router, prefix='/eval', tags=['評価API'])
+    app.include_router(reading_controller.router, prefix='/reading', tags=['読み変換API'])
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    # traling slash
-    app.url_map.strict_slashes = False
-
-    @app.after_request
-    def add_header(res):
-        res.headers['Access-Control-Allow-Origin'] = '*'
-        return res
-
-    @app.route('/')
-    def hello():
+    # index
+    @app.get('/', tags=['index'])
+    def index():
         return 'Hello, World!'
 
-    app.register_blueprint(judge_controller.bp, url_prefix='/judge')
-    app.register_blueprint(eval_controller.bp, url_prefix='/eval')
-    app.register_blueprint(reading_controller.bp, url_prefix='/reading')
-
-    # make url_for('index') == url_for('blog.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the blog blueprint a url_prefix, but for
-    # the tutorial the blog will be the main index
-    app.add_url_rule('/', endpoint='index')
+    # OpenAPI
+    app.title = 'DaaS API'
+    app.description = 'This is a document of DaaS.'
+    app.version = '1.0.0'
 
     return app

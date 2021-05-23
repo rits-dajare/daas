@@ -1,5 +1,5 @@
-class EvalRequest:
-    dajare: str
+from pydantic import BaseModel
 
-    def __init__(self, params: dict):
-        self.dajare = params["dajare"]
+
+class EvalRequest(BaseModel):
+    dajare: str
