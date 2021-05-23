@@ -3,6 +3,7 @@ import csv
 import emoji
 import pyboin
 import jaconv
+import kanjize
 import mojimoji
 from janome.tokenizer import Tokenizer
 
@@ -58,6 +59,12 @@ def preprocessing(text: str) -> str:
     result: str = text
     # 全角 -> 半角
     result = mojimoji.zen_to_han(result, kana=False)
+    # number -> kanji
+    result = re.sub(
+        r'\d+',
+        lambda m: kanjize.int2kanji(int(m.group(0))),
+        result,
+    )
     # remove '笑'
     result = re.sub(
         r'[a-zａ-ｚ]+',
@@ -71,8 +78,6 @@ def preprocessing(text: str) -> str:
     result = re.sub(r'[！-／：-＠［-｀｛、。”’・ 　]', '', result)
     # remove emoji
     result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
-    # remove number
-    result = re.sub(r'\d', '', result)
 
     return result
 

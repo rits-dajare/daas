@@ -12,6 +12,7 @@ class TestTextUtil(unittest.TestCase):
         self.assertEqual('アルドゥイーノ', text_util.reading('Arduino'))
         # alphabet
         self.assertEqual('エービーシーディー', text_util.reading('ABCD'))
+        self.assertEqual('センニヒャクサンジュウヨン', text_util.reading('千二百三十四'))
         self.assertEqual('', text_util.reading('abcd'))
 
     def test_正_形態素解析(self):
@@ -26,7 +27,7 @@ class TestTextUtil(unittest.TestCase):
         self.assertEqual('布団が吹っ飛んだ', text_util.preprocessing('布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ'))
         self.assertEqual('wwwwaa', text_util.preprocessing('wwwwaa'))
         self.assertEqual('hello', text_util.preprocessing('ｈｅｌｌｏ'))
-        self.assertEqual('', text_util.preprocessing('1234567890'))
+        self.assertEqual('千二百三十四', text_util.preprocessing('1234'))
         self.assertEqual('布団が吹っ飛んだ', text_util.preprocessing('布団が吹っ飛んだ'))
 
     def test_正_n_gram(self):
