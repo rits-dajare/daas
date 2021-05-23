@@ -4,17 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-restful = "*"
+fastapi = "*"
+uvicorn = "*"
+requests = "*"
+pydantic = "*"
+tqdm = "*"
 numpy = "*"
 Janome = "*"
 jaconv = "*"
-tqdm = "*"
 pyboin = "*"
 emoji = "*"
-python-levenshtein = "*"
 mojimoji = "*"
 kanjize = "*"
+python-levenshtein = "*"
 
 [dev-packages]
 flake8 = "*"
