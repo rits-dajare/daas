@@ -7,7 +7,7 @@ from core.util import text_util
 
 class EvalEngine:
     def __init__(self):
-        self.score_cache: list = []
+        self.score_cache: list[dict] = []
 
     def exec(self, text: str) -> float:
         # preprocessing
@@ -24,7 +24,7 @@ class EvalEngine:
 
         # score
         reading: str = text_util.reading(text)
-        vector: list = text_util.vectorize(reading)
+        vector: list[int] = text_util.vectorize(reading)
         result = self.eval(vector)
 
         # store fuzzy cache
@@ -32,7 +32,7 @@ class EvalEngine:
 
         return result
 
-    def eval(self, vector: list) -> float:
+    def eval(self, vector: list[int]) -> float:
         np.random.seed(sum(vector))
         result = np.random.normal(2, 1.3) + 1.0
         if result > 5.0:

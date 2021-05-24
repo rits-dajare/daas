@@ -21,7 +21,7 @@ Automatically determines whether a posted sentence is pun, and if true, gives a 
 
 ## Requiremenst
 
-- Python ~> 3.8
+- Python ~> 3.9
 - pipenv
 
 ## Installation

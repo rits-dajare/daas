@@ -19,8 +19,8 @@ def start_mode():
 
 def accuracy_mode():
     # load dajare samples
-    data: list = []
-    files: list = glob.glob(config.DATA_FILE_PATH)
+    data: list[dict] = []
+    files: list[str] = glob.glob(config.DATA_FILE_PATH)
     for file_name in tqdm.tqdm(files):
         print(message.LOAD_FILE_MSG(file_name))
         with open(file_name, 'r') as f:
@@ -36,7 +36,7 @@ def accuracy_mode():
     app = TestClient(create_app())
 
     # measure accuracy
-    error_samples: list = []
+    error_samples: list[dict] = []
     print(message.MEASURE_ACCURACY_MSG(n_samples))
     for sample in tqdm.tqdm(data):
         judge_res = app.get('judge', params={'dajare': sample['dajare']}).json()

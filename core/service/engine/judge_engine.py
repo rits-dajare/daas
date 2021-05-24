@@ -31,7 +31,7 @@ class JudgeEngine:
         reading: str = text_util.reading(text)
         self.ori_reading = reading
         reading = text_util.normalize(reading)
-        morphs: list = text_util.convert_morphs(text, True)
+        morphs: list[str] = text_util.convert_morphs(text, True)
         morphs = [text_util.normalize(morph) for morph in morphs]
 
         # force judge
