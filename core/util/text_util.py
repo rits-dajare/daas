@@ -38,9 +38,9 @@ def reading(text: str) -> str:
     return result
 
 
-def convert_morphs(text: str, filtering: bool = False) -> list:
-    result: list = []
-    filter_parts: list = ['助詞', '助動詞']
+def convert_morphs(text: str, filtering: bool = False) -> list[str]:
+    result: list[str] = []
+    filter_parts = ['助詞', '助動詞']
 
     for token in tokenizer.tokenize(text):
         for part in filter_parts:
@@ -82,7 +82,7 @@ def preprocessing(text: str) -> str:
     return result
 
 
-def n_gram(text: str, n: int = 3) -> list:
+def n_gram(text: str, n: int = 3) -> list[str]:
     return [text[idx:idx + n] for idx in range(len(text) - n + 1)]
 
 
@@ -90,7 +90,7 @@ def normalize(text: str) -> str:
     result: str = text
 
     # sub table
-    sub_table: list = [
+    sub_table = [
         'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
         'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
     ]
@@ -106,8 +106,8 @@ def normalize(text: str) -> str:
     return result
 
 
-def vectorize(text: str) -> list:
-    result: list = list(map(ord, text))
+def vectorize(text: str) -> list[int]:
+    result: list[int] = list(map(ord, text))
     # trimming
     result = result[:config.TEXT_MAX_LENGTH]
     # padding
