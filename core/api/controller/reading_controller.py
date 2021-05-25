@@ -9,6 +9,7 @@ dajare_service = DajareService()
 router = APIRouter()
 
 
+@router.get('/', status_code=200, response_model=ReadingResponse, include_in_schema=False)
 @router.get('', status_code=200, response_model=ReadingResponse)
 async def reading_dajare(request: ReadingRequest = Depends()):
     # convert reading
