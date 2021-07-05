@@ -1,48 +1,63 @@
 import unittest
+from parameterized import parameterized
 
 from core import config
 from core.util import text_util
 
 
 class TestTextUtil(unittest.TestCase):
-    def test_正_読みに変換(self):
-        self.assertEqual('コンニチハ', text_util.reading('こんにちは'))
-        self.assertEqual('フトンガフットンダ', text_util.reading('布団が吹っ飛んだ'))
-        # with dict
-        self.assertEqual('アルドゥイーノ', text_util.reading('Arduino'))
-        # alphabet
-        self.assertEqual('エービーシーディー', text_util.reading('ABCD'))
-        self.assertEqual('センニヒャクサンジュウヨン', text_util.reading('千二百三十四'))
-        self.assertEqual('', text_util.reading('abcd'))
+    @parameterized.expand([
+        ['こんにちは', 'コンニチハ'],
+        ['Arduino', 'アルドゥイーノ'],
+        ['ABCD', 'エービーシーディー'],
+        ['abcd', ''],
+        ['千二百三十四', 'センニヒャクサンジュウヨン'],
+    ])
+    def test_正_読みに変換(self, text: str, reading: str):
+        self.assertEqual(reading, text_util.reading(text))
 
-    def test_正_形態素解析(self):
-        # 通常の形態素解析
-        self.assertEqual(['キョウ', 'ノ', 'テンキ'], text_util.convert_morphs('今日の天気'))
-        # 助詞，助動詞フィルタリング
-        self.assertEqual(['キョウ', 'テンキ'], text_util.convert_morphs('今日の天気', True))
+    @parameterized.expand([
+        [False, '布団が吹っ飛んだ', ['フトン', 'ガ', 'フットン', 'ダ']],
+        [True, '布団が吹っ飛んだ', ['フトン', 'フットン']],
+    ])
+    def test_正_形態素解析(self, filtering: bool, text: str, morphs: list[str]):
+        self.assertEqual(morphs, text_util.convert_morphs(text, filtering))
 
-    def test_正_前処理(self):
-        self.assertEqual('', text_util.preprocessing('!@#$%^^&*()，。/-_=+;:'))
-        self.assertEqual('', text_util.preprocessing('🤗⭕🤓🤔🤘🦁⭐🆗🆖🈲🤐🤗🤖🤑🆙⏩'))
-        self.assertEqual('布団が吹っ飛んだ', text_util.preprocessing('布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ'))
-        self.assertEqual('wwwwaa', text_util.preprocessing('wwwwaa'))
-        self.assertEqual('hello', text_util.preprocessing('ｈｅｌｌｏ'))
-        self.assertEqual('千二百三十四', text_util.preprocessing('1234'))
-        self.assertEqual('布団が吹っ飛んだ', text_util.preprocessing('布団が吹っ飛んだ'))
+    @parameterized.expand([
+        ['!@#$%^^&*()，。/-_=+;:', ''],
+        ['🤗⭕🤓🤔🤘🦁⭐🆗🆖🈲🤐🤗🤖🤑🆙⏩', ''],
+        ['布団が吹っ飛んだwwwWWWｗｗｗＷＷＷ', '布団が吹っ飛んだ'],
+        ['wwwwaa', 'wwwwaa'],
+        ['ｈｅｌｌｏ', 'hello'],
+        ['1234', '千二百三十四'],
+        ['布団が吹っ飛んだ', '布団が吹っ飛んだ'],
+    ])
+    def test_正_前処理(self, text: str, preprocessed_text: str):
+        self.assertEqual(preprocessed_text, text_util.preprocessing(text))
 
-    def test_正_n_gram(self):
-        self.assertEqual(['あい', 'いう', 'うえ', 'えお'], text_util.n_gram('あいうえお', 2))
-        self.assertEqual(['あいう', 'いうえ', 'うえお'], text_util.n_gram('あいうえお', 3))
-        self.assertEqual(['あいうえ', 'いうえお'], text_util.n_gram('あいうえお', 4))
-        self.assertEqual(['あいうえお'], text_util.n_gram('あいうえお', 5))
+    @parameterized.expand([
+        [2, '布団が吹っ飛んだ', ['布団', '団が', 'が吹', '吹っ', 'っ飛', '飛ん', 'んだ']],
+        [3, '布団が吹っ飛んだ', ['布団が', '団が吹', 'が吹っ', '吹っ飛', 'っ飛ん', '飛んだ']],
+        [4, '布団が吹っ飛んだ', ['布団が吹', '団が吹っ', 'が吹っ飛', '吹っ飛ん', 'っ飛んだ']],
+        [5, '布団が吹っ飛んだ', ['布団が吹っ', '団が吹っ飛', 'が吹っ飛ん', '吹っ飛んだ']],
+    ])
+    def test_正_n_gram(self, n: int, text: str, n_gram: list[str]):
+        self.assertEqual(n_gram, text_util.n_gram(text, n))
 
-    def test_正_テキストの正規化(self):
-        self.assertEqual('カキクケコ', text_util.normalize('ガギグゲゴ'))
-        self.assertEqual('アイイ', text_util.normalize('アアアイイ'))
+    @parameterized.expand([
+        ['ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜', 'オシカキクケコサシスセソタシツテトハヒフフヘホハヒフヘホー'],
+        ['アアアイイ', 'アイイ'],
+        ['アアアアアア', 'ア'],
+    ])
+    def test_正_テキストの正規化(self, text: str, normalized_text: str):
+        self.assertEqual(normalized_text, text_util.normalize(text))
 
-    def test_正_テキストを文字コードのベクトルに変換(self):
-        text: str = 'こんにちは'
+    @parameterized.expand([
+        ['布団が吹っ飛んだ', [24067, 22243, 12364, 21561, 12387, 39131, 12435, 12384]]
+    ])
+    def test_正_テキストを文字コードのベクトルに変換(self, text: str, vector: list[int]):
+        vector = vector + [0] * (config.TEXT_MAX_LENGTH - len(text))
         self.assertEqual(
-            [12371, 12435, 12395, 12385, 12399] + [0] * (config.TEXT_MAX_LENGTH - len(text)),
+            vector,
             text_util.vectorize(text)
         )
