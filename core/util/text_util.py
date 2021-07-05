@@ -92,7 +92,7 @@ def normalize(text: str) -> str:
     # sub table
     sub_table = [
         'ヲヂガギグゲゴザジズゼゾダヂヅデドバビブヴベボパピプペポ〜',
-        'オジカキクケコサシスセソタチツテトハヒフフヘホハヒフヘホー'
+        'オシカキクケコサシスセソタシツテトハヒフフヘホハヒフヘホー',
     ]
     for i in range(len(sub_table[0])):
         result = result.replace(
