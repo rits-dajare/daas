@@ -77,7 +77,7 @@ def preprocessing(text: str) -> str:
     result = re.sub(r'[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]', '', result)
     result = re.sub(r'[！-／：-＠［-｀｛、。”’・ 　]', '', result)
     # remove emoji
-    result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI['en'])
+    result = ''.join(ch for ch in result if ch not in emoji.UNICODE_EMOJI_ENGLISH)
 
     return result
 

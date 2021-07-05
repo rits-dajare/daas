@@ -18,6 +18,7 @@ mojimoji = "*"
 kanjize = "*"
 python-levenshtein = "*"
 parameterized = "*"
+types-emoji = "*"
 
 [dev-packages]
 flake8 = "*"
