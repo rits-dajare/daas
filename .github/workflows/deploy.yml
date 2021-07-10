@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: deploy
-      env:
-        TOKEN: ${{secrets.TOKEN}}
-      run: |
-        curl -X POST -H 'Content-Type: application/json' 'https://api.abelab.dev/auto-deploy/' -d '{"app": "DaaS", "token": "'"$TOKEN"'"}'
+      - uses: actions/checkout@v2
+      - name: deploy
+        env:
+          JENKINS_USER_TOKEN: ${{secrets.JENKINS_USER_TOKEN}}
+          JENKINS_JOB_TOKEN: ${{secrets.JENKINS_JOB_TOKEN}}
+        run: |
+          curl --user $JENKINS_USER_TOKEN https://jenkins.abelab.dev/job/daas-deploy/build -d token=$JENKINS_JOB_TOKEN
