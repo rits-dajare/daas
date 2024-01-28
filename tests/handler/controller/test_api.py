@@ -1,10 +1,10 @@
 import unittest
 from fastapi.testclient import TestClient
 
-from core.api.controller import create_app
-from core.api.request.judge_request import JudgeRequest
-from core.api.request.eval_request import EvalRequest
-from core.api.request.reading_request import ReadingRequest
+from app.handler.controller.outer import fastapi_app
+from app.handler.dto.eval_dto import EvalV1
+from app.handler.dto.judge_dto import JudgeV1
+from app.handler.dto.reading_dto import ReadingV1
 
 
 class TestAPI(unittest.TestCase):
@@ -15,11 +15,11 @@ class TestAPI(unittest.TestCase):
     SAMPLE_STR: str = '布団が吹っ飛んだ'
 
     def setUp(self):
-        self.app = TestClient(create_app())
+        self.app = TestClient(fastapi_app())
 
     def test_正_ダジャレを判定(self):
         # setup
-        request_body = JudgeRequest(dajare=self.SAMPLE_STR)
+        request_body = JudgeV1.Request(dajare=self.SAMPLE_STR)
 
         # test
         res = self.app.get(self.DAJARE_JUDGE_PATH, params=request_body)
@@ -38,7 +38,7 @@ class TestAPI(unittest.TestCase):
 
     def test_正_ダジャレを評価(self):
         # setup
-        request_body = EvalRequest(dajare=self.SAMPLE_STR)
+        request_body = EvalV1.Request(dajare=self.SAMPLE_STR)
 
         # test
         res = self.app.get(self.DAJARE_EVAL_PATH, params=request_body)
@@ -57,7 +57,7 @@ class TestAPI(unittest.TestCase):
 
     def test_正_ダジャレを読みに変換(self):
         # setup
-        request_body = ReadingRequest(dajare=self.SAMPLE_STR)
+        request_body = ReadingV1.Request(dajare=self.SAMPLE_STR)
 
         # test
         res = self.app.get(self.DAJARE_READING_PATH, params=request_body)

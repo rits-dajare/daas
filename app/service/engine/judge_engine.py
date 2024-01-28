@@ -3,8 +3,8 @@ import re
 import pyboin
 import collections
 
-from core import config
-from core.util import text_util
+from app import config
+from app.util import text_util
 
 
 class JudgeEngine:

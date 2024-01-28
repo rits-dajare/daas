@@ -1,7 +1,7 @@
 import unittest
 from parameterized import parameterized
 
-from core.service.dajare_service import DajareService
+from app.service.dajare_service import DajareService
 
 
 class TestDajareService(unittest.TestCase):

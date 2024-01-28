@@ -7,8 +7,7 @@ import kanjize
 import mojimoji
 from janome.tokenizer import Tokenizer
 
-from core import config
-
+from app import config
 
 # morph analyzer
 tokenizer = Tokenizer()

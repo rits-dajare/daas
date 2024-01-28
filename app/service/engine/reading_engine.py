@@ -1,4 +1,4 @@
-from core.util import text_util
+from app.util import text_util
 
 
 class ReadingEngine:

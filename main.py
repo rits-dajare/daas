@@ -7,13 +7,12 @@ import tqdm
 import random
 import argparse
 
-from core import config
-from core import message
-from core.api.controller import create_app
+from app import config, message
+from app.handler.controller.outer import fastapi_app
 
 
 def start_mode():
-    app = create_app()
+    app = fastapi_app()
     uvicorn.run(app, host=config.API_HOST, port=config.API_PORT)
 
 
@@ -33,7 +32,7 @@ def accuracy_mode():
     data = random.sample(data, n_samples)
 
     # launch API
-    app = TestClient(create_app())
+    app = TestClient(fastapi_app())
 
     # measure accuracy
     error_samples: list[dict] = []
