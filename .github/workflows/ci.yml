@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: dependencies
+        run: |
+          pip install -U pip
+          pip install pipenv
+          pipenv install
+          pipenv install --dev
+
+      - name: test
+        run: |
+          pipenv run test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: dependencies
+        run: |
+          pip install -U pip
+          pip install pipenv
+          pipenv install
+          pipenv install --dev
+
+      - name: lint
+        run: |
+          pipenv run mypy
+          pipenv run lint
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false

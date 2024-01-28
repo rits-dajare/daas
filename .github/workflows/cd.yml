@@ -1,0 +1,43 @@
+name: CD
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: determine docker tag
+        id: docker_tag
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const tagExec = await exec.getExecOutput('git', ['describe', '--tags', '--abbrev=0']);
+            return tagExec.stdout || tagExec.stderr;
+
+      - name: build docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.docker_tag.outputs.result }}
