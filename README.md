@@ -53,8 +53,3 @@ Bug reports and pull requests are welcome on GitHub at [https://github.com/rits-
 
 - [Swagger UI](https://dajare.abelab.dev/docs)
 - [ダジャレステーション](https://dajare.jp/) - used dajare data as teacher in this project.
-
-## Author
-
-- [Averak](https://github.com/averak)
-- `abe12<at>mccc.jp`
